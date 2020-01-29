@@ -52,7 +52,7 @@ public class CertificateService {
                 tagVerifier.checkAndSaveTagIfNotExist(giftCertificate);
             }
             mapperMyBatis.save(giftCertificate);
-            int id = mapperMyBatis.getId(giftCertificate.getName());
+            int id = giftCertificate.getId();
             giftCertificate.setId(id);
             saveConnect(giftCertificate);
         } else {

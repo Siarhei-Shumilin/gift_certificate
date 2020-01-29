@@ -13,10 +13,8 @@ import java.util.List;
 public interface CertificateMapperMyBatis {
     @Insert("INSERT INTO certificates (name, description, price, create_date, last_update_date, duration) "
             + "VALUES (#{name},#{description},#{price},#{createDate},#{lastUpdateDate},#{duration})")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(GiftCertificate giftCertificate);
-
-    @Select("SELECT id FROM certificates WHERE name = #{name}")
-    int getId(String name);
 
     @Delete("DELETE FROM certificates WHERE id = #{id}")
     boolean delete(int id);
