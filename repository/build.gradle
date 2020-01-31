@@ -1,5 +1,5 @@
 dependencies {
-    compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.1.1'
-    compile group: 'com.zaxxer', name: 'HikariCP', version: '3.4.2'
-    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.18'
+    compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: myBatisVersion
+    compile group: 'com.zaxxer', name: 'HikariCP', version: hikariVersion
+    compile group: 'mysql', name: 'mysql-connector-java', version: mysqlVersion
 }

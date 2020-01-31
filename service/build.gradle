@@ -1,5 +1,5 @@
 
 dependencies {
     implementation project(':repository')
-    compile group: 'org.springframework.security', name: 'spring-security-core', version: '5.2.1.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-core', version: securityCoreVersion
 }
