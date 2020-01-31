@@ -2,7 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.TagNotFoundException;
-import com.epam.esm.mapper.TagMapperMyBatis;
+import com.epam.esm.mapper.TagMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 public class TagService {
 
     @Autowired
-    TagMapperMyBatis mapperTag;
+    TagMapper mapperTag;
 
     public void save(Tag tag) {
         if (tag.getName() == null) {

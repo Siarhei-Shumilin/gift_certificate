@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
 
 @Mapper
-public interface CertificateTagConnectingMapperBatis {
+public interface CertificateTagConnectingMapper {
 
     @Insert("INSERT INTO connecting (certificate_id, tag_id) VALUES (#{certificateId},#{tagId})")
     void save(CertificateTagConnecting certificateTagConnecting);

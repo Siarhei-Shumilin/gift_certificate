@@ -3,7 +3,7 @@ package com.epam.esm.util;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.TagNotFoundException;
-import com.epam.esm.mapper.TagMapperMyBatis;
+import com.epam.esm.mapper.TagMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class TagVerifier {
 
     @Autowired
-    private TagMapperMyBatis tagMapper;
+    private TagMapper tagMapper;
 
     public void checkAndSaveTagIfNotExist(GiftCertificate giftCertificate){
             List<Tag> tagList = giftCertificate.getTagList();

@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 @Mapper
-public interface CertificateMapperMyBatis {
+public interface CertificateMapper {
     @Insert("INSERT INTO certificates (name, description, price, create_date, last_update_date, duration) "
             + "VALUES (#{name},#{description},#{price},#{createDate},#{lastUpdateDate},#{duration})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")

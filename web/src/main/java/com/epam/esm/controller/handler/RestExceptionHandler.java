@@ -13,11 +13,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-//    @ExceptionHandler({RuntimeException.class})
-//    public ResponseEntity<ApiError> handleRunTimeException(RuntimeException e) {
-//        ApiError apiError = new ApiError("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR.value()+"04");
-//        return new ResponseEntity<ApiError>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler({RuntimeException.class})
+    public ResponseEntity<ApiError> handleRunTimeException(RuntimeException e) {
+        ApiError apiError = new ApiError("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR.value()+"04");
+        return new ResponseEntity<ApiError>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     @ExceptionHandler(CertificateNotFoundException.class)
     protected ResponseEntity<ApiError> handleThereIsNoSuchCertificatesException(CertificateNotFoundException exception) {

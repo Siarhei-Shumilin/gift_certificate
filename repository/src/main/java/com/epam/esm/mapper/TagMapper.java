@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 @Mapper
-public interface TagMapperMyBatis {
+public interface TagMapper {
 
     @SelectProvider(type = TagSqlUtil.class, method = "getTagByParameter")
     List<Tag> findByParameters(String name);
