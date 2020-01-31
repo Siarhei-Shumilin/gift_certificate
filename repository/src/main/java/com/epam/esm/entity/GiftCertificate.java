@@ -1,7 +1,5 @@
 package com.epam.esm.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -13,11 +11,7 @@ import java.util.List;
 public class GiftCertificate extends AbstractEntity implements Serializable {
     private String description;
     private BigDecimal price;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalDateTime createDate;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalDateTime lastUpdateDate;
     private int duration;
     private List<Tag> tagList;
