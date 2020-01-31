@@ -42,22 +42,24 @@ public class CertificateService {
     }
 
     @Transactional
-    public void save(GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
+    public int save(GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
         Timestamp date = Timestamp.from(Instant.now());
         LocalDateTime localDateTime = date.toLocalDateTime();
         giftCertificate.setCreateDate(localDateTime);
         giftCertificate.setLastUpdateDate(localDateTime);
+        int id;
         if (validator.validate(giftCertificate)) {
             if (giftCertificate.getTagList() != null) {
                 tagVerifier.checkAndSaveTagIfNotExist(giftCertificate);
             }
             mapperMyBatis.save(giftCertificate);
-            int id = giftCertificate.getId();
+            id = giftCertificate.getId();
             giftCertificate.setId(id);
             saveConnect(giftCertificate);
         } else {
             throw new CertificateFieldCanNotNullException();
         }
+        return id;
     }
 
     private void saveConnect(GiftCertificate giftCertificate) {

@@ -49,8 +49,8 @@ public class CertificateController {
     }
 
     @PostMapping
-    public void save(@RequestBody GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
-        service.save(giftCertificate);
+    public int save(@RequestBody GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
+        return service.save(giftCertificate);
     }
 
     @DeleteMapping("/{id}")
