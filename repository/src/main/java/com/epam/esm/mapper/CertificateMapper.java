@@ -17,7 +17,7 @@ public interface CertificateMapper {
     void save(GiftCertificate giftCertificate);
 
     @Delete("DELETE FROM certificates WHERE id = #{id}")
-    boolean delete(int id);
+    int delete(int id);
 
     @SelectProvider(type = CertificateSqlUtil.class, method = "getTagByParameter")
     @Results(value = {

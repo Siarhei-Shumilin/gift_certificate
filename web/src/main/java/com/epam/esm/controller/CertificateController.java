@@ -54,8 +54,8 @@ public class CertificateController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id) {
-        service.delete(id);
+    public String delete(@PathVariable int id) {
+        return service.delete(id);
     }
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)

@@ -73,8 +73,15 @@ public class CertificateService {
         }
     }
 
-    public boolean delete(int id) {
-        return mapperMyBatis.delete(id);
+    public String delete(int id) {
+        int delete = mapperMyBatis.delete(id);
+        String result;
+        if(delete>0){
+            result = "Deleted "+ delete +" certificates";
+        }else{
+            result = "Delete failed";
+        }
+        return result;
     }
 
     @Transactional
