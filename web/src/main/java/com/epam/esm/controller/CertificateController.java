@@ -31,7 +31,7 @@ public class CertificateController {
     }
 
     @PostMapping
-    public int save(@RequestBody GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
+    public long save(@RequestBody GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
         return service.save(giftCertificate);
     }
 

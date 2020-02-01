@@ -35,3 +35,15 @@ PRIMARY KEY (id)
 
 INSERT INTO users (active, password, roles, user_name) VALUES (true, '111', 'ROLE_ADMIN', 'admin');
 INSERT INTO users (active, password, roles, user_name) VALUES (true, 'pass', 'ROLE_USER', 'user');
+
+CREATE TABLE purchases
+(
+id bigint AUTO_INCREMENT NOT NULL,
+user_id bigint NOT NULL,
+certificate_id bigint NOT NULL,
+price decimal(4,2) not null,
+date_purchase timestamp not null,
+PRIMARY KEY (id),
+FOREIGN KEY (user_id) REFERENCES users (id),
+FOREIGN KEY (certificate_id) REFERENCES certificates (id)
+);

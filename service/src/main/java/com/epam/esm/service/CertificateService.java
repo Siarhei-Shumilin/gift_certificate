@@ -7,7 +7,6 @@ import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.CertificateTagConnectingMapper;
 import com.epam.esm.util.CertificateValidator;
 import com.epam.esm.util.TagVerifier;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,21 +18,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class CertificateService {
-    @Autowired
-    private TagService tagService;
-    @Autowired
-    private CertificateValidator validator;
-    @Autowired
-    private TagVerifier tagVerifier;
-    @Autowired
-    private CertificateMapper mapperMyBatis;
-    @Autowired
-    private CertificateTagConnectingMapper certificateTagConnectingMapperBatis;
+    private final TagService tagService;
+    private final CertificateValidator validator;
+    private final TagVerifier tagVerifier;
+    private final CertificateMapper mapperMyBatis;
+    private final CertificateTagConnectingMapper certificateTagConnectingMapperBatis;
+
+    public CertificateService(TagService tagService, CertificateValidator validator, TagVerifier tagVerifier,
+                              CertificateMapper mapperMyBatis, CertificateTagConnectingMapper certificateTagConnectingMapperBatis) {
+        this.tagService = tagService;
+        this.validator = validator;
+        this.tagVerifier = tagVerifier;
+        this.mapperMyBatis = mapperMyBatis;
+        this.certificateTagConnectingMapperBatis = certificateTagConnectingMapperBatis;
+    }
 
     public List<GiftCertificate> findByParameters(Parameters parameters) {
         List<GiftCertificate> certificateList = mapperMyBatis.findByParameters(parameters);
         if (certificateList.size() < 1) {
-            throw new CertificateNotFoundException();
+            throw new CertificateNotFoundException("There is no such certificate");
         }
         setTagsToCertificates(certificateList);
         return certificateList.stream()
@@ -42,12 +45,12 @@ public class CertificateService {
     }
 
     @Transactional
-    public int save(GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
+    public long save(GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
         Timestamp date = Timestamp.from(Instant.now());
         LocalDateTime localDateTime = date.toLocalDateTime();
         giftCertificate.setCreateDate(localDateTime);
         giftCertificate.setLastUpdateDate(localDateTime);
-        int id;
+        long id;
         if (validator.validate(giftCertificate)) {
             if (giftCertificate.getTagList() != null) {
                 tagVerifier.checkAndSaveTagIfNotExist(giftCertificate);
@@ -57,14 +60,14 @@ public class CertificateService {
             giftCertificate.setId(id);
             saveConnect(giftCertificate);
         } else {
-            throw new CertificateFieldCanNotNullException();
+            throw new CertificateFieldCanNotNullException("The certificate fields can't be null");
         }
         return id;
     }
 
     private void saveConnect(GiftCertificate giftCertificate) {
         List<String> tagName = giftCertificate.getTagList().stream()
-                .map(AbstractEntity::getName)
+                .map(Tag::getName)
                 .collect(Collectors.toList());
         for (String name : tagName) {
             List<Tag> tags = tagService.findByParameters(name);
@@ -91,7 +94,7 @@ public class CertificateService {
             tagVerifier.checkAndSaveTagIfNotExist(giftCertificate);
             mapperMyBatis.update(giftCertificate);
             List<String> tagName = giftCertificate.getTagList().stream()
-                    .map(AbstractEntity::getName)
+                    .map(Tag::getName)
                     .collect(Collectors.toList());
             CertificateTagConnecting certificateTagConnecting = new CertificateTagConnecting();
             certificateTagConnecting.setCertificateId(giftCertificate.getId());
@@ -102,7 +105,7 @@ public class CertificateService {
                 certificateTagConnectingMapperBatis.updateConnect(certificateTagConnecting);
             }
         } else {
-            throw new CertificateFieldCanNotNullException();
+            throw new CertificateFieldCanNotNullException("The certificate fields can't be null");
         }
         return update;
     }

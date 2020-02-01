@@ -18,37 +18,29 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UserExistsException.class)
     protected ResponseEntity<ApiError> handleUserExistsException(UserExistsException exception) {
-        ApiError apiError = new ApiError("User exists",
+        ApiError apiError = new ApiError(exception.getMessage(),
                 HttpStatus.BAD_REQUEST.value() + "01");
         return new ResponseEntity<ApiError>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-
     @ExceptionHandler(CertificateNotFoundException.class)
     protected ResponseEntity<ApiError> handleThereIsNoSuchCertificatesException(CertificateNotFoundException exception) {
-        ApiError apiError = new ApiError("There is no such certificate",
+        ApiError apiError = new ApiError(exception.getMessage(),
                 HttpStatus.NOT_FOUND.value() + "01");
         return new ResponseEntity<ApiError>(apiError, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(CertificateFieldCanNotNullException.class)
     protected ResponseEntity<ApiError> handleCertificateFieldCanNotNullException(CertificateFieldCanNotNullException exception) {
-        ApiError apiError = new ApiError("The certificate fields can't be null",
+        ApiError apiError = new ApiError(exception.getMessage(),
                 HttpStatus.NOT_FOUND.value() + "01");
         return new ResponseEntity<ApiError>(apiError, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(TagNotFoundException.class)
     protected ResponseEntity<ApiError> handleTagExistException(TagNotFoundException exception) {
-        ApiError apiError = new ApiError("There is no such tag",
+        ApiError apiError = new ApiError(exception.getMessage(),
                 HttpStatus.NOT_FOUND.value() + "01");
         return new ResponseEntity<ApiError>(apiError, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(TagExistsException.class)
-    protected ResponseEntity<ApiError> handleTagExistException(TagExistsException exception) {
-        ApiError apiError = new ApiError("Such an element already exists",
-                HttpStatus.CONFLICT.value() + "02");
-        return new ResponseEntity<ApiError>(apiError, HttpStatus.CONFLICT);
     }
 }

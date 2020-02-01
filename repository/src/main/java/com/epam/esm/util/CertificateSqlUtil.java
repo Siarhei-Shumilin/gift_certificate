@@ -2,7 +2,9 @@ package com.epam.esm.util;
 
 import com.epam.esm.entity.Parameters;
 import org.apache.ibatis.jdbc.SQL;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CertificateSqlUtil {
     private final String selectData = "certificates.id, certificates.name, certificates.description, certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration";
     private final String table = "connecting";

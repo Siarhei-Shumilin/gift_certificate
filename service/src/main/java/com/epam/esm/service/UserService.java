@@ -5,7 +5,6 @@ import com.epam.esm.exception.UserExistsException;
 import com.epam.esm.mapper.UserMapper;
 import com.epam.esm.util.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,9 +23,9 @@ public class UserService implements UserDetailsService {
 
     public String save(User user) throws UserExistsException {
         userMapper.save(user);
-        int id = user.getId();
-        if(id==0){
-            throw new UserExistsException();
+        long id = user.getId();
+        if (id == 0) {
+            throw new UserExistsException("User exists");
         }
         return "Saved user with id = " + id;
     }
