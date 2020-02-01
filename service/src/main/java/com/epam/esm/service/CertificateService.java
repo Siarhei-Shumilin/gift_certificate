@@ -21,20 +21,20 @@ public class CertificateService {
     private final TagService tagService;
     private final CertificateValidator validator;
     private final TagVerifier tagVerifier;
-    private final CertificateMapper mapperMyBatis;
+    private final CertificateMapper certificateMapper;
     private final CertificateTagConnectingMapper certificateTagConnectingMapperBatis;
 
     public CertificateService(TagService tagService, CertificateValidator validator, TagVerifier tagVerifier,
-                              CertificateMapper mapperMyBatis, CertificateTagConnectingMapper certificateTagConnectingMapperBatis) {
+                              CertificateMapper certificateMapper, CertificateTagConnectingMapper certificateTagConnectingMapperBatis) {
         this.tagService = tagService;
         this.validator = validator;
         this.tagVerifier = tagVerifier;
-        this.mapperMyBatis = mapperMyBatis;
+        this.certificateMapper = certificateMapper;
         this.certificateTagConnectingMapperBatis = certificateTagConnectingMapperBatis;
     }
 
     public List<GiftCertificate> findByParameters(Parameters parameters) {
-        List<GiftCertificate> certificateList = mapperMyBatis.findByParameters(parameters);
+        List<GiftCertificate> certificateList = certificateMapper.findByParameters(parameters);
         if (certificateList.size() < 1) {
             throw new CertificateNotFoundException("There is no such certificate");
         }
@@ -55,7 +55,7 @@ public class CertificateService {
             if (giftCertificate.getTagList() != null) {
                 tagVerifier.checkAndSaveTagIfNotExist(giftCertificate);
             }
-            mapperMyBatis.save(giftCertificate);
+            certificateMapper.save(giftCertificate);
             id = giftCertificate.getId();
             giftCertificate.setId(id);
             saveConnect(giftCertificate);
@@ -77,7 +77,7 @@ public class CertificateService {
     }
 
     public String delete(int id) {
-        int delete = mapperMyBatis.delete(id);
+        int delete = certificateMapper.delete(id);
         String result;
         if(delete>0){
             result = "Deleted "+ delete +" certificates";
@@ -88,11 +88,11 @@ public class CertificateService {
     }
 
     @Transactional
-    public boolean update(GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
-        boolean update = false;
+    public int update(GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
+        int update = 0;
         if (validator.validate(giftCertificate)) {
             tagVerifier.checkAndSaveTagIfNotExist(giftCertificate);
-            mapperMyBatis.update(giftCertificate);
+            certificateMapper.update(giftCertificate);
             List<String> tagName = giftCertificate.getTagList().stream()
                     .map(Tag::getName)
                     .collect(Collectors.toList());
@@ -104,7 +104,10 @@ public class CertificateService {
                 certificateTagConnecting.setTagId(tags.get(0).getId());
                 certificateTagConnectingMapperBatis.updateConnect(certificateTagConnecting);
             }
-        } else {
+        } else if(giftCertificate.getId()!=0 && giftCertificate.getName()==null && giftCertificate.getPrice()!=null){
+           update = certificateMapper.update(giftCertificate);
+        }
+        else {
             throw new CertificateFieldCanNotNullException("The certificate fields can't be null");
         }
         return update;
@@ -114,7 +117,7 @@ public class CertificateService {
         for (GiftCertificate giftCertificate : certificates) {
             CertificateTagConnecting certificateTagConnecting = new CertificateTagConnecting();
             certificateTagConnecting.setCertificateId(giftCertificate.getId());
-            List<Tag> certificateTags = mapperMyBatis.findCertificateTags(certificateTagConnecting);
+            List<Tag> certificateTags = certificateMapper.findCertificateTags(certificateTagConnecting);
             giftCertificate.setTagList(certificateTags);
         }
     }

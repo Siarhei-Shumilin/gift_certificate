@@ -1,12 +1,8 @@
 package com.epam.esm.mapper;
 
-import com.epam.esm.entity.CertificateTagConnecting;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Parameters;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.*;
 import com.epam.esm.util.CertificateSqlUtil;
 import org.apache.ibatis.annotations.*;
-
 import java.util.List;
 
 @Mapper
@@ -19,10 +15,10 @@ public interface CertificateMapper {
     @Delete("DELETE FROM certificates WHERE id = #{id}")
     int delete(int id);
 
-    @SelectProvider(type = CertificateSqlUtil.class, method = "getTagByParameter")
+    @SelectProvider(type = CertificateSqlUtil.class, method = "getByParameter")
     @Results(value = {
             @Result(property = "createDate", column = "create_date"),
-            @Result(property="lastUpdateDate", column = "last_update_date"),
+            @Result(property = "lastUpdateDate", column = "last_update_date"),
     })
     List<GiftCertificate> findByParameters(Parameters parameters);
 
@@ -30,6 +26,6 @@ public interface CertificateMapper {
             + "INNER JOIN tags ON connecting.tag_id=tags.id WHERE connecting.certificate_id = #{certificateId}")
     List<Tag> findCertificateTags(CertificateTagConnecting certificateTagConnecting);
 
-    @Update("UPDATE certificates SET name = #{name}, description=#{description}, price=#{price}, last_update_date=#{lastUpdateDate}, duration=#{duration} WHERE id = #{id}")
-    void update(GiftCertificate giftCertificate);
+    @UpdateProvider(type = CertificateSqlUtil.class, method = "update")
+    int update(GiftCertificate giftCertificate);
 }

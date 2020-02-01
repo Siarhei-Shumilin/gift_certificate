@@ -6,6 +6,7 @@ import com.epam.esm.exception.CertificateFieldCanNotNullException;
 import com.epam.esm.service.CertificateService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController

@@ -1,5 +1,6 @@
 package com.epam.esm.util;
 
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Parameters;
 import org.apache.ibatis.jdbc.SQL;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ public class CertificateSqlUtil {
     private final String innerJoinCertificate = "certificates ON connecting.certificate_id=certificates.id";
     private final String innerJoinTag = "tags ON connecting.tag_id=tags.id";
 
-    public String getTagByParameter(Parameters parameters) {
+    public String getByParameter(Parameters parameters) {
         return new SQL() {{
             SELECT(selectData);
             FROM(table);
@@ -41,7 +42,6 @@ public class CertificateSqlUtil {
                 } else if (parameters.getName() != null && parameters.getDescription() == null && parameters.getTagName() != null) {
                     WHERE("certificates.name like '" + "%" + parameters.getName() + "%'"
                             + " and tags.name = \"" + parameters.getTagName() + "\"" + sort(parameters));
-
                 }
             }
         }}.toString();
@@ -60,5 +60,18 @@ public class CertificateSqlUtil {
             }
         }
         return sort;
+    }
+
+    public String update(GiftCertificate giftCertificate){
+        return new SQL() {{
+            UPDATE("certificates");
+            if (giftCertificate.getName()!=null && giftCertificate.getDescription()!=null
+                    && giftCertificate.getPrice()!=null && giftCertificate.getDuration()!=0 && giftCertificate.getTagList()!=null){
+                SET("name = #{name}, description=#{description}, price=#{price}, last_update_date=#{lastUpdateDate}, duration=#{duration}");
+            } else {
+                SET("price=#{price}");
+            }
+            WHERE("id = #{id}");
+        }}.toString();
     }
 }
