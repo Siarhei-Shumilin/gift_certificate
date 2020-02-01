@@ -25,11 +25,11 @@ FOREIGN KEY (tag_id) REFERENCES tags (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE users (
-id INTEGER auto_increment NOT NULL,
+id bigint auto_increment NOT NULL,
 active boolean,
 password VARCHAR(30) NOT NULL,
 roles VARCHAR(30) NOT NULL,
-user_name VARCHAR(30) NOT NULL,
+user_name VARCHAR(30) UNIQUE NOT NULL,
 PRIMARY KEY (id)
 );
 

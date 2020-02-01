@@ -1,9 +1,6 @@
 package com.epam.esm.controller.handler;
 
-import com.epam.esm.exception.CertificateFieldCanNotNullException;
-import com.epam.esm.exception.CertificateNotFoundException;
-import com.epam.esm.exception.TagExistsException;
-import com.epam.esm.exception.TagNotFoundException;
+import com.epam.esm.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,6 +15,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError apiError = new ApiError("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR.value()+"04");
         return new ResponseEntity<ApiError>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(UserExistsException.class)
+    protected ResponseEntity<ApiError> handleUserExistsException(UserExistsException exception) {
+        ApiError apiError = new ApiError("User exists",
+                HttpStatus.BAD_REQUEST.value() + "01");
+        return new ResponseEntity<ApiError>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(CertificateNotFoundException.class)
     protected ResponseEntity<ApiError> handleThereIsNoSuchCertificatesException(CertificateNotFoundException exception) {
