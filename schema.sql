@@ -1,5 +1,5 @@
 CREATE TABLE certificates (
-id bigint auto_increment NOT NULL,
+id bigint auto_increment NOT NULL ,
 name VARCHAR(30) NOT NULL,
 description VARCHAR(300) NOT NULL,
 price DECIMAL(4,2) NOT NULL,
