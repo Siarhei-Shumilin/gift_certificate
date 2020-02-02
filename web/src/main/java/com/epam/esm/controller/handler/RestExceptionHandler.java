@@ -19,7 +19,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserExistsException.class)
     protected ResponseEntity<ApiError> handleUserExistsException(UserExistsException exception) {
         ApiError apiError = new ApiError(exception.getMessage(),
-                HttpStatus.BAD_REQUEST.value() + "01");
+                HttpStatus.BAD_REQUEST.value() + "02");
         return new ResponseEntity<ApiError>(apiError, HttpStatus.BAD_REQUEST);
     }
 
@@ -33,8 +33,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(CertificateFieldCanNotNullException.class)
     protected ResponseEntity<ApiError> handleCertificateFieldCanNotNullException(CertificateFieldCanNotNullException exception) {
         ApiError apiError = new ApiError(exception.getMessage(),
-                HttpStatus.NOT_FOUND.value() + "01");
-        return new ResponseEntity<ApiError>(apiError, HttpStatus.NOT_FOUND);
+                HttpStatus.BAD_REQUEST.value() + "02");
+        return new ResponseEntity<ApiError>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(TagNotFoundException.class)

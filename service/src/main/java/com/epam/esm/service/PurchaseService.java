@@ -18,17 +18,21 @@ public class PurchaseService {
 
     private final UserMapper userMapper;
     private final PurchaseMapper purchaseMapper;
+    private final Purchase purchase;
 
-    public PurchaseService(UserMapper userMapper, PurchaseMapper purchaseMapper) {
+    public PurchaseService(UserMapper userMapper, PurchaseMapper purchaseMapper, Purchase purchase) {
         this.userMapper = userMapper;
         this.purchaseMapper = purchaseMapper;
+        this.purchase = purchase;
     }
 
     public String buy(GiftCertificate giftCertificate) {
         User user = getCurrentUser();
-        long userId = user.getId();
         Timestamp date = Timestamp.from(Instant.now());
-        Purchase purchase = new Purchase(userId, giftCertificate.getId(), giftCertificate.getPrice(), date.toLocalDateTime());
+        purchase.setUserId(user.getId());
+        purchase.setCertificateId(giftCertificate.getId());
+        purchase.setPrice(giftCertificate.getPrice());
+        purchase.setDateTime(date.toLocalDateTime());
         purchaseMapper.buy(purchase);
         return "Purchase number = " + purchase.getId();
     }

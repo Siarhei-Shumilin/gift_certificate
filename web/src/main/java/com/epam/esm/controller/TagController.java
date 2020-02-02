@@ -31,9 +31,4 @@ public class TagController {
     public void delete(@PathVariable int id) {
         tagService.delete(id);
     }
-
-    @GetMapping(value = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<Tag> all(@RequestParam(required = false) String name){
-        return tagService.findByParameters(name);
-    }
 }

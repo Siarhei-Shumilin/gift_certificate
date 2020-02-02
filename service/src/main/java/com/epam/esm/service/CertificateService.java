@@ -22,20 +22,24 @@ public class CertificateService {
     private final CertificateValidator validator;
     private final TagVerifier tagVerifier;
     private final CertificateMapper certificateMapper;
+    private final CertificateTagConnecting certificateTagConnecting;
     private final CertificateTagConnectingMapper certificateTagConnectingMapperBatis;
 
     public CertificateService(TagService tagService, CertificateValidator validator, TagVerifier tagVerifier,
-                              CertificateMapper certificateMapper, CertificateTagConnectingMapper certificateTagConnectingMapperBatis) {
+                              CertificateMapper certificateMapper, CertificateTagConnecting certificateTagConnecting,
+                              CertificateTagConnectingMapper certificateTagConnectingMapperBatis) {
         this.tagService = tagService;
         this.validator = validator;
         this.tagVerifier = tagVerifier;
         this.certificateMapper = certificateMapper;
+        this.certificateTagConnecting = certificateTagConnecting;
         this.certificateTagConnectingMapperBatis = certificateTagConnectingMapperBatis;
     }
 
+    @Transactional
     public List<GiftCertificate> findByParameters(Parameters parameters) {
         List<GiftCertificate> certificateList = certificateMapper.findByParameters(parameters);
-        if (certificateList.size() < 1) {
+        if (certificateList.isEmpty()) {
             throw new CertificateNotFoundException("There is no such certificate");
         }
         setTagsToCertificates(certificateList);
@@ -46,23 +50,34 @@ public class CertificateService {
 
     @Transactional
     public long save(GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
-        Timestamp date = Timestamp.from(Instant.now());
-        LocalDateTime localDateTime = date.toLocalDateTime();
-        giftCertificate.setCreateDate(localDateTime);
-        giftCertificate.setLastUpdateDate(localDateTime);
-        long id;
+        giftCertificate.setCreateDate(getDate());
+        giftCertificate.setLastUpdateDate(getDate());
         if (validator.validate(giftCertificate)) {
-            if (giftCertificate.getTagList() != null) {
-                tagVerifier.checkAndSaveTagIfNotExist(giftCertificate);
-            }
+            tagVerifier.checkAndSaveTagIfNotExist(giftCertificate);
             certificateMapper.save(giftCertificate);
-            id = giftCertificate.getId();
-            giftCertificate.setId(id);
             saveConnect(giftCertificate);
         } else {
             throw new CertificateFieldCanNotNullException("The certificate fields can't be null");
         }
-        return id;
+        return giftCertificate.getId();
+    }
+
+    public String delete(int id) {
+        return "Deleted " + certificateMapper.delete(id);
+    }
+
+    @Transactional
+    public boolean update(GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
+        int updatedRow;
+        if (validator.validate(giftCertificate)) {
+            updatedRow = updateWholeObject(giftCertificate);
+        } else if (giftCertificate.getId() != 0 && giftCertificate.getPrice() != null) {
+            giftCertificate.setLastUpdateDate(getDate());
+            updatedRow = certificateMapper.update(giftCertificate);
+        } else {
+            throw new CertificateFieldCanNotNullException("The certificate fields can't be null");
+        }
+        return updatedRow > 0;
     }
 
     private void saveConnect(GiftCertificate giftCertificate) {
@@ -71,50 +86,32 @@ public class CertificateService {
                 .collect(Collectors.toList());
         for (String name : tagName) {
             List<Tag> tags = tagService.findByParameters(name);
-            CertificateTagConnecting certificateTagConnecting = new CertificateTagConnecting(giftCertificate.getId(), tags.get(0).getId());
+            certificateTagConnecting.setCertificateId(giftCertificate.getId());
+            certificateTagConnecting.setTagId(tags.get(0).getId());
             certificateTagConnectingMapperBatis.save(certificateTagConnecting);
         }
     }
 
-    public String delete(int id) {
-        int delete = certificateMapper.delete(id);
-        String result;
-        if(delete>0){
-            result = "Deleted "+ delete +" certificates";
-        }else{
-            result = "Delete failed";
-        }
-        return result;
-    }
-
-    @Transactional
-    public boolean update(GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
-        Timestamp date = Timestamp.from(Instant.now());
-        int update = 0;
-        if (validator.validate(giftCertificate)) {
-            tagVerifier.checkAndSaveTagIfNotExist(giftCertificate);
-            giftCertificate.setLastUpdateDate(date.toLocalDateTime());
-            update = certificateMapper.update(giftCertificate);
-            CertificateTagConnecting certificateTagConnecting = new CertificateTagConnecting();
-            certificateTagConnecting.setCertificateId(giftCertificate.getId());
-            certificateTagConnectingMapperBatis.deleteConnect(certificateTagConnecting);
-            saveConnect(giftCertificate);
-        } else if(giftCertificate.getId()!=0 && giftCertificate.getName()==null && giftCertificate.getPrice()!=null){
-            giftCertificate.setLastUpdateDate(date.toLocalDateTime());
-           update = certificateMapper.update(giftCertificate);
-        }
-        else {
-            throw new CertificateFieldCanNotNullException("The certificate fields can't be null");
-        }
-        return update > 0;
+    private int updateWholeObject(GiftCertificate giftCertificate){
+        tagVerifier.checkAndSaveTagIfNotExist(giftCertificate);
+        giftCertificate.setLastUpdateDate(getDate());
+        int update = certificateMapper.update(giftCertificate);
+        certificateTagConnecting.setCertificateId(giftCertificate.getId());
+        certificateTagConnectingMapperBatis.deleteConnect(certificateTagConnecting);
+        saveConnect(giftCertificate);
+        return update;
     }
 
     private void setTagsToCertificates(List<GiftCertificate> certificates) {
         for (GiftCertificate giftCertificate : certificates) {
-            CertificateTagConnecting certificateTagConnecting = new CertificateTagConnecting();
             certificateTagConnecting.setCertificateId(giftCertificate.getId());
             List<Tag> certificateTags = certificateMapper.findCertificateTags(certificateTagConnecting);
             giftCertificate.setTagList(certificateTags);
         }
+    }
+
+    private LocalDateTime getDate(){
+        Timestamp date = Timestamp.from(Instant.now());
+        return date.toLocalDateTime();
     }
 }

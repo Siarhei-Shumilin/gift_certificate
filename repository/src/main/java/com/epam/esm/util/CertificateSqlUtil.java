@@ -18,6 +18,23 @@ public class CertificateSqlUtil {
         Integer page = parameters.getPage();
         if (page == null) { page = 1; }
         String pageSize = ((page - 1) * 5) + "," + PAGE_SIZE;
+        return buildQuery(parameters, pageSize);
+    }
+
+    public String update(GiftCertificate giftCertificate) {
+        return new SQL() {{
+            UPDATE("certificates");
+            if (giftCertificate.getName() != null && giftCertificate.getDescription() != null
+                    && giftCertificate.getPrice() != null && giftCertificate.getDuration() != 0 && giftCertificate.getTagList() != null) {
+                SET("name = #{name}, description=#{description}, price=#{price}, last_update_date=#{lastUpdateDate}, duration=#{duration}");
+            } else {
+                SET("price=#{price}, last_update_date=#{lastUpdateDate}");
+            }
+            WHERE("id = #{id}");
+        }}.toString();
+    }
+
+    private String buildQuery(Parameters parameters, String pageSize){
         SearchUtil searchUtil = new SearchUtil();
         return new SQL() {{
             SELECT(selectData);
@@ -34,19 +51,6 @@ public class CertificateSqlUtil {
             } else if (parameters.getSort() != null) {
                 ORDER_BY(searchUtil.sort(parameters));
             }
-        }}.toString();
-    }
-
-    public String update(GiftCertificate giftCertificate) {
-        return new SQL() {{
-            UPDATE("certificates");
-            if (giftCertificate.getName() != null && giftCertificate.getDescription() != null
-                    && giftCertificate.getPrice() != null && giftCertificate.getDuration() != 0 && giftCertificate.getTagList() != null) {
-                SET("name = #{name}, description=#{description}, price=#{price}, last_update_date=#{lastUpdateDate}, duration=#{duration}");
-            } else {
-                SET("price=#{price}, last_update_date=#{lastUpdateDate}");
-            }
-            WHERE("id = #{id}");
         }}.toString();
     }
 }
