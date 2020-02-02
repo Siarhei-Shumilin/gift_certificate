@@ -21,7 +21,7 @@ public class CertificateController {
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public List<GiftCertificate> findByParameters(@RequestParam(required = false) String name, @RequestParam(required = false) String description,
                                        @RequestParam(required = false) String tagName, @RequestParam(required = false) String sort,
-                                       @RequestParam(required = false) String typeSort, @RequestParam int page) {
+                                       @RequestParam(required = false) String typeSort, @RequestParam(required = false) Integer page) {
         Parameters parameters = new Parameters(name, description, tagName, sort, typeSort, page);
         return service.findByParameters(parameters);
     }

@@ -8,12 +8,12 @@ public class Parameters implements Serializable {
     private String tagName;
     private String sort;
     private String typeSort;
-    private int page;
+    private Integer page;
 
     public Parameters() {
     }
 
-    public Parameters(String name, String description, String tagName, String sort, String typeSort, int page) {
+    public Parameters(String name, String description, String tagName, String sort, String typeSort, Integer page) {
         this.name = name;
         this.description = description;
         this.tagName = tagName;
@@ -22,15 +22,7 @@ public class Parameters implements Serializable {
         this.page = page;
     }
 
-    public Parameters(String name, String description, String tagName, String sort, String typeSort) {
-        this.name = name;
-        this.description = description;
-        this.tagName = tagName;
-        this.sort = sort;
-        this.typeSort = typeSort;
-    }
-
-    public int getPage() {
+    public Integer getPage() {
         return page;
     }
 
