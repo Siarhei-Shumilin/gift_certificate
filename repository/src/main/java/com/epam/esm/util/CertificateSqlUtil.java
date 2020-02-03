@@ -35,13 +35,21 @@ public class CertificateSqlUtil {
     }
 
     private String buildQuery(Parameters parameters, String pageSize){
+        String limitSubQuery = new SQL(){{
+        SELECT("id");
+        FROM("certificates");
+        ORDER_BY("id");
+        LIMIT(pageSize);
+        }}.toString();
+
+
         SearchUtil searchUtil = new SearchUtil();
         return new SQL() {{
             SELECT(selectData);
             FROM(table);
             INNER_JOIN(innerJoinCertificate);
             INNER_JOIN(innerJoinTag);
-            JOIN("(SELECT id FROM certificates ORDER BY id LIMIT " + pageSize + ") as b ON b.id = certificates.id");
+            JOIN("("+limitSubQuery + ") as b ON b.id = certificates.id");
             if (parameters.getName() != null) {
                 WHERE(searchUtil.findByName(parameters));
             } else if (parameters.getDescription() != null) {

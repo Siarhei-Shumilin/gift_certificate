@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface CertificateTagConnectingMapper {
-
     @Insert("INSERT INTO connecting (certificate_id, tag_id) VALUES (#{certificateId},#{tagId})")
     void save(CertificateTagConnecting certificateTagConnecting);
 
