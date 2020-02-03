@@ -5,6 +5,7 @@ import com.epam.esm.entity.Purchase;
 import com.epam.esm.entity.User;
 import com.epam.esm.mapper.PurchaseMapper;
 import com.epam.esm.mapper.UserMapper;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 @Service
 public class PurchaseService {
@@ -35,6 +37,12 @@ public class PurchaseService {
         purchase.setDateTime(date.toLocalDateTime());
         purchaseMapper.buy(purchase);
         return "Purchase number = " + purchase.getId();
+    }
+
+    public List<Purchase> findUsersPurchases(long userId, Integer page){
+        if (page == null) { page = 1; }
+        RowBounds rowBounds = new RowBounds(((page - 1) * 5), 5);
+        return purchaseMapper.findUsersPurchases(userId, rowBounds);
     }
 
     private User getCurrentUser() {

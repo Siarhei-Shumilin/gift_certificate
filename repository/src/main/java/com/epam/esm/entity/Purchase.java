@@ -13,6 +13,9 @@ public class Purchase {
     private BigDecimal price;
     private LocalDateTime dateTime;
 
+    private String certificatesName;
+    private String certificateDescription;
+
     public Purchase() {
     }
 
@@ -21,6 +24,22 @@ public class Purchase {
         this.certificateId = certificateId;
         this.price = price;
         this.dateTime = dateTime;
+    }
+
+    public String getCertificatesName() {
+        return certificatesName;
+    }
+
+    public void setCertificatesName(String certificatesName) {
+        this.certificatesName = certificatesName;
+    }
+
+    public String getCertificateDescription() {
+        return certificateDescription;
+    }
+
+    public void setCertificateDescription(String certificateDescription) {
+        this.certificateDescription = certificateDescription;
     }
 
     public long getId() {
