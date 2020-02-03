@@ -15,10 +15,22 @@ public class CertificateSqlUtil {
     private final static int PAGE_SIZE = 5;
 
     public String getByParameter(Parameters parameters) {
-        Integer page = parameters.getPage();
-        if (page == null) { page = 1; }
-        String pageSize = ((page - 1) * 5) + "," + PAGE_SIZE;
-        return buildQuery(parameters, pageSize);
+        SearchUtil searchUtil = new SearchUtil();
+        return new SQL() {{
+            SELECT(selectData);
+            FROM(table);
+            INNER_JOIN(innerJoinCertificate);
+            INNER_JOIN(innerJoinTag);
+            if (parameters.getName() != null) {
+                WHERE(searchUtil.findByName(parameters));
+            } else if (parameters.getDescription() != null) {
+                WHERE(searchUtil.findDescription(parameters));
+            } else if (parameters.getTagName() != null) {
+                WHERE(searchUtil.findByTag(parameters));
+            } else if (parameters.getSort() != null) {
+                ORDER_BY(searchUtil.sort(parameters));
+            }
+        }}.toString();
     }
 
     public String update(GiftCertificate giftCertificate) {
@@ -31,34 +43,6 @@ public class CertificateSqlUtil {
                 SET("price=#{price}, last_update_date=#{lastUpdateDate}");
             }
             WHERE("id = #{id}");
-        }}.toString();
-    }
-
-    private String buildQuery(Parameters parameters, String pageSize){
-        String limitSubQuery = new SQL(){{
-        SELECT("id");
-        FROM("certificates");
-        ORDER_BY("id");
-        LIMIT(pageSize);
-        }}.toString();
-
-
-        SearchUtil searchUtil = new SearchUtil();
-        return new SQL() {{
-            SELECT(selectData);
-            FROM(table);
-            INNER_JOIN(innerJoinCertificate);
-            INNER_JOIN(innerJoinTag);
-            JOIN("("+limitSubQuery + ") as b ON b.id = certificates.id");
-            if (parameters.getName() != null) {
-                WHERE(searchUtil.findByName(parameters));
-            } else if (parameters.getDescription() != null) {
-                WHERE(searchUtil.findDescription(parameters));
-            } else if (parameters.getTagName() != null) {
-                WHERE(searchUtil.findByTag(parameters));
-            } else if (parameters.getSort() != null) {
-                ORDER_BY(searchUtil.sort(parameters));
-            }
         }}.toString();
     }
 }

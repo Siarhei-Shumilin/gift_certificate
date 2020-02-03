@@ -8,6 +8,7 @@ import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.CertificateTagConnectingMapper;
 import com.epam.esm.util.CertificateValidator;
 import com.epam.esm.util.TagVerifier;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +40,10 @@ public class CertificateService {
 
     @Transactional
     public List<GiftCertificate> findByParameters(Parameters parameters) {
-        List<GiftCertificate> certificateList = certificateMapper.findByParameters(parameters);
+        Integer page = parameters.getPage();
+        if (page == null) { page = 1; }
+        RowBounds rowBounds = new RowBounds(((page - 1) * 5), 5);
+        List<GiftCertificate> certificateList = certificateMapper.findByParameters(parameters, rowBounds);
         if (certificateList.isEmpty()) {
             throw new CertificateNotFoundException("There is no such certificate");
         }
