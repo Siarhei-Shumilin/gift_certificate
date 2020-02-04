@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 public class CertificateValidator {
     public boolean validate(GiftCertificate giftCertificate){
         return giftCertificate.getName()!=null && giftCertificate.getDescription()!=null
-                && giftCertificate.getPrice()!=null && giftCertificate.getDuration()!=0 && giftCertificate.getTagList()!=null;
+                && giftCertificate.getPrice()!=null && giftCertificate.getDuration()>=0 && giftCertificate.getTagList()!=null;
     }
 }
