@@ -11,6 +11,7 @@ import com.epam.esm.mapper.CertificateTagConnectingMapper;
 import com.epam.esm.util.CertificateValidator;
 import com.epam.esm.util.TagVerifier;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,28 +29,30 @@ public class CertificateService {
     private final CertificateMapper certificateMapper;
     private final CertificateTagConnecting certificateTagConnecting;
     private final CertificateTagConnectingMapper certificateTagConnectingMapperBatis;
+    private final MessageSource messageSource;
 
     public CertificateService(TagService tagService, CertificateValidator validator, TagVerifier tagVerifier,
                               CertificateMapper certificateMapper, CertificateTagConnecting certificateTagConnecting,
-                              CertificateTagConnectingMapper certificateTagConnectingMapperBatis) {
+                              CertificateTagConnectingMapper certificateTagConnectingMapperBatis, MessageSource messageSource) {
         this.tagService = tagService;
         this.validator = validator;
         this.tagVerifier = tagVerifier;
         this.certificateMapper = certificateMapper;
         this.certificateTagConnecting = certificateTagConnecting;
         this.certificateTagConnectingMapperBatis = certificateTagConnectingMapperBatis;
+        this.messageSource = messageSource;
     }
 
     @Transactional
-    public List<GiftCertificate> findByParameters(Parameters parameters) {
-        List<GiftCertificate> certificateList;
-        if (parameters.getListTagName()==null){
-            certificateList = certificateMapper.findByParameters(parameters,getRowBounds(parameters));
+    public List<GiftCertificate> findByParameters(Parameters parameters, Locale locale) {
+        List<GiftCertificate> certificateList = new ArrayList<>();
+        if (parameters.getListTagName() == null) {
+            certificateList = certificateMapper.findByParameters(parameters, getRowBounds(parameters));
         } else {
-            certificateList = searchCertificatesByTags(parameters);
+            certificateList.addAll(searchCertificatesByTags(parameters));
         }
         if (certificateList.isEmpty()) {
-            throw new CertificateNotFoundException("There is no such certificate");
+            throw new CertificateNotFoundException(messageSource.getMessage("certificate.not.exists", null, locale));
         }
         setTagsToCertificates(certificateList);
         return certificateList.stream()
@@ -58,7 +61,7 @@ public class CertificateService {
     }
 
     @Transactional
-    public long save(GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
+    public long save(GiftCertificate giftCertificate, Locale locale) throws CertificateFieldCanNotNullException {
         giftCertificate.setCreateDate(getDate());
         giftCertificate.setLastUpdateDate(getDate());
         if (validator.validate(giftCertificate)) {
@@ -66,7 +69,7 @@ public class CertificateService {
             certificateMapper.save(giftCertificate);
             saveConnect(giftCertificate);
         } else {
-            throw new CertificateFieldCanNotNullException("The certificate fields can't be null");
+            throw new CertificateFieldCanNotNullException(messageSource.getMessage("certificate.field.null", null, locale));
         }
         return giftCertificate.getId();
     }
@@ -76,7 +79,7 @@ public class CertificateService {
     }
 
     @Transactional
-    public boolean update(GiftCertificate giftCertificate) throws CertificateFieldCanNotNullException {
+    public boolean update(GiftCertificate giftCertificate, Locale locale) throws CertificateFieldCanNotNullException {
         int updatedRow;
         if (validator.validate(giftCertificate)) {
             updatedRow = updateWholeObject(giftCertificate);
@@ -84,7 +87,7 @@ public class CertificateService {
             giftCertificate.setLastUpdateDate(getDate());
             updatedRow = certificateMapper.update(giftCertificate);
         } else {
-            throw new CertificateFieldCanNotNullException("The certificate fields can't be null");
+            throw new CertificateFieldCanNotNullException(messageSource.getMessage("certificate.field.null", null, locale));
         }
         return updatedRow > 0;
     }
@@ -95,6 +98,7 @@ public class CertificateService {
                 .collect(Collectors.toList());
         for (String name : tagName) {
             List<Tag> tags = tagService.findByParameters(name);
+            certificateTagConnecting.setCertificateId(giftCertificate.getId());
             certificateTagConnecting.setTagId(tags.get(0).getId());
             certificateTagConnectingMapperBatis.save(certificateTagConnecting);
         }
@@ -118,18 +122,18 @@ public class CertificateService {
         }
     }
 
-    private List<GiftCertificate> searchCertificatesByTags(Parameters parameters){
+    private List<GiftCertificate> searchCertificatesByTags(Parameters parameters) {
         RowBounds rowBounds = getRowBounds(parameters);
         List<GiftCertificate> certificateList = new ArrayList<>();
-            if (parameters.getListTagName().size() == 1) {
-                parameters.setTagName(parameters.getListTagName().get(0));
-                certificateList = certificateMapper.findByParameters(parameters, rowBounds);
-            } else {
-                for (String tagName : parameters.getListTagName()) {
-                    parameters.setTagName(tagName);
-                    certificateList.addAll(certificateMapper.findByParameters(parameters, rowBounds));
-                }
+        if (parameters.getListTagName().size() == 1) {
+            parameters.setTagName(parameters.getListTagName().get(0));
+            certificateList = certificateMapper.findByParameters(parameters, rowBounds);
+        } else {
+            for (String tagName : parameters.getListTagName()) {
+                parameters.setTagName(tagName);
+                certificateList.addAll(certificateMapper.findByParameters(parameters, rowBounds));
             }
+        }
         return certificateList;
     }
 
@@ -138,7 +142,7 @@ public class CertificateService {
         return date.toLocalDateTime();
     }
 
-    private RowBounds getRowBounds(Parameters parameters){
+    private RowBounds getRowBounds(Parameters parameters) {
         Integer page = parameters.getPage();
         if (parameters.getPage() == null) {
             page = 1;
