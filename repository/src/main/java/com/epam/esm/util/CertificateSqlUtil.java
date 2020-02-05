@@ -12,7 +12,6 @@ public class CertificateSqlUtil {
     private final String table = "certificates";
     private final String innerJoinCertificate = "connecting ON connecting.certificate_id=certificates.id";
     private final String innerJoinTag = "tags ON connecting.tag_id=tags.id";
-    private final static int PAGE_SIZE = 5;
 
     public String getByParameter(Parameters parameters) {
         SearchUtil searchUtil = new SearchUtil();
@@ -25,7 +24,7 @@ public class CertificateSqlUtil {
                 WHERE(searchUtil.findByName(parameters));
             } else if (parameters.getDescription() != null) {
                 WHERE(searchUtil.findDescription(parameters));
-            } else if (parameters.getTagName() != null) {
+            } else if (parameters.getListTagName() != null) {
                 WHERE(searchUtil.findByTag(parameters));
             } else if (parameters.getSort() != null) {
                 ORDER_BY(searchUtil.sort(parameters));
