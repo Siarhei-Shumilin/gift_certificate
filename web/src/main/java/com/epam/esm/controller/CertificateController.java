@@ -2,6 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Parameters;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateFieldCanNotNullException;
 import com.epam.esm.service.CertificateService;
 import org.springframework.http.MediaType;

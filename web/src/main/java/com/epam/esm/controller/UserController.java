@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody User user) throws Exception {
+    public ResponseEntity createAuthenticationToken(@RequestBody User user) throws Exception {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
