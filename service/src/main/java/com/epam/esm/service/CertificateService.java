@@ -46,7 +46,7 @@ public class CertificateService {
         if (parameters.getListTagName()==null){
             certificateList = certificateMapper.findByParameters(parameters,getRowBounds(parameters));
         } else {
-            certificateList = searchCertificatesByTag(parameters);
+            certificateList = searchCertificatesByTags(parameters);
         }
         if (certificateList.isEmpty()) {
             throw new CertificateNotFoundException("There is no such certificate");
@@ -118,7 +118,7 @@ public class CertificateService {
         }
     }
 
-    private List<GiftCertificate> searchCertificatesByTag(Parameters parameters){
+    private List<GiftCertificate> searchCertificatesByTags(Parameters parameters){
         RowBounds rowBounds = getRowBounds(parameters);
         List<GiftCertificate> certificateList = new ArrayList<>();
             if (parameters.getListTagName().size() == 1) {
