@@ -28,7 +28,7 @@ public class PurchaseService {
         this.purchase = purchase;
     }
 
-    public String buy(GiftCertificate giftCertificate) {
+    public long buy(GiftCertificate giftCertificate) {
         User user = getCurrentUser();
         Timestamp date = Timestamp.from(Instant.now());
         purchase.setUserId(user.getId());
@@ -36,7 +36,7 @@ public class PurchaseService {
         purchase.setPrice(giftCertificate.getPrice());
         purchase.setDateTime(date.toLocalDateTime());
         purchaseMapper.buy(purchase);
-        return "Purchase number = " + purchase.getId();
+        return purchase.getId();
     }
 
     public List<Purchase> findUsersPurchases(long userId, Integer page){

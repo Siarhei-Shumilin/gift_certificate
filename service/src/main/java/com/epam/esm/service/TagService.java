@@ -1,23 +1,28 @@
 package com.epam.esm.service;
 
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.TagDataIncorrectException;
 import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.mapper.TagMapper;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class TagService {
 
     private final TagMapper mapperTag;
+    private final MessageSource messageSource;
 
-    public TagService(TagMapper mapperTag) {
+    public TagService(TagMapper mapperTag, MessageSource messageSource) {
         this.mapperTag = mapperTag;
+        this.messageSource = messageSource;
     }
 
-    public void save(Tag tag) {
-        if (tag.getName() == null) {
-            throw new TagNotFoundException("The tag cannot be null");
+    public void save(Tag tag, Locale locale) {
+        if (tag.getName() == null || tag.getName().trim().equals("")) {
+            throw new TagDataIncorrectException(messageSource.getMessage("tag.field.incorrect", null, locale));
         }
         mapperTag.save(tag);
     }
@@ -26,7 +31,11 @@ public class TagService {
         return mapperTag.delete(id);
     }
 
-    public List<Tag> findByParameters(String tagName){
-        return mapperTag.findByParameters(tagName);
+    public List<Tag> findByParameters(String tagName, Locale locale) {
+        List<Tag> tagList = mapperTag.findByParameters(tagName);
+        if (tagList.isEmpty()) {
+            throw new TagNotFoundException(messageSource.getMessage("tag.not.exists", null, locale));
+        }
+        return tagList;
     }
 }

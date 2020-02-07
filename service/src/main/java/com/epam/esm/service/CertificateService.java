@@ -4,7 +4,7 @@ import com.epam.esm.entity.CertificateTagConnecting;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Parameters;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.CertificateFieldCanNotNullException;
+import com.epam.esm.exception.CertificateDataIncorrectException;
 import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.CertificateTagConnectingMapper;
@@ -43,13 +43,15 @@ public class CertificateService {
         this.messageSource = messageSource;
     }
 
-    @Transactional
     public List<GiftCertificate> findByParameters(Parameters parameters, Locale locale) {
         List<GiftCertificate> certificateList = new ArrayList<>();
         if (parameters.getListTagName() == null) {
             certificateList = certificateMapper.findByParameters(parameters, getRowBounds(parameters));
         } else {
-            certificateList.addAll(searchCertificatesByTags(parameters));
+            for (String tagName : parameters.getListTagName()) {
+                parameters.setTagName(tagName);
+                certificateList.addAll(certificateMapper.findByParameters(parameters, getRowBounds(parameters)));
+            }
         }
         if (certificateList.isEmpty()) {
             throw new CertificateNotFoundException(messageSource.getMessage("certificate.not.exists", null, locale));
@@ -61,56 +63,56 @@ public class CertificateService {
     }
 
     @Transactional
-    public long save(GiftCertificate giftCertificate, Locale locale) throws CertificateFieldCanNotNullException {
+    public long save(GiftCertificate giftCertificate, Locale locale) throws CertificateDataIncorrectException {
         giftCertificate.setCreateDate(getDate());
         giftCertificate.setLastUpdateDate(getDate());
         if (validator.validate(giftCertificate)) {
-            tagVerifier.checkAndSaveTagIfNotExist(giftCertificate);
+            tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, locale);
             certificateMapper.save(giftCertificate);
-            saveConnect(giftCertificate);
+            saveConnect(giftCertificate, locale);
         } else {
-            throw new CertificateFieldCanNotNullException(messageSource.getMessage("certificate.field.null", null, locale));
+            throw new CertificateDataIncorrectException(messageSource.getMessage("certificate.field.incorrect", null, locale));
         }
         return giftCertificate.getId();
     }
 
-    public String delete(int id) {
-        return "Deleted " + certificateMapper.delete(id);
+    public int delete(int id) {
+        return certificateMapper.delete(id);
     }
 
     @Transactional
-    public boolean update(GiftCertificate giftCertificate, Locale locale) throws CertificateFieldCanNotNullException {
+    public int update(GiftCertificate giftCertificate, Locale locale) throws CertificateDataIncorrectException {
         int updatedRow;
         if (validator.validate(giftCertificate)) {
-            updatedRow = updateWholeObject(giftCertificate);
+            updatedRow = updateWholeObject(giftCertificate, locale);
         } else if (giftCertificate.getId() != 0 && giftCertificate.getPrice() != null) {
             giftCertificate.setLastUpdateDate(getDate());
             updatedRow = certificateMapper.update(giftCertificate);
         } else {
-            throw new CertificateFieldCanNotNullException(messageSource.getMessage("certificate.field.null", null, locale));
+            throw new CertificateDataIncorrectException(messageSource.getMessage("certificate.field.null", null, locale));
         }
-        return updatedRow > 0;
+        return updatedRow;
     }
 
-    private void saveConnect(GiftCertificate giftCertificate) {
+    private void saveConnect(GiftCertificate giftCertificate, Locale locale) {
         List<String> tagName = giftCertificate.getTagList().stream()
                 .map(Tag::getName)
                 .collect(Collectors.toList());
         for (String name : tagName) {
-            List<Tag> tags = tagService.findByParameters(name);
+            List<Tag> tags = tagService.findByParameters(name, locale);
             certificateTagConnecting.setCertificateId(giftCertificate.getId());
             certificateTagConnecting.setTagId(tags.get(0).getId());
             certificateTagConnectingMapperBatis.save(certificateTagConnecting);
         }
     }
 
-    private int updateWholeObject(GiftCertificate giftCertificate) {
-        tagVerifier.checkAndSaveTagIfNotExist(giftCertificate);
+    private int updateWholeObject(GiftCertificate giftCertificate, Locale locale) {
+        tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, locale);
         giftCertificate.setLastUpdateDate(getDate());
         int update = certificateMapper.update(giftCertificate);
         certificateTagConnecting.setCertificateId(giftCertificate.getId());
         certificateTagConnectingMapperBatis.deleteConnect(certificateTagConnecting);
-        saveConnect(giftCertificate);
+        saveConnect(giftCertificate, locale);
         return update;
     }
 
@@ -120,21 +122,6 @@ public class CertificateService {
             List<Tag> certificateTags = certificateMapper.findCertificateTags(certificateTagConnecting);
             giftCertificate.setTagList(certificateTags);
         }
-    }
-
-    private List<GiftCertificate> searchCertificatesByTags(Parameters parameters) {
-        RowBounds rowBounds = getRowBounds(parameters);
-        List<GiftCertificate> certificateList = new ArrayList<>();
-        if (parameters.getListTagName().size() == 1) {
-            parameters.setTagName(parameters.getListTagName().get(0));
-            certificateList = certificateMapper.findByParameters(parameters, rowBounds);
-        } else {
-            for (String tagName : parameters.getListTagName()) {
-                parameters.setTagName(tagName);
-                certificateList.addAll(certificateMapper.findByParameters(parameters, rowBounds));
-            }
-        }
-        return certificateList;
     }
 
     private LocalDateTime getDate() {

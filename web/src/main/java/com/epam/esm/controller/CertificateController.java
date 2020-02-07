@@ -2,7 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Parameters;
-import com.epam.esm.exception.CertificateFieldCanNotNullException;
+import com.epam.esm.exception.CertificateDataIncorrectException;
 import com.epam.esm.service.CertificateService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -28,17 +28,17 @@ public class CertificateController {
     }
 
     @PutMapping
-    public boolean update(@RequestBody GiftCertificate giftCertificate, Locale locale) throws CertificateFieldCanNotNullException {
+    public int update(@RequestBody GiftCertificate giftCertificate, Locale locale) throws CertificateDataIncorrectException {
         return service.update(giftCertificate, locale);
     }
 
     @PostMapping
-    public long save(@RequestBody GiftCertificate giftCertificate, Locale locale) throws CertificateFieldCanNotNullException {
+    public long save(@RequestBody GiftCertificate giftCertificate, Locale locale) throws CertificateDataIncorrectException {
         return service.save(giftCertificate, locale);
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable int id) {
+    public int delete(@PathVariable int id) {
         return service.delete(id);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/tags")
@@ -18,13 +19,13 @@ public class TagController {
     }
 
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public List<Tag> findByParameters(@RequestParam(required = false) String tagName) {
-        return tagService.findByParameters(tagName);
+    public List<Tag> findByParameters(@RequestParam(required = false) String tagName, Locale locale) {
+        return tagService.findByParameters(tagName, locale);
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public void save(@RequestBody Tag tag) {
-        tagService.save(tag);
+    public void save(@RequestBody Tag tag, Locale locale) {
+        tagService.save(tag, locale);
     }
 
     @DeleteMapping("/{id}")

@@ -18,7 +18,7 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public String buy(@RequestBody GiftCertificate giftCertificate) {
+    public long buy(@RequestBody GiftCertificate giftCertificate) {
         return purchaseService.buy(giftCertificate);
     }
 

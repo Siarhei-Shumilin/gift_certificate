@@ -7,5 +7,4 @@ import org.springframework.context.annotation.*;
 @ComponentScan("com.epam.esm")
 @MapperScan("com.epam.esm.mapper")
 public class DataBaseConfig {
-
 }

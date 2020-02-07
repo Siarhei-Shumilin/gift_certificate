@@ -1,7 +1,7 @@
 package com.epam.esm.exception;
 
-public class CertificateFieldCanNotNullException extends GeneralException {
-    public CertificateFieldCanNotNullException(String message) {
+public class CertificateDataIncorrectException extends GeneralException {
+    public CertificateDataIncorrectException(String message) {
         super(message);
     }
 }
