@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Component
 public class Purchase {
@@ -80,5 +81,24 @@ public class Purchase {
 
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Purchase purchase = (Purchase) o;
+        return id == purchase.id &&
+                userId == purchase.userId &&
+                certificateId == purchase.certificateId &&
+                Objects.equals(price, purchase.price) &&
+                Objects.equals(dateTime, purchase.dateTime) &&
+                Objects.equals(certificatesName, purchase.certificatesName) &&
+                Objects.equals(certificateDescription, purchase.certificateDescription);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userId, certificateId, price, dateTime, certificatesName, certificateDescription);
     }
 }

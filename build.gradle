@@ -4,9 +4,7 @@ plugins {
 
 subprojects {
     apply plugin: "java"
-
     sourceCompatibility = 1.8
-
     repositories {
         mavenCentral()
     }

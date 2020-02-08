@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TagSqlUtil {
     public String getTagByParameter(String name) {
-              return   new SQL() {{
+        return new SQL() {{
             SELECT("id, name");
             FROM("tags");
             if (name != null) {
