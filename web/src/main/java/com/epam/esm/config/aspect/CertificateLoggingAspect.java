@@ -1,10 +1,7 @@
 package com.epam.esm.config.aspect;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -25,22 +22,32 @@ private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @Before("findByParameters()")
     public void logBeforeFindCertificates(JoinPoint joinPoint) {
-        LOGGER.info("Start searching certificates" + joinPoint.getSignature().getName());
+        LOGGER.info("Start " + joinPoint.getSignature().getName());
     }
 
-    @After("findByParameters()")
+    @AfterReturning("findByParameters()")
     public void logAfterFindCertificates(JoinPoint joinPoint) {
-        LOGGER.info("End searching certificates" + joinPoint.getSignature().getName());
+        LOGGER.info("Ended " + joinPoint.getSignature().getName() + " successfully");
+    }
+
+    @AfterThrowing("findByParameters()")
+    public void logAfterFindCertificatesThrowException(JoinPoint joinPoint) {
+        LOGGER.info("The " + joinPoint.getSignature().getName() + " failed");
     }
 
     @Before("delete()")
     public void logBeforeDeleteCertificate(JoinPoint joinPoint) {
-        LOGGER.info("Start delete certificates" + joinPoint.getSignature().getName());
+        LOGGER.info("Start " + joinPoint.getSignature().getName() + " successfully");
     }
 
-    @After("delete()")
+    @AfterReturning("delete()")
     public void logAfterDeleteCertificates(JoinPoint joinPoint) {
-        LOGGER.info("End delete certificates" + joinPoint.getSignature().getName());
+        LOGGER.info("Ended " + joinPoint.getSignature().getName() + " successfully");
+    }
+
+    @AfterThrowing("delete()")
+    public void logAfterDeleteThrowException(JoinPoint joinPoint) {
+        LOGGER.info("The " + joinPoint.getSignature().getName() + " failed");
     }
 
     @Before("save()")
@@ -48,8 +55,13 @@ private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
         LOGGER.info("Start save certificates" + joinPoint.getSignature().getName());
     }
 
-    @After("save()")
+    @AfterReturning("save()")
     public void logAfterSaveCertificates(JoinPoint joinPoint) {
-        LOGGER.info("End save certificates" + joinPoint.getSignature().getName());
+        LOGGER.info("Ended " + joinPoint.getSignature().getName() + " successfully");
+    }
+
+    @AfterThrowing("save()")
+    public void logAfterSaveThrowException(JoinPoint joinPoint) {
+        LOGGER.info("The " + joinPoint.getSignature().getName() + " failed");
     }
 }
