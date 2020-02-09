@@ -24,12 +24,12 @@ public class TagController {
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public void save(@RequestBody Tag tag, Locale locale) {
-        tagService.save(tag, locale);
+    public long save(@RequestBody Tag tag, Locale locale) {
+        return tagService.save(tag, locale);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id) {
-        tagService.delete(id);
+    public int delete(@PathVariable int id) {
+        return tagService.delete(id);
     }
 }

@@ -1,6 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.config.JwtUtil;
+import com.epam.esm.config.util.JwtUtil;
 import com.epam.esm.config.entity.AuthenticationResponse;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
@@ -32,7 +32,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping("/populartag")
+    @GetMapping("/popular/tag")
     public Tag findMostPopularTag(){
         return userService.findMostPopularTag();
     }

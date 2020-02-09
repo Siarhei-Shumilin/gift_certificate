@@ -1,4 +1,4 @@
-package com.epam.esm.config;
+package com.epam.esm.config.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

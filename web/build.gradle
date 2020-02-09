@@ -13,12 +13,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web') {
         exclude module: 'spring-boot-starter-tomcat'
     }
-    implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
-    implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty', version: springBootVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: springBootVersion
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: springBootVersion
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: jjwtVersion
-    compile group: 'org.springframework', name: 'spring-aop', version: '5.2.3.RELEASE'
-    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.5'
-    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.5'
 }

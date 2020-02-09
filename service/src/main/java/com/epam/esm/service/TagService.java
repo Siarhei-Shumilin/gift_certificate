@@ -20,14 +20,15 @@ public class TagService {
         this.messageSource = messageSource;
     }
 
-    public void save(Tag tag, Locale locale) {
+    public long save(Tag tag, Locale locale) {
         if (tag.getName() == null || tag.getName().trim().equals("")) {
             throw new TagDataIncorrectException(messageSource.getMessage("tag.field.incorrect", null, locale));
         }
         mapperTag.save(tag);
+        return tag.getId();
     }
 
-    public boolean delete(int id) {
+    public int delete(int id) {
         return mapperTag.delete(id);
     }
 

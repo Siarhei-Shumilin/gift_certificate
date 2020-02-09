@@ -1,6 +1,6 @@
 package com.epam.esm.config.filter;
 
-import com.epam.esm.config.JwtUtil;
+import com.epam.esm.config.util.JwtUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

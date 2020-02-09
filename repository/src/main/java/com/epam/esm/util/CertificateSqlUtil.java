@@ -35,8 +35,10 @@ public class CertificateSqlUtil {
     public String update(GiftCertificate giftCertificate) {
         return new SQL() {{
             UPDATE("certificates");
-            if (giftCertificate.getName() != null && giftCertificate.getDescription() != null
-                    && giftCertificate.getPrice() != null && giftCertificate.getDuration() != 0 && giftCertificate.getTagList() != null) {
+            if (giftCertificate.getName() != null && !giftCertificate.getName().trim().equals("")
+                    && giftCertificate.getDescription() != null && !giftCertificate.getDescription().trim().equals("")
+                    && giftCertificate.getPrice() != null && giftCertificate.getPrice().intValue() > 0
+                    && giftCertificate.getDuration() >= 0 && giftCertificate.getTagList() != null) {
                 SET("name = #{name}, description=#{description}, price=#{price}, last_update_date=#{lastUpdateDate}, duration=#{duration}");
             } else {
                 SET("price=#{price}, last_update_date=#{lastUpdateDate}");
