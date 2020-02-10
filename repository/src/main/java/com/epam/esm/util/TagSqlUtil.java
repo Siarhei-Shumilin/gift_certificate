@@ -9,7 +9,7 @@ public class TagSqlUtil {
         return new SQL() {{
             SELECT("id, name");
             FROM("tags");
-            if (name != null) {
+            if (name != null && !name.trim().isEmpty()) {
                 WHERE("name like #{name}");
             }
         }}.toString();
