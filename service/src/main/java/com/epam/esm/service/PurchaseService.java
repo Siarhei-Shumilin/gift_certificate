@@ -28,14 +28,14 @@ public class PurchaseService {
         this.purchase = purchase;
     }
 
-    public long buy(GiftCertificate giftCertificate) {
+    public long save(GiftCertificate giftCertificate) {
         User user = getCurrentUser();
         Timestamp date = Timestamp.from(Instant.now());
         purchase.setUserId(user.getId());
         purchase.setCertificateId(giftCertificate.getId());
         purchase.setPrice(giftCertificate.getPrice());
         purchase.setDateTime(date.toLocalDateTime());
-        purchaseMapper.buy(purchase);
+        purchaseMapper.save(purchase);
         return purchase.getId();
     }
 

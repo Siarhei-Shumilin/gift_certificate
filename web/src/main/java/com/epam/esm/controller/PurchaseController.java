@@ -18,8 +18,8 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public long buy(@RequestBody GiftCertificate giftCertificate) {
-        return purchaseService.buy(giftCertificate);
+    public long save(@RequestBody GiftCertificate giftCertificate) {
+        return purchaseService.save(giftCertificate);
     }
 
     @GetMapping("/{userId}")

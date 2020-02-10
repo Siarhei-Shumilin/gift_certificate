@@ -11,7 +11,7 @@ import java.util.List;
 public interface PurchaseMapper {
     @Insert("INSERT INTO purchases (user_id, certificate_id, price, date_purchase) VALUES (#{userId},#{certificateId},#{price},#{dateTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
-    void buy(Purchase purchase);
+    void save(Purchase purchase);
 
     @SelectProvider(type = PurchaseSqlUtil.class, method = "findUsersPurchase")
     @Results(value = {
