@@ -14,9 +14,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -64,8 +61,8 @@ public class CertificateService {
 
     @Transactional
     public long save(GiftCertificate giftCertificate, Locale locale) throws CertificateDataIncorrectException {
-        giftCertificate.setCreateDate(getDate());
-        giftCertificate.setLastUpdateDate(getDate());
+        giftCertificate.setCreateDate(LocalDateTime.now());
+        giftCertificate.setLastUpdateDate(LocalDateTime.now());
         if (validator.validate(giftCertificate)) {
             tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, locale);
             certificateMapper.save(giftCertificate);
@@ -86,7 +83,7 @@ public class CertificateService {
         if (validator.validate(giftCertificate)) {
             updatedRow = updateWholeObject(giftCertificate, locale);
         } else if (giftCertificate.getId() != 0 && giftCertificate.getPrice() != null) {
-            giftCertificate.setLastUpdateDate(getDate());
+            giftCertificate.setLastUpdateDate(LocalDateTime.now());
             updatedRow = certificateMapper.update(giftCertificate);
         } else {
             throw new CertificateDataIncorrectException(messageSource.getMessage("certificate.field.null", null, locale));
@@ -108,7 +105,7 @@ public class CertificateService {
 
     private int updateWholeObject(GiftCertificate giftCertificate, Locale locale) {
         tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, locale);
-        giftCertificate.setLastUpdateDate(getDate());
+        giftCertificate.setLastUpdateDate(LocalDateTime.now());
         int update = certificateMapper.update(giftCertificate);
         certificateTagConnecting.setCertificateId(giftCertificate.getId());
         certificateTagConnectingMapperBatis.deleteConnect(certificateTagConnecting);
@@ -122,11 +119,6 @@ public class CertificateService {
             List<Tag> certificateTags = certificateMapper.findCertificateTags(certificateTagConnecting);
             giftCertificate.setTagList(certificateTags);
         }
-    }
-
-    private LocalDateTime getDate() {
-        Timestamp date = Timestamp.from(Instant.now());
-        return date.toLocalDateTime();
     }
 
     private RowBounds getRowBounds(Parameters parameters) {

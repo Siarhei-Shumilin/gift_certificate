@@ -10,9 +10,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -30,11 +28,10 @@ public class PurchaseService {
 
     public long save(GiftCertificate giftCertificate) {
         User user = getCurrentUser();
-        Timestamp date = Timestamp.from(Instant.now());
         purchase.setUserId(user.getId());
         purchase.setCertificateId(giftCertificate.getId());
         purchase.setPrice(giftCertificate.getPrice());
-        purchase.setDateTime(date.toLocalDateTime());
+        purchase.setDateTime(LocalDateTime.now());
         purchaseMapper.save(purchase);
         return purchase.getId();
     }
