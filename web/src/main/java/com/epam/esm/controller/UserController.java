@@ -2,7 +2,6 @@ package com.epam.esm.controller;
 
 import com.epam.esm.config.util.JwtUtil;
 import com.epam.esm.config.entity.AuthenticationResponse;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.UserExistsException;
 import com.epam.esm.service.UserService;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/users")
 public class UserController {
 
     private final AuthenticationManager authenticationManager;
@@ -30,11 +29,6 @@ public class UserController {
         this.jwtTokenUtil = jwtTokenUtil;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    @GetMapping("/popular/tag")
-    public Tag findMostPopularTag(){
-        return userService.findMostPopularTag();
     }
 
     @PostMapping("/registration")

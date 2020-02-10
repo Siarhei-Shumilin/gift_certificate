@@ -1,6 +1,5 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.UserExistsException;
 import com.epam.esm.mapper.UserMapper;
@@ -37,9 +36,5 @@ public class UserService implements UserDetailsService {
             throw new UserExistsException(messageSource.getMessage("user.exists", null, locale));
         }
         return id;
-    }
-
-    public Tag findMostPopularTag(){
-        return userMapper.findMostPopularTag();
     }
 }

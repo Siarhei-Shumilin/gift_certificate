@@ -32,4 +32,9 @@ public class TagController {
     public int delete(@PathVariable int id) {
         return tagService.delete(id);
     }
+
+    @GetMapping("/popular")
+    public Tag findMostPopularTag(){
+        return tagService.findMostPopularTag();
+    }
 }

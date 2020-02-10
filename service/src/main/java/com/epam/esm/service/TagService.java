@@ -39,4 +39,8 @@ public class TagService {
         }
         return tagList;
     }
+
+    public Tag findMostPopularTag(){
+        return mapperTag.findMostPopularTag();
+    }
 }
