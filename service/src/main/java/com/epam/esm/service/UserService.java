@@ -3,7 +3,7 @@ package com.epam.esm.service;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.UserExistsException;
 import com.epam.esm.mapper.UserMapper;
-import com.epam.esm.util.MyUserDetails;
+import com.epam.esm.util.CustomUserDetails;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,7 +26,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userMapper.findByUserName(username);
-        return new MyUserDetails(user);
+        return new CustomUserDetails(user);
     }
 
     public long save(User user, Locale locale) throws UserExistsException {
