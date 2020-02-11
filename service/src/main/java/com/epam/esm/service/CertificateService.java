@@ -2,7 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.entity.CertificateTagConnecting;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Parameters;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateDataIncorrectException;
 import com.epam.esm.exception.CertificateNotFoundException;
@@ -40,13 +39,13 @@ public class CertificateService {
         this.messageSource = messageSource;
     }
 
-    public List<GiftCertificate> findByParameters(Parameters parameters, Locale locale) {
+    public List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, Locale locale) {
         List<GiftCertificate> certificateList = new ArrayList<>();
-        if (parameters.getListTagName() == null) {
+        if (tagList == null) {
             certificateList = certificateMapper.findByParameters(parameters, getRowBounds(parameters));
         } else {
-            for (String tagName : parameters.getListTagName()) {
-                parameters.setTagName(tagName);
+            for (String tagName : tagList) {
+                parameters.put("tag", tagName);
                 certificateList.addAll(certificateMapper.findByParameters(parameters, getRowBounds(parameters)));
             }
         }
@@ -121,10 +120,12 @@ public class CertificateService {
         }
     }
 
-    private RowBounds getRowBounds(Parameters parameters) {
-        Integer page = parameters.getPage();
-        if (parameters.getPage() == null) {
+    private RowBounds getRowBounds(Map<String, Object> parameters) {
+        int page;
+        if (parameters.get("page") == null) {
             page = 1;
+        } else {
+            page = Integer.parseInt((String)parameters.get("page"));
         }
         return new RowBounds(((page - 1) * 5), 5);
     }

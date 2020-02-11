@@ -1,41 +1,42 @@
 package com.epam.esm.util;
 
-import com.epam.esm.entity.Parameters;
+import java.util.Map;
 
 public class SearchUtil {
 
-    public String findByName(Parameters parameters) {
-        if (parameters.getTagName() != null) {
-            return "certificates.name like '" + "%" + parameters.getName() + "%' and tags.name = \"" + parameters.getTagName() + "\"" + sort(parameters);
+    public String findByName(Map<String, Object> parameters) {
+        if (parameters.get("tag") != null) {
+            return "certificates.name like '" + "%" + parameters.get("name") + "%' and tags.name = \"" + parameters.get("tag") + "\"" + sort(parameters);
         } else {
-            return "certificates.name like '" + "%" + parameters.getName() + "%'" + sort(parameters);
+            return "certificates.name like '" + "%" + parameters.get("name") + "%'";
         }
     }
 
-    public String findDescription(Parameters parameters) {
-        if (parameters.getTagName() != null) {
-            return "certificates.description like '" + "%" + parameters.getDescription() + "%'" + " and tags.name = \"" + parameters.getTagName() + "\"" + sort(parameters);
+    public String findDescription(Map<String, Object> parameters) {
+        if (parameters.get("tag") != null) {
+            return "certificates.description like '" + "%" + parameters.get("description") + "%'" + " and tags.name = \"" + parameters.get("tag") + "\"" + sort(parameters);
         } else {
-            return "certificates.description like '" + "%" + parameters.getDescription() + "%'" + sort(parameters);
+            return "certificates.description like '" + "%" + parameters.get("description") + "%'" + sort(parameters);
         }
     }
 
-    public String findByTag(Parameters parameters) {
-        return "tags.name = \"" + parameters.getTagName() + "\"" + sort(parameters);
+    public String findByTag(Map<String, Object> parameters) {
+        return "tags.name = \"" + parameters.get("tag") + "\"" + sort(parameters);
     }
 
-    public String sort(Parameters parameters) {
+    public String sort(Map<String, Object> parameters) {
         String result = "";
-        if (parameters.getSort() != null) {
-            if (parameters.getSort().equalsIgnoreCase("date")) {
+        if (parameters.get("sort") != null) {
+            String sort = (String) parameters.get("sort");
+            if (sort.equalsIgnoreCase("date")) {
                 result = "certificates.last_update_date ";
-                if (parameters.getTypeSort() != null) {
-                    result = result + parameters.getTypeSort();
+                if (parameters.get("typeSort") != null) {
+                    result = result + parameters.get("typeSort");
                 }
-            } else if (parameters.getSort().equalsIgnoreCase("name")) {
+            } else if (sort.equalsIgnoreCase("name")) {
                 result = "certificates.name ";
-                if (parameters.getTypeSort() != null) {
-                    result = result + parameters.getTypeSort();
+                if (parameters.get("typeSort") != null) {
+                    result = result + parameters.get("typeSort");
                 }
             }
         }

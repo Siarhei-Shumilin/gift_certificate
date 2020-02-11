@@ -1,9 +1,10 @@
 package com.epam.esm.util;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Parameters;
 import org.apache.ibatis.jdbc.SQL;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 @Component
 public class CertificateSqlUtil {
@@ -13,20 +14,20 @@ public class CertificateSqlUtil {
     private final String innerJoinCertificate = "connecting ON connecting.certificate_id=certificates.id";
     private final String innerJoinTag = "tags ON connecting.tag_id=tags.id";
 
-    public String getByParameter(Parameters parameters) {
+    public String getByParameter(Map<String, Object> parameters) {
         SearchUtil searchUtil = new SearchUtil();
         return new SQL() {{
             SELECT(selectData);
             FROM(table);
             INNER_JOIN(innerJoinCertificate);
             INNER_JOIN(innerJoinTag);
-            if (parameters.getName() != null) {
+            if (parameters.get("name") != null) {
                 WHERE(searchUtil.findByName(parameters));
-            } else if (parameters.getDescription() != null) {
+            } else if (parameters.get("description") != null) {
                 WHERE(searchUtil.findDescription(parameters));
-            } else if (parameters.getListTagName() != null) {
+            } else if (parameters.get("tag") != null) {
                 WHERE(searchUtil.findByTag(parameters));
-            } else if (parameters.getSort() != null) {
+            } else if (parameters.get("sort") != null) {
                 ORDER_BY(searchUtil.sort(parameters));
             }
         }}.toString();

@@ -1,7 +1,6 @@
 package com.epam.esm.service;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Parameters;
 import com.epam.esm.exception.CertificateDataIncorrectException;
 import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.mapper.CertificateMapper;
@@ -14,8 +13,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.context.MessageSource;
-import java.util.Locale;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CertificateServiceTest {
@@ -38,7 +39,7 @@ public class CertificateServiceTest {
 
     @Test(expected = CertificateNotFoundException.class)
     public void testFindByParameters(){
-        service.findByParameters(new Parameters(), new Locale("en"));
+        service.findByParameters(new HashMap<>(), new ArrayList<>(), new Locale("en"));
     }
 
     @Test(expected = CertificateDataIncorrectException.class)
