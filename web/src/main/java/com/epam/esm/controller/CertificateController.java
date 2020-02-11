@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("/certificates")
+@RequestMapping(value = "/certificates",
+        produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+        consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 public class CertificateController {
     private final CertificateService service;
 
@@ -21,10 +23,10 @@ public class CertificateController {
     }
 
     @TrackTime
-    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @GetMapping
     public List<GiftCertificate> findByParameters(@RequestParam(required = false) String name, @RequestParam(required = false) String description,
-                                                 @RequestParam(required = false) List<String> tagName, @RequestParam(required = false) String sort,
-                                                 @RequestParam(required = false) String typeSort, @RequestParam(required = false) Integer page, Locale locale) {
+                                                  @RequestParam(required = false) List<String> tagName, @RequestParam(required = false) String sort,
+                                                  @RequestParam(required = false) String typeSort, @RequestParam(required = false) Integer page, Locale locale) {
         Parameters parameters = new Parameters(name, description, tagName, sort, typeSort, page);
         return service.findByParameters(parameters, locale);
     }
