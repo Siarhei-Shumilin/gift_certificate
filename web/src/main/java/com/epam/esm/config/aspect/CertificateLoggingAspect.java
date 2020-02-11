@@ -1,6 +1,7 @@
 package com.epam.esm.config.aspect;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class CertificateLoggingAspect {
 
 private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
     @Pointcut("execution(* com.epam.esm.controller.CertificateController.findByParameters(..))")
     public void findByParameters() {}
 
@@ -19,6 +21,14 @@ private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @Pointcut("execution(* com.epam.esm.controller.CertificateController.save(..))")
     public void save() {}
+
+    @Around("@annotation(com.epam.esm.config.aspect.TrackTime)")
+    public void around(ProceedingJoinPoint joinPoint) throws Throwable {
+        long startTime = System.currentTimeMillis();
+        joinPoint.proceed();
+        long timeTaken = System.currentTimeMillis() - startTime;
+        LOGGER.info("Time taken by {} is {}", joinPoint, timeTaken);
+    }
 
     @Before("findByParameters()")
     public void logBeforeFindCertificates(JoinPoint joinPoint) {
