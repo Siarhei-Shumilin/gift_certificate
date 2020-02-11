@@ -41,7 +41,7 @@ CREATE TABLE purchases
 id bigint AUTO_INCREMENT NOT NULL,
 user_id bigint NOT NULL,
 certificate_id bigint NOT NULL,
-price decimal(4,2) not null,
+price decimal(10,2) not null,
 date_purchase timestamp not null,
 PRIMARY KEY (id),
 FOREIGN KEY (user_id) REFERENCES users (id),
