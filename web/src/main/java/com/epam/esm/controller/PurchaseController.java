@@ -26,4 +26,9 @@ public class PurchaseController {
     public List<Purchase> findUsersPurchases(@PathVariable long userId, @RequestParam(required = false) Integer page){
         return purchaseService.findUsersPurchases(userId, page);
     }
+
+    @GetMapping
+    public List<Purchase> findCurrentUserPurchase(@RequestParam(required = false) Integer page){
+        return purchaseService.findCurrentUserPurchases(page);
+    }
 }

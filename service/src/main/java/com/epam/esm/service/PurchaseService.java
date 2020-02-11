@@ -42,6 +42,12 @@ public class PurchaseService {
         return purchaseMapper.findUsersPurchases(userId, rowBounds);
     }
 
+    public List<Purchase> findCurrentUserPurchases(Integer page){
+        if (page == null) { page = 1; }
+        RowBounds rowBounds = new RowBounds(((page - 1) * 5), 5);
+        return purchaseMapper.findUsersPurchases(getCurrentUser().getId(), rowBounds);
+    }
+
     private User getCurrentUser() {
         User user = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
