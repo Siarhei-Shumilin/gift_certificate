@@ -3,6 +3,8 @@
 *.iml
 *.ipr
 *.iws
+*.gz
+*.log
 out
 
 # Gradle
