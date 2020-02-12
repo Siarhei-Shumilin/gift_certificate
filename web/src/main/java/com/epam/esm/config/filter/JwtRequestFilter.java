@@ -33,6 +33,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String jwt = null;
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
+            String[] parts = jwt.split("\\.");
+            if (parts.length != 3) {
+                throw new IllegalArgumentException("Invalid Token format");
+            }
             username = jwtUtil.extractUsername(jwt);
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
