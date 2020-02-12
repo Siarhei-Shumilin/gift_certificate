@@ -38,10 +38,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             String status = HttpStatus.BAD_REQUEST.value() + errorCodeBadRequest;
             responseEntity = new ResponseEntity<>(new ApiError(exception.getMessage(), status), HttpStatus.BAD_REQUEST);
         }
-        if (exception instanceof CertificateNotFoundException || exception instanceof TagNotFoundException ){
-           String status =  HttpStatus.NOT_FOUND.value() + errorCodeNotFound;
-            responseEntity = new ResponseEntity<>(new ApiError(exception.getMessage(), status), HttpStatus.NOT_FOUND);
-        }
         return responseEntity;
     }
 

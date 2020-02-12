@@ -4,7 +4,6 @@ import com.epam.esm.entity.CertificateTagConnecting;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateDataIncorrectException;
-import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.CertificateTagConnectingMapper;
 import com.epam.esm.util.CertificateValidator;
@@ -39,7 +38,7 @@ public class CertificateService {
         this.messageSource = messageSource;
     }
 
-    public List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, Locale locale) {
+    public List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList) {
         List<GiftCertificate> certificateList = new ArrayList<>();
         if (tagList == null) {
             certificateList = certificateMapper.findByParameters(parameters, getRowBounds(parameters));
@@ -48,9 +47,6 @@ public class CertificateService {
                 parameters.put("tag", tagName);
                 certificateList.addAll(certificateMapper.findByParameters(parameters, getRowBounds(parameters)));
             }
-        }
-        if (certificateList.isEmpty()) {
-            throw new CertificateNotFoundException(messageSource.getMessage("certificate.not.exists", null, locale));
         }
         setTagsToCertificates(certificateList);
         return certificateList.stream()
@@ -65,7 +61,7 @@ public class CertificateService {
         if (validator.validate(giftCertificate)) {
             tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, locale);
             certificateMapper.save(giftCertificate);
-            saveConnect(giftCertificate, locale);
+            saveConnect(giftCertificate);
         } else {
             throw new CertificateDataIncorrectException(messageSource.getMessage("certificate.field.incorrect", null, locale));
         }
@@ -85,17 +81,17 @@ public class CertificateService {
             giftCertificate.setLastUpdateDate(LocalDateTime.now());
             updatedRow = certificateMapper.update(giftCertificate);
         } else {
-            throw new CertificateDataIncorrectException(messageSource.getMessage("certificate.field.null", null, locale));
+            throw new CertificateDataIncorrectException(messageSource.getMessage("certificate.field.incorrect", null, locale));
         }
         return updatedRow;
     }
 
-    private void saveConnect(GiftCertificate giftCertificate, Locale locale) {
+    private void saveConnect(GiftCertificate giftCertificate) {
         List<String> tagName = giftCertificate.getTagList().stream()
                 .map(Tag::getName)
                 .collect(Collectors.toList());
         for (String name : tagName) {
-            List<Tag> tags = tagService.findByParameters(name, locale);
+            List<Tag> tags = tagService.findByParameters(name);
             certificateTagConnecting.setCertificateId(giftCertificate.getId());
             certificateTagConnecting.setTagId(tags.get(0).getId());
             certificateTagConnectingMapperBatis.save(certificateTagConnecting);
@@ -108,7 +104,7 @@ public class CertificateService {
         int update = certificateMapper.update(giftCertificate);
         certificateTagConnecting.setCertificateId(giftCertificate.getId());
         certificateTagConnectingMapperBatis.deleteConnect(certificateTagConnecting);
-        saveConnect(giftCertificate, locale);
+        saveConnect(giftCertificate);
         return update;
     }
 

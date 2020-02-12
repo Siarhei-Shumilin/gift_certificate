@@ -2,7 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.TagDataIncorrectException;
-import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.mapper.TagMapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -47,11 +46,6 @@ private TagService tagService;
         Mockito.verify(tagMapper, Mockito.times(1)).delete(1);
     }
 
-    @Test(expected = TagNotFoundException.class)
-    public void testFindByParametersShouldThrowException() {
-        tagService.findByParameters("name", new Locale("en"));
-    }
-
     @Test
     public void testFindByParameterShouldReturnTrue() {
         Tag tag = new Tag();
@@ -60,7 +54,7 @@ private TagService tagService;
         List<Tag> tags = Arrays.asList(tag);
         Locale locale = new Locale("en");
         Mockito.when(tagMapper.findByParameters(tag.getName())).thenReturn(tags);
-        List<Tag> byParameters = tagService.findByParameters(tag.getName(), locale);
+        List<Tag> byParameters = tagService.findByParameters(tag.getName());
         Assert.assertEquals(tags, byParameters);
     }
 }

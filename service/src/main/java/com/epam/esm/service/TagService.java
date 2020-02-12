@@ -2,7 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.TagDataIncorrectException;
-import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.mapper.TagMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -32,12 +31,8 @@ public class TagService {
         return mapperTag.delete(id);
     }
 
-    public List<Tag> findByParameters(String tagName, Locale locale) {
-        List<Tag> tagList = mapperTag.findByParameters(tagName);
-        if (tagList.isEmpty()) {
-            throw new TagNotFoundException(messageSource.getMessage("tag.not.exists", null, locale));
-        }
-        return tagList;
+    public List<Tag> findByParameters(String tagName) {
+        return mapperTag.findByParameters(tagName);
     }
 
     public Tag findMostPopularTag(){
