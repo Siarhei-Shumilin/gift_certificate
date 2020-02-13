@@ -4,32 +4,13 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.Advisor;
-import org.springframework.aop.aspectj.AspectJExpressionPointcut;
-import org.springframework.aop.interceptor.PerformanceMonitorInterceptor;
-import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.stereotype.Component;
 
 @Aspect
-@Configuration
-@EnableAspectJAutoProxy
+@Component
 public class CertificateLoggingAspect {
 
 private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-
-    @Bean
-    public PerformanceMonitorInterceptor performanceMonitorInterceptor() {
-        return new PerformanceMonitorInterceptor(false);
-    }
-
-    @Bean
-    public Advisor performanceMonitorAdvisor() {
-        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        pointcut.setExpression("com.epam.esm.config.aspect.PointCutConfig.monitor()");
-        return new DefaultPointcutAdvisor(pointcut, performanceMonitorInterceptor());
-    }
 
     @Before("com.epam.esm.config.aspect.PointCutConfig.findByParameters()")
     public void logBeforeFindCertificates(JoinPoint joinPoint) {
