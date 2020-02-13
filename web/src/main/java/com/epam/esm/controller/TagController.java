@@ -21,8 +21,8 @@ public class TagController {
     }
 
     @GetMapping
-    public List<Tag> findByParameters(@RequestParam(required = false) String tagName, Locale locale) {
-        return tagService.findByParameters(tagName, locale);
+    public List<Tag> findByParameters(@RequestParam(required = false) String tagName) {
+        return tagService.findByParameters(tagName);
     }
 
     @PostMapping

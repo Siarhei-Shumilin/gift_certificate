@@ -1,4 +1,4 @@
-package com.epam.esm.config.aspect;
+package com.epam.esm.config.aspect.config;
 
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;

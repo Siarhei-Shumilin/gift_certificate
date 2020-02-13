@@ -23,8 +23,8 @@ public class CertificateController {
 
     @GetMapping
     public List<GiftCertificate> findByParameters(@RequestParam(required = false) Map<String, Object> parameters,
-                                                  @RequestParam(required = false) List<String> tagName, Locale locale) {
-        return service.findByParameters(parameters, tagName, locale);
+                                                  @RequestParam(required = false) List<String> tagName) {
+        return service.findByParameters(parameters, tagName);
     }
 
     @PutMapping
