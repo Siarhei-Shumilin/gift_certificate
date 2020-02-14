@@ -4,9 +4,9 @@ import com.epam.esm.util.ErrorMessageConstants;
 
 public enum ExceptionType {
 
-    CERTIFICATE_DATA_INCORRECT(ErrorMessageConstants.CERTIFICATE_INCORRECT, 400, "40002"),
+    CERTIFICATE_DATA_INCORRECT(ErrorMessageConstants.CERTIFICATE_INCORRECT, 400, "40001"),
     TAG_DATA_INCORRECT(ErrorMessageConstants.TAG_INCORRECT, 400, "40002"),
-    USER_EXISTS_EXCEPTION(ErrorMessageConstants.USER_EXISTS, 400, "40002");
+    USER_EXISTS_EXCEPTION(ErrorMessageConstants.USER_EXISTS, 400, "40003");
 
     private final String message;
     private final int statusCode;
