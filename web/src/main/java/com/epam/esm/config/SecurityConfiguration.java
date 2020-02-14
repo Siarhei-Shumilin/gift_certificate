@@ -1,6 +1,7 @@
 package com.epam.esm.config;
 
 import com.epam.esm.config.filter.JwtRequestFilter;
+import com.epam.esm.controller.handler.RestAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,18 +40,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/certificates").permitAll()
                 .antMatchers("/certificates/*").hasRole("ADMIN")
-                .antMatchers("/tags").permitAll()
-                .antMatchers(HttpMethod.GET, "/popular/tag").permitAll()
+                .antMatchers("/tags").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/tags/popular").permitAll()
                 .antMatchers("/purchase/*").hasRole("ADMIN")
                 .antMatchers("/purchase").authenticated()
                 .antMatchers("/users/authenticate").anonymous()
                 .antMatchers("/registration").anonymous()
                 .anyRequest().authenticated()
                 .and()
-                .exceptionHandling().and().sessionManagement()
+                .exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
 
     @Override
     @Bean
