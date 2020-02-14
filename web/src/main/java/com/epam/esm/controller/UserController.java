@@ -3,7 +3,6 @@ package com.epam.esm.controller;
 import com.epam.esm.config.util.JwtUtil;
 import com.epam.esm.config.entity.AuthenticationResponse;
 import com.epam.esm.entity.User;
-import com.epam.esm.exception.UserExistsException;
 import com.epam.esm.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

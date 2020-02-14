@@ -20,7 +20,7 @@ public class JwtUtil {
     private String expiration;
 
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+       return extractClaim(token, Claims::getSubject);
     }
 
     public Date extractExpiration(String token) {
@@ -46,7 +46,6 @@ public class JwtUtil {
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
-
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(expiration)))
                 .signWith(SignatureAlgorithm.HS256, key).compact();

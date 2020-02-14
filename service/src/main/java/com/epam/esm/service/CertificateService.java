@@ -3,14 +3,13 @@ package com.epam.esm.service;
 import com.epam.esm.entity.CertificateTagConnecting;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.CertificateDataIncorrectException;
+import com.epam.esm.exception.ExceptionType;
+import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.CertificateTagConnectingMapper;
 import com.epam.esm.util.CertificateValidator;
-import com.epam.esm.util.ErrorMessageConstants;
 import com.epam.esm.util.TagVerifier;
 import org.apache.ibatis.session.RowBounds;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -25,18 +24,16 @@ public class CertificateService {
     private final CertificateMapper certificateMapper;
     private final CertificateTagConnecting certificateTagConnecting;
     private final CertificateTagConnectingMapper certificateTagConnectingMapperBatis;
-    private final MessageSource messageSource;
 
     public CertificateService(TagService tagService, CertificateValidator validator, TagVerifier tagVerifier,
                               CertificateMapper certificateMapper, CertificateTagConnecting certificateTagConnecting,
-                              CertificateTagConnectingMapper certificateTagConnectingMapperBatis, MessageSource messageSource) {
+                              CertificateTagConnectingMapper certificateTagConnectingMapperBatis) {
         this.tagService = tagService;
         this.validator = validator;
         this.tagVerifier = tagVerifier;
         this.certificateMapper = certificateMapper;
         this.certificateTagConnecting = certificateTagConnecting;
         this.certificateTagConnectingMapperBatis = certificateTagConnectingMapperBatis;
-        this.messageSource = messageSource;
     }
 
     public List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList) {
@@ -56,7 +53,7 @@ public class CertificateService {
     }
 
     @Transactional
-    public long save(GiftCertificate giftCertificate, Locale locale) throws CertificateDataIncorrectException {
+    public long save(GiftCertificate giftCertificate, Locale locale) {
         giftCertificate.setCreateDate(LocalDateTime.now());
         giftCertificate.setLastUpdateDate(LocalDateTime.now());
         if (validator.validate(giftCertificate)) {
@@ -64,8 +61,7 @@ public class CertificateService {
             certificateMapper.save(giftCertificate);
             saveConnect(giftCertificate);
         } else {
-            throw new CertificateDataIncorrectException(
-                    messageSource.getMessage(ErrorMessageConstants.CERTIFICATE_INCORRECT, null, locale));
+            throw new GeneralException(ExceptionType.CERTIFICATE_DATA_INCORRECT, locale);
         }
         return giftCertificate.getId();
     }
@@ -75,7 +71,7 @@ public class CertificateService {
     }
 
     @Transactional
-    public int update(GiftCertificate giftCertificate, Locale locale) throws CertificateDataIncorrectException {
+    public int update(GiftCertificate giftCertificate, Locale locale) {
         int updatedRow;
         if (validator.validate(giftCertificate)) {
             updatedRow = updateWholeObject(giftCertificate, locale);
@@ -83,8 +79,7 @@ public class CertificateService {
             giftCertificate.setLastUpdateDate(LocalDateTime.now());
             updatedRow = certificateMapper.update(giftCertificate);
         } else {
-            throw new CertificateDataIncorrectException(
-                    messageSource.getMessage(ErrorMessageConstants.CERTIFICATE_INCORRECT, null, locale));
+            throw new GeneralException(ExceptionType.CERTIFICATE_DATA_INCORRECT, locale);
         }
         return updatedRow;
     }

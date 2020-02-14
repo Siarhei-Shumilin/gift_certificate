@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.TagDataIncorrectException;
+import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.TagMapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.context.MessageSource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +19,6 @@ import java.util.Locale;
 public class TagServiceTest {
 @Mock
 private TagMapper tagMapper;
-@Mock
-private MessageSource messageSource;
 @InjectMocks
 private TagService tagService;
 
@@ -34,7 +31,7 @@ private TagService tagService;
         Mockito.verify(tagMapper, Mockito.times(1)).save(tag);
     }
 
-    @Test(expected = TagDataIncorrectException.class)
+    @Test(expected = GeneralException.class)
     public void testSaveThrowException() {
         Tag tag = new Tag();
         tagService.save(tag, new Locale("en"));

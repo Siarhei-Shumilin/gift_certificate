@@ -1,11 +1,11 @@
 package com.epam.esm.service;
 
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.TagDataIncorrectException;
+import com.epam.esm.exception.ExceptionType;
+import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.TagMapper;
-import com.epam.esm.util.ErrorMessageConstants;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -13,17 +13,14 @@ import java.util.Locale;
 public class TagService {
 
     private final TagMapper mapperTag;
-    private final MessageSource messageSource;
 
-    public TagService(TagMapper mapperTag, MessageSource messageSource) {
+    public TagService(TagMapper mapperTag) {
         this.mapperTag = mapperTag;
-        this.messageSource = messageSource;
     }
 
     public long save(Tag tag, Locale locale) {
         if (tag.getName() == null || tag.getName().trim().equals("")) {
-            throw new TagDataIncorrectException(
-                    messageSource.getMessage(ErrorMessageConstants.TAG_INCORRECT, null, locale));
+            throw new GeneralException(ExceptionType.TAG_DATA_INCORRECT, locale);
         }
         mapperTag.save(tag);
         return tag.getId();

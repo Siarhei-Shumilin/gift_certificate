@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.exception.CertificateDataIncorrectException;
+import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.util.CertificateValidator;
 import com.epam.esm.util.TagVerifier;
@@ -23,8 +23,6 @@ public class CertificateServiceTest {
     private CertificateValidator validator;
     @Mock
     private TagVerifier tagVerifier;
-    @Mock
-    private MessageSource messageSource;
     @InjectMocks
     private CertificateService service;
 
@@ -34,12 +32,12 @@ public class CertificateServiceTest {
         Mockito.verify(mapper, Mockito.times(1)).delete(1);
     }
 
-    @Test(expected = CertificateDataIncorrectException.class)
+    @Test(expected = GeneralException.class)
     public void testSave(){
         service.save(new GiftCertificate(), new Locale("en"));
     }
 
-    @Test(expected = CertificateDataIncorrectException.class)
+    @Test(expected = GeneralException.class)
     public void testUpdate(){
         service.update(new GiftCertificate(), new Locale("en"));
     }

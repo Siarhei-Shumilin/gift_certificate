@@ -1,7 +1,10 @@
 package com.epam.esm.controller.handler;
 
 import com.epam.esm.exception.*;
+import com.epam.esm.exception.ExceptionType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +17,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-
+    @Autowired
+    private MessageSource messageSource;
     @Value("${error.code.not.found}")
     private String errorCodeNotFound;
     @Value("${error.code.bad.request}")
@@ -22,23 +26,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @Value("${error.code.server}")
     private String errorCodeServer;
 
+    @ExceptionHandler(GeneralException.class)
+    protected ResponseEntity<ApiError> handleException(GeneralException exception) {
+        ExceptionType error = exception.getError();
+        HttpStatus httpStatus = HttpStatus.valueOf(error.getStatusCode());
+        return new ResponseEntity<>(
+                new ApiError(messageSource.getMessage(error.getMessage(), null, exception.getLocale()),
+                        error.getCustomCode()), httpStatus);
+    }
+
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ApiError apiError =
                 new ApiError(ex.getLocalizedMessage(), HttpStatus.NOT_FOUND.value() + errorCodeNotFound);
         return new ResponseEntity<>(
                 apiError, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(GeneralException.class)
-    protected ResponseEntity<ApiError> handleException(GeneralException exception){
-        ResponseEntity<ApiError> responseEntity = null;
-        if (exception instanceof CertificateDataIncorrectException || exception instanceof TagDataIncorrectException
-                || exception instanceof UserExistsException){
-            String status = HttpStatus.BAD_REQUEST.value() + errorCodeBadRequest;
-            responseEntity = new ResponseEntity<>(new ApiError(exception.getMessage(), status), HttpStatus.BAD_REQUEST);
-        }
-        return responseEntity;
     }
 
     @ExceptionHandler({RuntimeException.class})

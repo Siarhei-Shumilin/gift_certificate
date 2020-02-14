@@ -1,11 +1,10 @@
 package com.epam.esm.service;
 
 import com.epam.esm.entity.User;
-import com.epam.esm.exception.UserExistsException;
+import com.epam.esm.exception.ExceptionType;
+import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.UserMapper;
-import com.epam.esm.util.ErrorMessageConstants;
 import com.epam.esm.util.UserDetailsImpl;
-import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,11 +16,9 @@ import java.util.Locale;
 public class UserService implements UserDetailsService {
 
     private final UserMapper userMapper;
-    private final MessageSource messageSource;
 
-    public UserService(UserMapper userMapper, MessageSource messageSource) {
+    public UserService(UserMapper userMapper) {
         this.userMapper = userMapper;
-        this.messageSource = messageSource;
     }
 
     @Override
@@ -30,11 +27,11 @@ public class UserService implements UserDetailsService {
         return new UserDetailsImpl(user);
     }
 
-    public long save(User user, Locale locale) throws UserExistsException {
+    public long save(User user, Locale locale) {
         userMapper.save(user);
         long id = user.getId();
         if (id == 0) {
-            throw new UserExistsException(messageSource.getMessage(ErrorMessageConstants.USER_EXISTS, null, locale));
+            throw new GeneralException(ExceptionType.USER_EXISTS_EXCEPTION, locale);
         }
         return id;
     }

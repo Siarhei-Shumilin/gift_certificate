@@ -1,7 +1,6 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.exception.CertificateDataIncorrectException;
 import com.epam.esm.service.CertificateService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

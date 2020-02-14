@@ -2,9 +2,9 @@ package com.epam.esm.util;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.TagDataIncorrectException;
+import com.epam.esm.exception.ExceptionType;
+import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.TagMapper;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,11 +14,9 @@ import java.util.Locale;
 public class TagVerifier {
 
     private final TagMapper tagMapper;
-    private final MessageSource messageSource;
 
-    public TagVerifier(TagMapper tagMapper, MessageSource messageSource) {
+    public TagVerifier(TagMapper tagMapper) {
         this.tagMapper = tagMapper;
-        this.messageSource = messageSource;
     }
 
     public void checkAndSaveTagIfNotExist(GiftCertificate giftCertificate, Locale locale) {
@@ -26,8 +24,7 @@ public class TagVerifier {
         for (Tag tag : tagList) {
             String name = tag.getName();
             if (name == null || name.trim().isEmpty()) {
-                throw new TagDataIncorrectException(
-                        messageSource.getMessage(ErrorMessageConstants.TAG_INCORRECT, null, locale));
+                throw new GeneralException(ExceptionType.TAG_DATA_INCORRECT, locale);
             }
             Boolean existByName = tagMapper.existByName(tag.getName());
             if (!existByName) {

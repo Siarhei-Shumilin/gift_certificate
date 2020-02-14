@@ -1,6 +1,9 @@
 package com.epam.esm.config.filter;
 
 import com.epam.esm.config.util.JwtUtil;
+import com.epam.esm.exception.GeneralException;
+import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,12 +36,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String jwt = null;
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
-            String[] parts = jwt.split("\\.");
-            if (parts.length != 3) {
-                throw new IllegalArgumentException("Invalid Token format");
-            }
             username = jwtUtil.extractUsername(jwt);
         }
+
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             if (jwtUtil.validateToken(jwt, userDetails)) {
