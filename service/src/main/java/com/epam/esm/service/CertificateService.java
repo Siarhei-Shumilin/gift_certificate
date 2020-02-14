@@ -7,6 +7,7 @@ import com.epam.esm.exception.CertificateDataIncorrectException;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.CertificateTagConnectingMapper;
 import com.epam.esm.util.CertificateValidator;
+import com.epam.esm.util.ErrorMessageConstants;
 import com.epam.esm.util.TagVerifier;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.context.MessageSource;
@@ -63,7 +64,8 @@ public class CertificateService {
             certificateMapper.save(giftCertificate);
             saveConnect(giftCertificate);
         } else {
-            throw new CertificateDataIncorrectException(messageSource.getMessage("certificate.field.incorrect", null, locale));
+            throw new CertificateDataIncorrectException(
+                    messageSource.getMessage(ErrorMessageConstants.CERTIFICATE_INCORRECT, null, locale));
         }
         return giftCertificate.getId();
     }
@@ -81,7 +83,8 @@ public class CertificateService {
             giftCertificate.setLastUpdateDate(LocalDateTime.now());
             updatedRow = certificateMapper.update(giftCertificate);
         } else {
-            throw new CertificateDataIncorrectException(messageSource.getMessage("certificate.field.incorrect", null, locale));
+            throw new CertificateDataIncorrectException(
+                    messageSource.getMessage(ErrorMessageConstants.CERTIFICATE_INCORRECT, null, locale));
         }
         return updatedRow;
     }

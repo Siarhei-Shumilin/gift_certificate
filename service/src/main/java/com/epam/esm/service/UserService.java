@@ -3,6 +3,7 @@ package com.epam.esm.service;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.UserExistsException;
 import com.epam.esm.mapper.UserMapper;
+import com.epam.esm.util.ErrorMessageConstants;
 import com.epam.esm.util.UserDetailsImpl;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,7 +34,7 @@ public class UserService implements UserDetailsService {
         userMapper.save(user);
         long id = user.getId();
         if (id == 0) {
-            throw new UserExistsException(messageSource.getMessage("user.exists", null, locale));
+            throw new UserExistsException(messageSource.getMessage(ErrorMessageConstants.USER_EXISTS, null, locale));
         }
         return id;
     }

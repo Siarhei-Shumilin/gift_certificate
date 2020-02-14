@@ -26,7 +26,8 @@ public class TagVerifier {
         for (Tag tag : tagList) {
             String name = tag.getName();
             if (name == null || name.trim().isEmpty()) {
-                throw new TagDataIncorrectException(messageSource.getMessage("tag.field.incorrect", null, locale));
+                throw new TagDataIncorrectException(
+                        messageSource.getMessage(ErrorMessageConstants.TAG_INCORRECT, null, locale));
             }
             Boolean existByName = tagMapper.existByName(tag.getName());
             if (!existByName) {
