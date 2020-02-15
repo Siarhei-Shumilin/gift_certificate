@@ -1,7 +1,12 @@
+ext {
+    securityCoreVersion = '5.2.1.RELEASE'
+    junitVersion = '4.13'
+    mockitoVersion = '3.2.4'
+}
 
 dependencies {
     implementation project(':repository')
-    compile group: 'org.springframework.security', name: 'spring-security-core', version: securityCoreVersion
-    testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
-    testCompile group: 'junit', name: 'junit', version: junitVersion
+    compile group: 'org.springframework.security', name: 'spring-security-core', version: "${securityCoreVersion}"
+    compile group: 'org.mockito', name: 'mockito-core', version: "${mockitoVersion}"
+    compile group: 'junit', name: 'junit', version: "${junitVersion}"
 }

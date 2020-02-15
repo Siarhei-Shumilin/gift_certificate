@@ -1,7 +1,13 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.4.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'war'
+    id "org.springframework.boot" version "2.2.4.RELEASE"
+    id "io.spring.dependency-management" version "1.0.9.RELEASE"
+}
+
+ext{
+    jjwtVersion='0.9.1'
+    restAssured= '4.2.0'
+    jacksonDataBind = '2.10.2'
+    jsonSimple = '1.1'
 }
 springBoot {
     mainClassName="com.epam.esm.CertificateApplication"
@@ -13,9 +19,13 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web') {
         exclude module: 'spring-boot-starter-tomcat'
     }
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty', version: springBootVersion
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: springBootVersion
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: springBootVersion
-    compile group: 'io.jsonwebtoken', name: 'jjwt', version: jjwtVersion
-    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+    compile group: 'io.jsonwebtoken', name: 'jjwt', version: "${jjwtVersion}"
+    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: "${jsonSimple}"
+    compile group: 'io.rest-assured', name: 'rest-assured', version: "${restAssured}"
+    compile group: 'io.rest-assured', name: 'json-path', version: "${restAssured}"
+    compile group: 'io.rest-assured', name: 'xml-path', version: "${restAssured}"
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonDataBind}"
 }
