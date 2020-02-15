@@ -3,13 +3,12 @@ package com.epam.esm.util;
 import com.epam.esm.entity.GiftCertificate;
 import org.apache.ibatis.jdbc.SQL;
 import org.springframework.stereotype.Component;
-
 import java.util.Map;
 
 @Component
 public class CertificateSqlUtil {
     private final String selectData = "certificates.id, certificates.name, certificates.description, "
-        + "certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration";
+            + "certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration";
     private final String table = "certificates";
     private final String innerJoinCertificate = "connecting ON connecting.certificate_id=certificates.id";
     private final String innerJoinTag = "tags ON connecting.tag_id=tags.id";
@@ -27,7 +26,8 @@ public class CertificateSqlUtil {
                 WHERE(searchUtil.findDescription(parameters));
             } else if (parameters.get("tag") != null) {
                 WHERE(searchUtil.findByTag(parameters));
-            } else if (parameters.get("sort") != null) {
+            }
+            if (parameters.get("sort") != null) {
                 ORDER_BY(searchUtil.sort(parameters));
             }
         }}.toString();

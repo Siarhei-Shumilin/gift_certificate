@@ -6,6 +6,7 @@ import com.epam.esm.service.PurchaseService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/purchase")
@@ -18,8 +19,8 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public long save(@RequestBody GiftCertificate giftCertificate) {
-        return purchaseService.save(giftCertificate);
+    public long save(@RequestBody GiftCertificate giftCertificate, Locale locale) {
+        return purchaseService.save(giftCertificate, locale);
     }
 
     @GetMapping("/{userId}")

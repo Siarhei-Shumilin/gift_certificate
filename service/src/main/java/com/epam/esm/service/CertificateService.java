@@ -75,7 +75,8 @@ public class CertificateService {
         int updatedRow;
         if (validator.validate(giftCertificate)) {
             updatedRow = updateWholeObject(giftCertificate, locale);
-        } else if (giftCertificate.getId() != 0 && giftCertificate.getPrice() != null) {
+        } else if (giftCertificate.getId() != 0 && giftCertificate.getPrice() != null
+                && giftCertificate.getPrice().intValue()>0) {
             giftCertificate.setLastUpdateDate(LocalDateTime.now());
             updatedRow = certificateMapper.update(giftCertificate);
         } else {

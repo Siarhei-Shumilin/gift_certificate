@@ -21,10 +21,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private MessageSource messageSource;
     @Value("${error.code.not.found}")
     private String errorCodeNotFound;
-    @Value("${error.code.bad.request}")
-    private String errorCodeBadRequest;
-    @Value("${error.code.server}")
-    private String errorCodeServer;
 
     @ExceptionHandler(GeneralException.class)
     protected ResponseEntity<ApiError> handleException(GeneralException exception) {
@@ -45,7 +41,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({RuntimeException.class})
     public ResponseEntity<ApiError> handleRunTimeException(RuntimeException e) {
-        ApiError apiError = new ApiError("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR.value() + errorCodeServer);
-        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+        HttpStatus httpStatus = HttpStatus.valueOf(ExceptionType.FAILED_AUTHENTICATION.getStatusCode());
+        ApiError apiError = new ApiError(ExceptionType.UNEXPECTED_EXCEPTION.getMessage(),
+                ExceptionType.FAILED_AUTHENTICATION.getCustomCode());
+        return new ResponseEntity<>(apiError, httpStatus);
     }
 }

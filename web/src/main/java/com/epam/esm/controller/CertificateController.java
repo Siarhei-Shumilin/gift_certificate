@@ -27,12 +27,12 @@ public class CertificateController {
     }
 
     @PutMapping
-    public int update(@RequestBody GiftCertificate giftCertificate, Locale locale) throws CertificateDataIncorrectException {
+    public int update(@RequestBody GiftCertificate giftCertificate, Locale locale) {
         return service.update(giftCertificate, locale);
     }
 
     @PostMapping
-    public long save(@RequestBody GiftCertificate giftCertificate, Locale locale) throws CertificateDataIncorrectException {
+    public long save(@RequestBody GiftCertificate giftCertificate, Locale locale) {
         return service.save(giftCertificate, locale);
     }
 

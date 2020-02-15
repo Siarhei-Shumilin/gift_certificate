@@ -17,8 +17,7 @@ public class CertificateControllerTest {
                 .get("/certificates?name=jjjkkj")
                 .then()
                 .statusCode(200)
-                .body("name", equalTo(Arrays.asList("jjjkkj")))
-                .extract().response().prettyPrint();
+                .body("name", equalTo(Arrays.asList("jjjkkj")));
     }
 
     @Test
@@ -38,7 +37,6 @@ public class CertificateControllerTest {
                 .when()
                 .post("/certificates/")
                 .then()
-                .statusCode(400)
-                .extract().response().prettyPrint();
+                .statusCode(400);
     }
 }

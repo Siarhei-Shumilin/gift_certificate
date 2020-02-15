@@ -2,7 +2,8 @@ ext {
     myBatisVersion = '2.1.1'
     mysqlVersion = '8.0.18'
 }
+
 dependencies {
     compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: "${myBatisVersion}"
-    compile group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
+    implementation group: 'mysql', name: 'mysql-connector-java', version: "${mysqlVersion}"
 }

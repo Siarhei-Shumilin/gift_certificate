@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public long registration(@RequestBody User user, Locale locale) throws UserExistsException {
+    public long registration(@RequestBody User user, Locale locale) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userService.save(user, locale);
     }

@@ -5,7 +5,6 @@ import com.epam.esm.exception.ExceptionType;
 import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.TagMapper;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Locale;
 

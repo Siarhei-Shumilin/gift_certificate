@@ -6,7 +6,7 @@ public class SearchUtil {
 
     public String findByName(Map<String, Object> parameters) {
         if (parameters.get("tag") != null) {
-            return "certificates.name like '" + "%" + parameters.get("name") + "%' and tags.name = \"" + parameters.get("tag") + "\"" + sort(parameters);
+            return "certificates.name like '" + "%" + parameters.get("name") + "%' and tags.name = \"" + parameters.get("tag") + "\"";
         } else {
             return "certificates.name like '" + "%" + parameters.get("name") + "%'";
         }
@@ -14,14 +14,14 @@ public class SearchUtil {
 
     public String findDescription(Map<String, Object> parameters) {
         if (parameters.get("tag") != null) {
-            return "certificates.description like '" + "%" + parameters.get("description") + "%'" + " and tags.name = \"" + parameters.get("tag") + "\"" + sort(parameters);
+            return "certificates.description like '" + "%" + parameters.get("description") + "%'" + " and tags.name = \"" + parameters.get("tag") + "\"";
         } else {
-            return "certificates.description like '" + "%" + parameters.get("description") + "%'" + sort(parameters);
+            return "certificates.description like '" + "%" + parameters.get("description") + "%'";
         }
     }
 
     public String findByTag(Map<String, Object> parameters) {
-        return "tags.name = \"" + parameters.get("tag") + "\"" + sort(parameters);
+        return "tags.name = \"" + parameters.get("tag") + "\"";
     }
 
     public String sort(Map<String, Object> parameters) {
@@ -30,14 +30,12 @@ public class SearchUtil {
             String sort = (String) parameters.get("sort");
             if (sort.equalsIgnoreCase("date")) {
                 result = "certificates.last_update_date ";
-                if (parameters.get("typeSort") != null) {
-                    result = result + parameters.get("typeSort");
-                }
             } else if (sort.equalsIgnoreCase("name")) {
                 result = "certificates.name ";
-                if (parameters.get("typeSort") != null) {
-                    result = result + parameters.get("typeSort");
-                }
+            }
+            String typeSort = (String) parameters.get("typeSort");
+            if (typeSort != null && typeSort.equalsIgnoreCase("DESC")) {
+                result = result + typeSort;
             }
         }
         return result;
