@@ -5,11 +5,14 @@ import java.util.Map;
 public class SearchUtil {
 
     public String findByName(Map<String, Object> parameters) {
-        if (parameters.get("tag") != null) {
-            return "certificates.name like '" + "%" + parameters.get("name") + "%' and tags.name = \"" + parameters.get("tag") + "\"";
-        } else {
-            return "certificates.name like '" + "%" + parameters.get("name") + "%'";
+        String query = "certificates.name like '" + "%" + parameters.get("name") + "%' ";
+        if(parameters.get("description")!=null){
+            query = query + " and certificates.description like '" + "%" + parameters.get("description") + "%'";
         }
+        if (parameters.get("tag") != null) {
+            query = query + " and tags.name = \"" + parameters.get("tag") + "\"";
+        }
+        return query;
     }
 
     public String findDescription(Map<String, Object> parameters) {

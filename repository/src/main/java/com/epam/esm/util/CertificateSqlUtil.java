@@ -29,6 +29,8 @@ public class CertificateSqlUtil {
             }
             if (parameters.get("sort") != null) {
                 ORDER_BY(searchUtil.sort(parameters));
+            } else {
+                ORDER_BY("certificates.id");
             }
         }}.toString();
     }
