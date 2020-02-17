@@ -1,12 +1,17 @@
 package com.epam.esm.entity;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class CertificateTagConnecting {
     private long id;
     private long certificateId;
     private long tagId;
+
+    public CertificateTagConnecting() {
+    }
+
+    public CertificateTagConnecting(long certificateId, long tagId) {
+        this.certificateId = certificateId;
+        this.tagId = tagId;
+    }
 
     public long getId() {
         return id;

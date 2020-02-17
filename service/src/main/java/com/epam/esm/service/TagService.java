@@ -4,6 +4,7 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionType;
 import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.TagMapper;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Locale;
@@ -29,11 +30,25 @@ public class TagService {
         return mapperTag.delete(id);
     }
 
-    public List<Tag> findByParameters(String tagName) {
-        return mapperTag.findByParameters(tagName);
+    public List<Tag> findByParameters(String tagName, String page) {
+        return mapperTag.findByParameters(tagName, getRowBounds(page));
     }
 
     public Tag findMostPopularTag(){
         return mapperTag.findMostPopularTag();
+    }
+
+    public long findIdTag(String tagName){
+        return mapperTag.findIdTag(tagName);
+    }
+
+    private RowBounds getRowBounds(String page) {
+        int currentPage;
+        if (page == null) {
+            currentPage = 1;
+        } else {
+            currentPage = Integer.parseInt(page);
+        }
+        return new RowBounds(((currentPage-1) * 5), 5);
     }
 }

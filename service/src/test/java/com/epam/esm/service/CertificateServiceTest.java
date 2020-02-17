@@ -38,6 +38,6 @@ public class CertificateServiceTest {
 
     @Test(expected = GeneralException.class)
     public void testUpdate(){
-        service.update(new GiftCertificate(), new Locale("en"));
+        service.update(1, new GiftCertificate(), new Locale("en"));
     }
 }

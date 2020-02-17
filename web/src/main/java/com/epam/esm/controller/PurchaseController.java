@@ -24,12 +24,12 @@ public class PurchaseController {
     }
 
     @GetMapping("/{userId}")
-    public List<Purchase> findUsersPurchases(@PathVariable long userId, @RequestParam(required = false) Integer page){
+    public List<Purchase> findUsersPurchases(@PathVariable long userId, @RequestParam(required = false) String page){
         return purchaseService.findUsersPurchases(userId, page);
     }
 
     @GetMapping
-    public List<Purchase> findCurrentUserPurchase(@RequestParam(required = false) Integer page){
+    public List<Purchase> findCurrentUserPurchase(@RequestParam(required = false) String page){
         return purchaseService.findCurrentUserPurchases(page);
     }
 }

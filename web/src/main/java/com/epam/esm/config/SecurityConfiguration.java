@@ -39,11 +39,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/certificates").permitAll()
-                .antMatchers("/certificates/*").hasRole("ADMIN")
-                .antMatchers("/tags").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/certificates").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT,"/certificates").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/certificates/*").hasRole("ADMIN")
+
+                .antMatchers(HttpMethod.POST,"/tags").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE,"/tags").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/tags").authenticated()
                 .antMatchers(HttpMethod.GET, "/tags/popular").permitAll()
-                .antMatchers("/purchase/*").hasRole("ADMIN")
-                .antMatchers("/purchase").authenticated()
+
+                .antMatchers(HttpMethod.POST, "/purchase").authenticated()
+                .antMatchers(HttpMethod.GET, "/purchase").authenticated()
+                .antMatchers(HttpMethod.GET, "/purchase/*").hasRole("ADMIN")
+
                 .antMatchers("/users/authenticate").anonymous()
                 .antMatchers("/registration").anonymous()
                 .anyRequest().authenticated()

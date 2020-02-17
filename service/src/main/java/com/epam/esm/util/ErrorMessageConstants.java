@@ -7,4 +7,5 @@ public class ErrorMessageConstants {
     public static final String FAILED_AUTHENTICATION = "Sorry, You're not authorized to access this resource.";
     public static final String UNEXPECTED_EXCEPTION = "Something went wrong";
     public static final String CERTIFICATE_NOT_EXISTS = "certificate.not.exists";
+    public static final String INCORRECT_FORMAT_PAGE = "incorrect page format";
 }

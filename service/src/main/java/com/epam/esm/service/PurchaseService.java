@@ -46,20 +46,12 @@ public class PurchaseService {
         return purchase.getId();
     }
 
-    public List<Purchase> findUsersPurchases(long userId, Integer page) {
-        if (page == null) {
-            page = 1;
-        }
-        RowBounds rowBounds = new RowBounds(((page - 1) * 5), 5);
-        return purchaseMapper.findUsersPurchases(userId, rowBounds);
+    public List<Purchase> findUsersPurchases(long userId, String page) {
+        return purchaseMapper.findUsersPurchases(userId, getRowBounds(page));
     }
 
-    public List<Purchase> findCurrentUserPurchases(Integer page) {
-        if (page == null) {
-            page = 1;
-        }
-        RowBounds rowBounds = new RowBounds(((page - 1) * 5), 5);
-        return purchaseMapper.findUsersPurchases(getCurrentUser().getId(), rowBounds);
+    public List<Purchase> findCurrentUserPurchases(String page) {
+        return purchaseMapper.findUsersPurchases(getCurrentUser().getId(), getRowBounds(page));
     }
 
     private User getCurrentUser() {
@@ -70,5 +62,15 @@ public class PurchaseService {
             user = userMapper.findByUserName(currentUserName);
         }
         return user;
+    }
+
+    private RowBounds getRowBounds(String page) {
+        int currentPage;
+        if (page == null) {
+            currentPage = 1;
+        } else {
+            currentPage = Integer.parseInt(page);
+        }
+        return new RowBounds(((currentPage-1) * 5), 5);
     }
 }

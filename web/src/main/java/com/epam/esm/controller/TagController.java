@@ -21,8 +21,8 @@ public class TagController {
     }
 
     @GetMapping
-    public List<Tag> findByParameters(@RequestParam(required = false) String tagName) {
-        return tagService.findByParameters(tagName);
+    public List<Tag> findByParameters(@RequestParam(required = false) String tagName, @RequestParam(required = false) String page) {
+        return tagService.findByParameters(tagName, page);
     }
 
     @PostMapping

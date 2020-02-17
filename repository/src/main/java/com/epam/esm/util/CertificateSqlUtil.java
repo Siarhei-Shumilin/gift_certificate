@@ -1,8 +1,9 @@
 package com.epam.esm.util;
 
-import com.epam.esm.entity.GiftCertificate;
 import org.apache.ibatis.jdbc.SQL;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -13,7 +14,7 @@ public class CertificateSqlUtil {
     private final String innerJoinCertificate = "connecting ON connecting.certificate_id=certificates.id";
     private final String innerJoinTag = "tags ON connecting.tag_id=tags.id";
 
-    public String getByParameter(Map<String, Object> parameters) {
+    public String getByParameter(Map<String, Object> parameters, List<String> tagList) {
         SearchUtil searchUtil = new SearchUtil();
         return new SQL() {{
             SELECT(selectData);
@@ -24,8 +25,8 @@ public class CertificateSqlUtil {
                 WHERE(searchUtil.findByName(parameters));
             } else if (parameters.get("description") != null) {
                 WHERE(searchUtil.findDescription(parameters));
-            } else if (parameters.get("tag") != null) {
-                WHERE(searchUtil.findByTag(parameters));
+            } else if (tagList != null) {
+                WHERE(searchUtil.findByTag(tagList));
             }
             if (parameters.get("sort") != null) {
                 ORDER_BY(searchUtil.sort(parameters));
@@ -35,17 +36,18 @@ public class CertificateSqlUtil {
         }}.toString();
     }
 
-    public String update(GiftCertificate giftCertificate) {
+    public String update() {
         return new SQL() {{
             UPDATE("certificates");
-            if (giftCertificate.getName() != null && !giftCertificate.getName().trim().isEmpty()
-                    && giftCertificate.getDescription() != null && !giftCertificate.getDescription().trim().isEmpty()
-                    && giftCertificate.getPrice() != null && giftCertificate.getPrice().intValue() > 0
-                    && giftCertificate.getDuration() > 0 && giftCertificate.getTagList() != null) {
-                SET("name = #{name}, description=#{description}, price=#{price}, last_update_date=#{lastUpdateDate}, duration=#{duration}");
-            } else {
-                SET("price=#{price}, last_update_date=#{lastUpdateDate}");
-            }
+            SET("name = #{name}, description=#{description}, price=#{price}, last_update_date=#{lastUpdateDate}, duration=#{duration}");
+            WHERE("id = #{id}");
+        }}.toString();
+    }
+
+    public String updatePrice() {
+        return new SQL() {{
+            UPDATE("certificates");
+            SET("price=#{price}, last_update_date=#{lastUpdateDate}");
             WHERE("id = #{id}");
         }}.toString();
     }

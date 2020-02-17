@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.session.RowBounds;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Mapper
 public interface CertificateMapper {
@@ -22,7 +23,7 @@ public interface CertificateMapper {
             @Result(property = "createDate", column = "create_date"),
             @Result(property = "lastUpdateDate", column = "last_update_date"),
     })
-    List<GiftCertificate> findByParameters(Map<String, Object> parameters, RowBounds rowBounds);
+    Set<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, RowBounds rowBounds);
 
     @Select("SELECT tags.id, tags.name FROM connecting INNER JOIN certificates ON connecting.certificate_id=certificates.id "
             + "INNER JOIN tags ON connecting.tag_id=tags.id WHERE connecting.certificate_id = #{certificateId}")
@@ -30,6 +31,9 @@ public interface CertificateMapper {
 
     @UpdateProvider(type = CertificateSqlUtil.class, method = "update")
     int update(GiftCertificate giftCertificate);
+
+    @UpdateProvider(type = CertificateSqlUtil.class, method = "updatePrice")
+    int updatePrice(GiftCertificate giftCertificate);
 
     @Select("SELECT EXISTS(SELECT price FROM certificates WHERE id = #{id})")
     boolean existById(long id);

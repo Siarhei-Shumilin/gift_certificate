@@ -4,8 +4,6 @@ import com.epam.esm.config.entity.AuthenticationResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.Test;
-import java.util.Arrays;
-import static org.hamcrest.Matchers.equalTo;
 
 public class CertificateControllerTest {
 
@@ -14,17 +12,16 @@ public class CertificateControllerTest {
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get("/certificates?name=jjjkkj")
+                .get("/certificates?name=a")
                 .then()
-                .statusCode(200)
-                .body("name", equalTo(Arrays.asList("jjjkkj")));
+                .statusCode(200);
     }
 
-    @Test
+   @Test
     public void testSaveCertificates() {
         String response = RestAssured.given()
                 .contentType("application/json")
-                .body("{\"username\" : \"username\", \"password\" : \"22222\"}")
+                .body("{\"username\" : \"admin\", \"password\" : \"22222\"}")
                 .when()
                 .post("/users/authenticate")
                 .then().extract().response().as(AuthenticationResponse.class).getJwt();

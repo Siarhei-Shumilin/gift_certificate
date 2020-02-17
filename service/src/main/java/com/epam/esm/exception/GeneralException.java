@@ -5,6 +5,7 @@ import java.util.Locale;
 public class GeneralException extends RuntimeException {
    private ExceptionType error;
    private Locale locale;
+
     public GeneralException(ExceptionType error, Locale locale) {
         this.error = error;
         this.locale = locale;

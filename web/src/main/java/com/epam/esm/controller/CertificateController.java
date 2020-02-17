@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/certificates",
@@ -21,14 +22,19 @@ public class CertificateController {
     }
 
     @GetMapping
-    public List<GiftCertificate> findByParameters(@RequestParam(required = false) Map<String, Object> parameters,
-                                                  @RequestParam(required = false) List<String> tagName) {
-        return service.findByParameters(parameters, tagName);
+    public Set<GiftCertificate> findByParameters(@RequestParam(required = false) Map<String, Object> parameters,
+                                                 @RequestParam(required = false) List<String> tagName, Locale locale) {
+        return service.findByParameters(parameters, tagName, locale);
     }
 
-    @PutMapping
-    public int update(@RequestBody GiftCertificate giftCertificate, Locale locale) {
-        return service.update(giftCertificate, locale);
+    @PutMapping(value = "/{id}")
+    public int update(@PathVariable long id, @RequestBody GiftCertificate giftCertificate, Locale locale) {
+        return service.update(id, giftCertificate, locale);
+    }
+
+    @PutMapping(value = "/price/{id}")
+    public int updatePrice(@PathVariable long id, @RequestBody GiftCertificate giftCertificate, Locale locale) {
+        return service.updatePrice(id, giftCertificate, locale);
     }
 
     @PostMapping

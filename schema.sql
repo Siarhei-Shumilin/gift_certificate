@@ -45,5 +45,5 @@ price decimal(10,2) not null,
 date_purchase timestamp not null,
 PRIMARY KEY (id),
 FOREIGN KEY (user_id) REFERENCES users (id),
-FOREIGN KEY (certificate_id) REFERENCES certificates (id)
+FOREIGN KEY (certificate_id) REFERENCES certificates (id) ON UPDATE CASCADE ON DELETE CASCADE
 );

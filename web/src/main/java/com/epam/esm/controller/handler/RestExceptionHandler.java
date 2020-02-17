@@ -41,9 +41,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({RuntimeException.class})
     public ResponseEntity<ApiError> handleRunTimeException(RuntimeException e) {
-        HttpStatus httpStatus = HttpStatus.valueOf(ExceptionType.FAILED_AUTHENTICATION.getStatusCode());
+        HttpStatus httpStatus = HttpStatus.valueOf(ExceptionType.UNEXPECTED_EXCEPTION.getStatusCode());
         ApiError apiError = new ApiError(ExceptionType.UNEXPECTED_EXCEPTION.getMessage(),
-                ExceptionType.FAILED_AUTHENTICATION.getCustomCode());
+                ExceptionType.UNEXPECTED_EXCEPTION.getCustomCode());
         return new ResponseEntity<>(apiError, httpStatus);
     }
 }

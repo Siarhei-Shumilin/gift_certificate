@@ -1,5 +1,8 @@
 package com.epam.esm.util;
 
+import com.epam.esm.entity.Tag;
+
+import java.util.List;
 import java.util.Map;
 
 public class SearchUtil {
@@ -23,8 +26,10 @@ public class SearchUtil {
         }
     }
 
-    public String findByTag(Map<String, Object> parameters) {
-        return "tags.name = \"" + parameters.get("tag") + "\"";
+//    public String findByTag(Map<String, Object> parameters) {
+    public String findByTag(List<String> tagList) {
+        return "tags.name = \"" + tagList.get(0)+ "\"";
+//        return "tags.name = \"" + parameters.get("tagName") + "\"";
     }
 
     public String sort(Map<String, Object> parameters) {

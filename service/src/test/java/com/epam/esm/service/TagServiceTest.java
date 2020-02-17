@@ -49,8 +49,8 @@ private TagService tagService;
         tag.setName("name");
         tag.setId(1);
         List<Tag> tags = Arrays.asList(tag);
-        Mockito.when(tagMapper.findByParameters(tag.getName())).thenReturn(tags);
-        List<Tag> byParameters = tagService.findByParameters(tag.getName());
-        Assert.assertEquals(tags, byParameters);
+        Mockito.when(tagMapper.findIdTag(tag.getName())).thenReturn(1L);
+        long actualId = tagService.findIdTag(tag.getName());
+        Assert.assertEquals(tag.getId(), actualId);
     }
 }
