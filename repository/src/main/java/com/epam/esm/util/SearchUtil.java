@@ -1,35 +1,43 @@
 package com.epam.esm.util;
 
-import com.epam.esm.entity.Tag;
-
+import org.apache.ibatis.jdbc.SQL;
 import java.util.List;
 import java.util.Map;
 
 public class SearchUtil {
 
-    public String findByName(Map<String, Object> parameters) {
+    public String findByName(Map<String, Object> parameters, List<String> tagList, SQL sql) {
         String query = "certificates.name like '" + "%" + parameters.get("name") + "%' ";
-        if(parameters.get("description")!=null){
+        if (parameters.get("description") != null) {
             query = query + " and certificates.description like '" + "%" + parameters.get("description") + "%'";
         }
-        if (parameters.get("tag") != null) {
-            query = query + " and tags.name = \"" + parameters.get("tag") + "\"";
+        if (tagList != null) {
+            query = query + " and " + findByTag(tagList, sql);
         }
         return query;
     }
 
-    public String findDescription(Map<String, Object> parameters) {
-        if (parameters.get("tag") != null) {
-            return "certificates.description like '" + "%" + parameters.get("description") + "%'" + " and tags.name = \"" + parameters.get("tag") + "\"";
-        } else {
-            return "certificates.description like '" + "%" + parameters.get("description") + "%'";
+    public String findDescription(Map<String, Object> parameters, List<String> tagList, SQL sql) {
+        String query = "certificates.description like '" + "%" + parameters.get("description") + "%'";
+        if (tagList != null) {
+            query = query + " and " + findByTag(tagList, sql);
         }
+        return query;
     }
 
-//    public String findByTag(Map<String, Object> parameters) {
-    public String findByTag(List<String> tagList) {
-        return "tags.name = \"" + tagList.get(0)+ "\"";
-//        return "tags.name = \"" + parameters.get("tagName") + "\"";
+    public String findByTag(List<String> tagList, SQL sql) {
+        StringBuilder query = new StringBuilder("tags.name IN (");
+        if (tagList.size() == 1) {
+            query.append("\"").append(tagList.get(0)).append("\")");
+        } else {
+            for (String tagName : tagList) {
+                query.append("\"").append(tagName).append("\",");
+            }
+            String string = query.toString().replaceAll(",$", "");
+            query = new StringBuilder(string + ")");
+            sql.GROUP_BY("certificates.id having count(tags.id)>=" + tagList.size());
+        }
+        return query.toString();
     }
 
     public String sort(Map<String, Object> parameters) {

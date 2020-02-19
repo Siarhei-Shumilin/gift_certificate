@@ -6,12 +6,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class TagSqlUtil {
     public String getTagByParameter(String name) {
-        return new SQL() {{
-            SELECT("id, name");
-            FROM("tags");
-            if (name != null && !name.trim().isEmpty()) {
-                WHERE("name like #{name}");
-            }
-        }}.toString();
+        SQL sql = new SQL();
+        sql.SELECT("id, name");
+        sql.FROM("tags");
+        if (name != null && !name.trim().isEmpty()) {
+        sql.WHERE("name like #{name}");
+        }
+        sql.ORDER_BY("id");
+        return sql.toString();
     }
 }

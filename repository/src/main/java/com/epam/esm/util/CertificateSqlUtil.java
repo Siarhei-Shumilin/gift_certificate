@@ -16,39 +16,45 @@ public class CertificateSqlUtil {
 
     public String getByParameter(Map<String, Object> parameters, List<String> tagList) {
         SearchUtil searchUtil = new SearchUtil();
-        return new SQL() {{
-            SELECT(selectData);
-            FROM(table);
-            INNER_JOIN(innerJoinCertificate);
-            INNER_JOIN(innerJoinTag);
-            if (parameters.get("name") != null) {
-                WHERE(searchUtil.findByName(parameters));
-            } else if (parameters.get("description") != null) {
-                WHERE(searchUtil.findDescription(parameters));
-            } else if (tagList != null) {
-                WHERE(searchUtil.findByTag(tagList));
-            }
-            if (parameters.get("sort") != null) {
-                ORDER_BY(searchUtil.sort(parameters));
-            } else {
-                ORDER_BY("certificates.id");
-            }
-        }}.toString();
+        SQL sql = new SQL();
+        sql.SELECT_DISTINCT(selectData);
+        sql.FROM(table);
+        sql.INNER_JOIN(innerJoinCertificate);
+        sql.INNER_JOIN(innerJoinTag);
+        if (parameters.get("name") != null) {
+            sql.WHERE(searchUtil.findByName(parameters, tagList, sql));
+        } else if (parameters.get("description") != null) {
+            sql.WHERE(searchUtil.findDescription(parameters, tagList, sql));
+        } else if (tagList != null) {
+            sql.WHERE(searchUtil.findByTag(tagList, sql));
+        }
+        String sort = sort(parameters);
+        sql.ORDER_BY(sort);
+        return sql.toString();
     }
 
     public String update() {
-        return new SQL() {{
-            UPDATE("certificates");
-            SET("name = #{name}, description=#{description}, price=#{price}, last_update_date=#{lastUpdateDate}, duration=#{duration}");
-            WHERE("id = #{id}");
-        }}.toString();
+        SQL sql = new SQL();
+        sql.UPDATE("certificates");
+        sql.SET("name = #{name}, description=#{description}, price=#{price}, last_update_date=#{lastUpdateDate}, duration=#{duration}");
+        sql.WHERE("id = #{id}");
+        return sql.toString();
     }
 
     public String updatePrice() {
-        return new SQL() {{
-            UPDATE("certificates");
-            SET("price=#{price}, last_update_date=#{lastUpdateDate}");
-            WHERE("id = #{id}");
-        }}.toString();
+        SQL sql = new SQL();
+        sql.UPDATE("certificates");
+        sql.SET("price=#{price}, last_update_date=#{lastUpdateDate}");
+        sql.WHERE("id = #{id}");
+        return sql.toString();
+    }
+
+    private String sort(Map<String, Object> parameters) {
+        SearchUtil searchUtil = new SearchUtil();
+        String sort = "certificates.id";
+        if (parameters.get("sort") != null) {
+            sort = searchUtil.sort(parameters);
+        }
+        return sort;
     }
 }

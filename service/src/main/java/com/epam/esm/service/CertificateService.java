@@ -9,7 +9,6 @@ import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.CertificateTagConnectingMapper;
 import com.epam.esm.util.CertificateValidator;
 import com.epam.esm.util.TagVerifier;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +16,12 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-public class CertificateService {
+public class CertificateService extends GeneralService {
     private final TagService tagService;
     private final CertificateValidator validator;
     private final TagVerifier tagVerifier;
     private final CertificateMapper certificateMapper;
-    private final CertificateTagConnectingMapper certificateTagConnectingMapperBatis;
+    private final CertificateTagConnectingMapper certificateTagConnectingMapper;
 
     public CertificateService(TagService tagService, CertificateValidator validator, TagVerifier tagVerifier,
                               CertificateMapper certificateMapper, CertificateTagConnectingMapper certificateTagConnectingMapperBatis) {
@@ -30,18 +29,18 @@ public class CertificateService {
         this.validator = validator;
         this.tagVerifier = tagVerifier;
         this.certificateMapper = certificateMapper;
-        this.certificateTagConnectingMapperBatis = certificateTagConnectingMapperBatis;
+        this.certificateTagConnectingMapper = certificateTagConnectingMapperBatis;
     }
 
-    public Set<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, Locale locale) {
-        Set<GiftCertificate>  certificateSet = certificateMapper.findByParameters(parameters, tagList , getRowBounds(parameters, locale));
-        for (GiftCertificate giftCertificate : certificateSet) {
+    public List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, Locale locale) {
+        List<GiftCertificate> certificateList = certificateMapper.findByParameters(parameters, tagList, getRowBounds(parameters, locale));
+        for (GiftCertificate giftCertificate : certificateList) {
             CertificateTagConnecting certificateTagConnecting = new CertificateTagConnecting();
             certificateTagConnecting.setCertificateId(giftCertificate.getId());
             List<Tag> certificateTags = certificateMapper.findCertificateTags(certificateTagConnecting);
             giftCertificate.setTagList(certificateTags);
         }
-        return certificateSet;
+        return certificateList;
     }
 
     @Transactional
@@ -72,7 +71,7 @@ public class CertificateService {
             giftCertificate.setId(id);
             update = certificateMapper.update(giftCertificate);
             certificateTagConnecting.setCertificateId(id);
-            certificateTagConnectingMapperBatis.deleteConnect(certificateTagConnecting);
+            certificateTagConnectingMapper.deleteConnect(certificateTagConnecting);
             saveConnect(giftCertificate);
         } else {
             throw new GeneralException(ExceptionType.CERTIFICATE_DATA_INCORRECT, locale);
@@ -83,7 +82,7 @@ public class CertificateService {
     @Transactional
     public int updatePrice(long id, GiftCertificate giftCertificate, Locale locale) {
         int updatedRow;
-        if (giftCertificate.getPrice()!=null && giftCertificate.getPrice().intValue()>0) {
+        if (giftCertificate.getPrice() != null && giftCertificate.getPrice().intValue() > 0) {
             giftCertificate.setLastUpdateDate(LocalDateTime.now());
             giftCertificate.setId(id);
             updatedRow = certificateMapper.updatePrice(giftCertificate);
@@ -96,22 +95,10 @@ public class CertificateService {
 
     private void saveConnect(GiftCertificate giftCertificate) {
         List<Tag> tagList = giftCertificate.getTagList();
-        List<CertificateTagConnecting> certificateTagConnectings = new ArrayList<>();
         for (Tag tag : tagList) {
             long tagId = tagService.findIdTag(tag.getName());
             CertificateTagConnecting certificateTagConnecting = new CertificateTagConnecting(giftCertificate.getId(), tagId);
-            certificateTagConnectingMapperBatis.save(certificateTagConnecting);
+            certificateTagConnectingMapper.save(certificateTagConnecting);
         }
-    }
-
-    private RowBounds getRowBounds(Map<String, Object> parameters, Locale locale) {
-        int page;
-        if(parameters.get("page") == null || Integer.parseInt((String) parameters.get("page"))<1){
-            page = 1;
-        } else {
-            page = Integer.parseInt((String) parameters.get("page"));
-        }
-        int offset = (page-1) * 5;
-        return new RowBounds(offset, 5);
     }
 }

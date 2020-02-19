@@ -5,10 +5,7 @@ import com.epam.esm.service.CertificateService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/certificates",
@@ -22,28 +19,37 @@ public class CertificateController {
     }
 
     @GetMapping
-    public Set<GiftCertificate> findByParameters(@RequestParam(required = false) Map<String, Object> parameters,
+    public List<GiftCertificate> findByParameters(@RequestParam(required = false) Map<String, Object> parameters,
                                                  @RequestParam(required = false) List<String> tagName, Locale locale) {
-        return service.findByParameters(parameters, tagName, locale);
+        return  service.findByParameters(parameters, tagName, locale);
+
     }
 
     @PutMapping(value = "/{id}")
-    public int update(@PathVariable long id, @RequestBody GiftCertificate giftCertificate, Locale locale) {
-        return service.update(id, giftCertificate, locale);
+    public Map<String, String> update(@PathVariable long id, @RequestBody GiftCertificate giftCertificate, Locale locale) {
+        Map<String, String> map = new HashMap<>();
+        map.put("Message" , "Updated " + service.update(id, giftCertificate, locale) + " certificate");
+        return map;
     }
 
     @PutMapping(value = "/price/{id}")
-    public int updatePrice(@PathVariable long id, @RequestBody GiftCertificate giftCertificate, Locale locale) {
-        return service.updatePrice(id, giftCertificate, locale);
+    public Map<String, String> updatePrice(@PathVariable long id, @RequestBody GiftCertificate giftCertificate, Locale locale) {
+       Map<String, String> map = new HashMap<>();
+       map.put("Message" , "Updated " + service.updatePrice(id, giftCertificate, locale) + " certificate");
+       return map;
     }
 
     @PostMapping
-    public long save(@RequestBody GiftCertificate giftCertificate, Locale locale) {
-        return service.save(giftCertificate, locale);
+    public Map<String, Long> save(@RequestBody GiftCertificate giftCertificate, Locale locale) {
+        Map<String, Long> map = new HashMap<>();
+        map.put("id" , service.save(giftCertificate, locale));
+        return map;
     }
 
     @DeleteMapping("/{id}")
-    public int delete(@PathVariable int id) {
-        return service.delete(id);
+    public Map<String, String> delete(@PathVariable int id) {
+        Map<String, String> map = new HashMap<>();
+        map.put("Message" , "Deleted " + service.delete(id) + " certificate");
+        return map;
     }
 }

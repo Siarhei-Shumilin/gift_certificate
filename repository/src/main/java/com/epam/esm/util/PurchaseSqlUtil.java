@@ -7,13 +7,11 @@ import org.springframework.stereotype.Component;
 public class PurchaseSqlUtil {
 
     public String findUsersPurchase() {
-        return new SQL() {
-            {
-                SELECT("purchases.id, purchases.user_id, purchases.certificate_id, certificates.name,  certificates.description, purchases.price, purchases.date_purchase");
-                FROM("certificates");
-                INNER_JOIN("purchases ON purchases.certificate_id=certificates.id");
-                WHERE("user_id=#{userId}");
-            }
-        }.toString();
+        SQL sql = new SQL();
+        sql.SELECT("purchases.id, purchases.user_id, purchases.certificate_id, certificates.name,  certificates.description, purchases.price, purchases.date_purchase");
+        sql.FROM("certificates");
+        sql.INNER_JOIN("purchases ON purchases.certificate_id=certificates.id");
+        sql.WHERE("user_id=#{userId}");
+        return sql.toString();
     }
 }

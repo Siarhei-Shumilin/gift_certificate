@@ -33,4 +33,6 @@ public enum ExceptionType {
     public String getCustomCode() {
         return customCode;
     }
+
+
 }

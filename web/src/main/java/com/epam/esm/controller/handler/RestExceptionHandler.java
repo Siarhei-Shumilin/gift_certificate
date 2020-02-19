@@ -2,7 +2,6 @@ package com.epam.esm.controller.handler;
 
 import com.epam.esm.exception.*;
 import com.epam.esm.exception.ExceptionType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -17,18 +16,26 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-    @Autowired
-    private MessageSource messageSource;
+
+    private final MessageSource messageSource;
     @Value("${error.code.not.found}")
     private String errorCodeNotFound;
+
+    public RestExceptionHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     @ExceptionHandler(GeneralException.class)
     protected ResponseEntity<ApiError> handleException(GeneralException exception) {
         ExceptionType error = exception.getError();
         HttpStatus httpStatus = HttpStatus.valueOf(error.getStatusCode());
-        return new ResponseEntity<>(
-                new ApiError(messageSource.getMessage(error.getMessage(), null, exception.getLocale()),
-                        error.getCustomCode()), httpStatus);
+        String message = messageSource.getMessage(error.getMessage(), null, exception.getLocale());
+        return new ResponseEntity<>(new ApiError(message, error.getCustomCode()), httpStatus);
+    }
+
+    @ExceptionHandler(NumberFormatException.class)
+    protected ResponseEntity<String> handleNumberException(NumberFormatException exception) { ;
+        return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
     }
 
     @Override

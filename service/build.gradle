@@ -5,5 +5,5 @@ ext {
 dependencies {
     implementation project(':repository')
     implementation group: 'org.springframework.security', name: 'spring-security-core', version: "${securityCoreVersion}"
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-test' , version: '2.2.4.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.2.4.RELEASE'
 }

@@ -1,12 +1,14 @@
 package com.epam.esm.mapper;
 
-import com.epam.esm.entity.*;
+import com.epam.esm.entity.CertificateTagConnecting;
+import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.util.CertificateSqlUtil;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.session.RowBounds;
+
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Mapper
 public interface CertificateMapper {
@@ -23,7 +25,7 @@ public interface CertificateMapper {
             @Result(property = "createDate", column = "create_date"),
             @Result(property = "lastUpdateDate", column = "last_update_date"),
     })
-    Set<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, RowBounds rowBounds);
+    List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, RowBounds rowBounds);
 
     @Select("SELECT tags.id, tags.name FROM connecting INNER JOIN certificates ON connecting.certificate_id=certificates.id "
             + "INNER JOIN tags ON connecting.tag_id=tags.id WHERE connecting.certificate_id = #{certificateId}")

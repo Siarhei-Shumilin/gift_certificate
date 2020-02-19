@@ -4,13 +4,13 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionType;
 import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.TagMapper;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Service
-public class TagService {
+public class TagService extends GeneralService {
 
     private final TagMapper mapperTag;
 
@@ -30,8 +30,9 @@ public class TagService {
         return mapperTag.delete(id);
     }
 
-    public List<Tag> findByParameters(String tagName, String page) {
-        return mapperTag.findByParameters(tagName, getRowBounds(page));
+    public List<Tag> findByParameters(Map<String, Object> parameters, Locale locale) {
+        String tagName = (String) parameters.get("tagName");
+        return mapperTag.findByParameters(tagName, getRowBounds(parameters, locale));
     }
 
     public Tag findMostPopularTag(){
@@ -40,15 +41,5 @@ public class TagService {
 
     public long findIdTag(String tagName){
         return mapperTag.findIdTag(tagName);
-    }
-
-    private RowBounds getRowBounds(String page) {
-        int currentPage;
-        if (page == null) {
-            currentPage = 1;
-        } else {
-            currentPage = Integer.parseInt(page);
-        }
-        return new RowBounds(((currentPage-1) * 5), 5);
     }
 }

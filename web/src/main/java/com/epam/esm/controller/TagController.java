@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/tags",
@@ -21,8 +22,8 @@ public class TagController {
     }
 
     @GetMapping
-    public List<Tag> findByParameters(@RequestParam(required = false) String tagName, @RequestParam(required = false) String page) {
-        return tagService.findByParameters(tagName, page);
+    public List<Tag> findByParameters(@RequestParam(required = false) Map<String, Object> parameters, Locale locale) {
+        return tagService.findByParameters(parameters, locale);
     }
 
     @PostMapping

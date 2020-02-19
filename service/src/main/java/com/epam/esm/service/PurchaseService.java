@@ -8,18 +8,19 @@ import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.PurchaseMapper;
 import com.epam.esm.mapper.UserMapper;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Service
-public class PurchaseService {
+public class PurchaseService extends GeneralService {
 
     private final UserMapper userMapper;
     private final CertificateMapper certificateMapper;
@@ -36,22 +37,30 @@ public class PurchaseService {
     public long save(GiftCertificate giftCertificate, Locale locale) {
         if (certificateMapper.existById(giftCertificate.getId())) {
             User user = getCurrentUser();
-            purchase.setUserId(user.getId());
-            purchase.setCertificateId(giftCertificate.getId());
-            purchase.setDateTime(LocalDateTime.now());
-            purchaseMapper.save(purchase);
+            if(user!=null) {
+                purchase.setUserId(user.getId());
+                purchase.setCertificateId(giftCertificate.getId());
+                purchase.setDateTime(LocalDateTime.now());
+                purchaseMapper.save(purchase);
+            }
         } else {
             throw new GeneralException(ExceptionType.CERTIFICATE_NOT_EXISTS, locale);
         }
         return purchase.getId();
     }
 
-    public List<Purchase> findUsersPurchases(long userId, String page) {
-        return purchaseMapper.findUsersPurchases(userId, getRowBounds(page));
+    public List<Purchase> findUsersPurchases(long userId, Map<String, Object> parameters, Locale locale) {
+        return purchaseMapper.findUsersPurchases(userId, getRowBounds(parameters, locale));
     }
 
-    public List<Purchase> findCurrentUserPurchases(String page) {
-        return purchaseMapper.findUsersPurchases(getCurrentUser().getId(), getRowBounds(page));
+    public List<Purchase> findCurrentUserPurchases(Map<String, Object> parameters, Locale locale) {
+        User user = getCurrentUser();
+        List<Purchase> usersPurchases = new ArrayList<>();
+        if (user!=null){
+            long id = user.getId();
+            usersPurchases = purchaseMapper.findUsersPurchases(id, getRowBounds(parameters, locale));
+        }
+        return usersPurchases;
     }
 
     private User getCurrentUser() {
@@ -62,15 +71,5 @@ public class PurchaseService {
             user = userMapper.findByUserName(currentUserName);
         }
         return user;
-    }
-
-    private RowBounds getRowBounds(String page) {
-        int currentPage;
-        if (page == null) {
-            currentPage = 1;
-        } else {
-            currentPage = Integer.parseInt(page);
-        }
-        return new RowBounds(((currentPage-1) * 5), 5);
     }
 }
