@@ -49,8 +49,15 @@ public class PurchaseService extends GeneralService {
         return purchase.getId();
     }
 
-    public List<Purchase> findUsersPurchases(long userId, Map<String, Object> parameters, Locale locale) {
-        return purchaseMapper.findUsersPurchases(userId, getRowBounds(parameters, locale));
+    public List<Purchase> findUsersPurchases(String userId, Map<String, Object> parameters, Locale locale) {
+        long id;
+            try {
+                id = Long.parseLong(userId);
+            } catch (NumberFormatException e) {
+                throw new GeneralException(ExceptionType.INCORRECT_DATA_FORMAT, locale);
+            }
+
+        return purchaseMapper.findUsersPurchases(id, getRowBounds(parameters, locale));
     }
 
     public List<Purchase> findCurrentUserPurchases(Map<String, Object> parameters, Locale locale) {

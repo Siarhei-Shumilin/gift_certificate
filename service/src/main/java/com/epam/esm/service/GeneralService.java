@@ -21,7 +21,7 @@ public class GeneralService {
                 limit = Integer.parseInt((String) parameters.get("limit"));
             }
         } catch (NumberFormatException e) {
-            throw new GeneralException(ExceptionType.INCORRECT_FORMAT_PAGE, locale);
+            throw new GeneralException(ExceptionType.INCORRECT_DATA_FORMAT, locale);
         }
         int offset = (page - 1) * limit;
         return new RowBounds(offset, limit);

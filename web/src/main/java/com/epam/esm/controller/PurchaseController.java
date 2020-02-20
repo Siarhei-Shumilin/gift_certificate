@@ -24,7 +24,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/{userId}")
-    public List<Purchase> findUsersPurchases(@PathVariable long userId, @RequestParam(required = false) Map<String, Object> parameters, Locale locale){
+    public List<Purchase> findUsersPurchases(@PathVariable String userId, @RequestParam(required = false) Map<String, Object> parameters, Locale locale){
         return purchaseService.findUsersPurchases(userId, parameters, locale);
     }
 

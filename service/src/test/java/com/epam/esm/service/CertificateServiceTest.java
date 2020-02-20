@@ -27,7 +27,8 @@ public class CertificateServiceTest {
 
     @Test
     public void testDeleteShouldCallMappersMethodDelete() {
-        service.delete(1);
+        Locale locale = new Locale("en");
+        service.delete("1", locale);
         Mockito.verify(mapper, Mockito.times(1)).delete(1);
     }
 
@@ -38,6 +39,6 @@ public class CertificateServiceTest {
 
     @Test(expected = GeneralException.class)
     public void testUpdate(){
-        service.update(1, new GiftCertificate(), new Locale("en"));
+        service.update("1", new GiftCertificate(), new Locale("en"));
     }
 }

@@ -18,7 +18,7 @@ public interface CertificateMapper {
     void save(GiftCertificate giftCertificate);
 
     @Delete("DELETE FROM certificates WHERE id = #{id}")
-    int delete(int id);
+    int delete(long id);
 
     @SelectProvider(type = CertificateSqlUtil.class, method = "getByParameter")
     @Results(value = {

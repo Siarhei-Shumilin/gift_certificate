@@ -9,7 +9,7 @@ public enum ExceptionType {
     TAG_DATA_INCORRECT(ErrorMessageConstants.TAG_INCORRECT, 400, "40003"),
     USER_EXISTS_EXCEPTION(ErrorMessageConstants.USER_EXISTS, 400, "40004"),
     FAILED_AUTHENTICATION(ErrorMessageConstants.FAILED_AUTHENTICATION, 403, "40301"),
-    INCORRECT_FORMAT_PAGE(ErrorMessageConstants.INCORRECT_FORMAT_PAGE, 400, "40005"),
+    INCORRECT_DATA_FORMAT(ErrorMessageConstants.INCORRECT_DATA_FORMAT, 400, "40005"),
     UNEXPECTED_EXCEPTION(ErrorMessageConstants.UNEXPECTED_EXCEPTION, 500, "50005");
 
     private final String message;

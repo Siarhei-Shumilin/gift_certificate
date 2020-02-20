@@ -26,14 +26,14 @@ public class CertificateController {
     }
 
     @PutMapping(value = "/{id}")
-    public Map<String, String> update(@PathVariable long id, @RequestBody GiftCertificate giftCertificate, Locale locale) {
+    public Map<String, String> update(@PathVariable String id, @RequestBody GiftCertificate giftCertificate, Locale locale) {
         Map<String, String> map = new HashMap<>();
         map.put("Message" , "Updated " + service.update(id, giftCertificate, locale) + " certificate");
         return map;
     }
 
     @PutMapping(value = "/price/{id}")
-    public Map<String, String> updatePrice(@PathVariable long id, @RequestBody GiftCertificate giftCertificate, Locale locale) {
+    public Map<String, String> updatePrice(@PathVariable String id, @RequestBody GiftCertificate giftCertificate, Locale locale) {
        Map<String, String> map = new HashMap<>();
        map.put("Message" , "Updated " + service.updatePrice(id, giftCertificate, locale) + " certificate");
        return map;
@@ -47,9 +47,9 @@ public class CertificateController {
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, String> delete(@PathVariable int id) {
+    public Map<String, String> delete(@PathVariable String id, Locale locale) {
         Map<String, String> map = new HashMap<>();
-        map.put("Message" , "Deleted " + service.delete(id) + " certificate");
+        map.put("Message" , "Deleted " + service.delete(id, locale) + " certificate");
         return map;
     }
 }
