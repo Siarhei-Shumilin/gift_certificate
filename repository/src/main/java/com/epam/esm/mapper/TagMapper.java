@@ -18,7 +18,7 @@ public interface TagMapper {
     long save(Tag tag);
 
     @Delete("DELETE FROM tags WHERE id = #{id}")
-    int delete(long id);
+    int delete(int id);
 
     @Select("SELECT EXISTS(SELECT name FROM tags WHERE name = #{name})")
     Boolean existByName(String name);

@@ -32,8 +32,8 @@ public class TagController {
     }
 
     @DeleteMapping("/{id}")
-    public int delete(@PathVariable String id, Locale locale) {
-        return tagService.delete(id, locale);
+    public int delete(@PathVariable int id) {
+        return tagService.delete(id);
     }
 
     @GetMapping("/popular")

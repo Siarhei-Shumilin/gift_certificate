@@ -37,7 +37,7 @@ public class PurchaseService extends GeneralService {
     public long save(GiftCertificate giftCertificate, Locale locale) {
         if (certificateMapper.existById(giftCertificate.getId())) {
             User user = getCurrentUser();
-            if (user != null) {
+            if(user!=null) {
                 purchase.setUserId(user.getId());
                 purchase.setCertificateId(giftCertificate.getId());
                 purchase.setDateTime(LocalDateTime.now());
@@ -50,14 +50,20 @@ public class PurchaseService extends GeneralService {
     }
 
     public List<Purchase> findUsersPurchases(String userId, Map<String, Object> parameters, Locale locale) {
-        long id = parseId(userId, locale);
+        long id;
+            try {
+                id = Long.parseLong(userId);
+            } catch (NumberFormatException e) {
+                throw new GeneralException(ExceptionType.INCORRECT_DATA_FORMAT, locale);
+            }
+
         return purchaseMapper.findUsersPurchases(id, getRowBounds(parameters, locale));
     }
 
     public List<Purchase> findCurrentUserPurchases(Map<String, Object> parameters, Locale locale) {
         User user = getCurrentUser();
         List<Purchase> usersPurchases = new ArrayList<>();
-        if (user != null) {
+        if (user!=null){
             long id = user.getId();
             usersPurchases = purchaseMapper.findUsersPurchases(id, getRowBounds(parameters, locale));
         }

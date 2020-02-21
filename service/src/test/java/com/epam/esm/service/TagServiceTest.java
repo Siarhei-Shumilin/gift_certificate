@@ -39,7 +39,7 @@ private TagService tagService;
 
     @Test
     public void testDeleteShouldTagMapperCallDeleteMethod() {
-        tagService.delete("1", new Locale("en"));
+        tagService.delete(1);
         Mockito.verify(tagMapper, Mockito.times(1)).delete(1);
     }
 
@@ -48,6 +48,7 @@ private TagService tagService;
         Tag tag = new Tag();
         tag.setName("name");
         tag.setId(1);
+        List<Tag> tags = Arrays.asList(tag);
         Mockito.when(tagMapper.findIdTag(tag.getName())).thenReturn(1L);
         long actualId = tagService.findIdTag(tag.getName());
         Assert.assertEquals(tag.getId(), actualId);
