@@ -19,15 +19,16 @@ public class TagService extends GeneralService {
     }
 
     public long save(Tag tag, Locale locale) {
-        if (tag.getName() == null || tag.getName().trim().equals("")) {
+        if (tag.getName() == null || tag.getName().trim().isEmpty()) {
             throw new GeneralException(ExceptionType.TAG_DATA_INCORRECT, locale);
         }
         mapperTag.save(tag);
         return tag.getId();
     }
 
-    public int delete(int id) {
-        return mapperTag.delete(id);
+    public int delete(String id, Locale locale) {
+        long tagId = parseId(id, locale);
+        return mapperTag.delete(tagId);
     }
 
     public List<Tag> findByParameters(Map<String, Object> parameters, Locale locale) {

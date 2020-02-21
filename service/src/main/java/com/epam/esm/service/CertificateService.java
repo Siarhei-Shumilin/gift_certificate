@@ -9,8 +9,9 @@ import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.CertificateTagConnectingMapper;
 import com.epam.esm.util.CertificateValidator;
 import com.epam.esm.util.TagVerifier;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,30 +66,20 @@ public class CertificateService extends GeneralService {
     }
 
     public int delete(String id, Locale locale) {
-        long certificateId;
-        try {
-            certificateId = Long.parseLong(id);
-        } catch (NumberFormatException e) {
-            throw new GeneralException(ExceptionType.INCORRECT_DATA_FORMAT, locale);
-        }
+        long certificateId = parseId(id, locale);
         return certificateMapper.delete(certificateId);
     }
 
     @Transactional
     public int update(String id, GiftCertificate giftCertificate, Locale locale) {
-        long certificateId;
-        try {
-            certificateId = Long.parseLong(id);
-        } catch (NumberFormatException e) {
-            throw new GeneralException(ExceptionType.INCORRECT_DATA_FORMAT, locale);
-        }
+        long certificateId = parseId(id, locale);
         int update;
         if (validator.validate(giftCertificate)) {
-            CertificateTagConnecting certificateTagConnecting = new CertificateTagConnecting();
             tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, locale);
             giftCertificate.setLastUpdateDate(LocalDateTime.now());
             giftCertificate.setId(certificateId);
             update = certificateMapper.update(giftCertificate);
+            CertificateTagConnecting certificateTagConnecting = new CertificateTagConnecting();
             certificateTagConnecting.setCertificateId(certificateId);
             certificateTagConnectingMapper.deleteConnect(certificateTagConnecting);
             saveConnect(giftCertificate);
@@ -100,12 +91,7 @@ public class CertificateService extends GeneralService {
 
     @Transactional
     public int updatePrice(String id, GiftCertificate giftCertificate, Locale locale) {
-        long certificateId;
-        try {
-            certificateId = Long.parseLong(id);
-        } catch (NumberFormatException e) {
-            throw new GeneralException(ExceptionType.INCORRECT_DATA_FORMAT, locale);
-        }
+        long certificateId = parseId(id, locale);
         int updatedRow;
         if (giftCertificate.getPrice() != null && giftCertificate.getPrice().intValue() > 0) {
             giftCertificate.setLastUpdateDate(LocalDateTime.now());
@@ -114,7 +100,6 @@ public class CertificateService extends GeneralService {
         } else {
             throw new GeneralException(ExceptionType.CERTIFICATE_DATA_INCORRECT, locale);
         }
-
         return updatedRow;
     }
 
@@ -125,10 +110,10 @@ public class CertificateService extends GeneralService {
             long tagId = tagService.findIdTag(tag.getName());
             list.add(new CertificateTagConnecting(giftCertificate.getId(), tagId));
         }
-        SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(sqlSessionFactory);
+        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
         for (CertificateTagConnecting connecting : list) {
-            sqlSessionTemplate.insert("com.epam.esm.mapper.CertificateTagConnectingMapper.save", connecting);
+            sqlSession.insert("com.epam.esm.mapper.CertificateTagConnectingMapper.save", connecting);
         }
-        sqlSessionTemplate.flushStatements();
+        sqlSession.flushStatements();
     }
 }

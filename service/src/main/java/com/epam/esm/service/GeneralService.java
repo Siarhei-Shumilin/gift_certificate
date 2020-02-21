@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class GeneralService {
+
     protected RowBounds getRowBounds(Map<String, Object> parameters, Locale locale) {
         int page = 1;
         int limit = 5;
@@ -25,5 +26,15 @@ public class GeneralService {
         }
         int offset = (page - 1) * limit;
         return new RowBounds(offset, limit);
+    }
+
+    protected long parseId(String entityId, Locale locale) {
+        long id;
+        try {
+            id = Long.parseLong(entityId);
+        } catch (NumberFormatException e) {
+            throw new GeneralException(ExceptionType.INCORRECT_DATA_FORMAT, locale);
+        }
+        return id;
     }
 }
