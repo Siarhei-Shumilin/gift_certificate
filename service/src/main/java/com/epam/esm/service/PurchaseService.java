@@ -25,52 +25,45 @@ public class PurchaseService extends GeneralService {
     private final UserMapper userMapper;
     private final CertificateMapper certificateMapper;
     private final PurchaseMapper purchaseMapper;
-    private final Purchase purchase;
 
-    public PurchaseService(UserMapper userMapper, CertificateMapper certificateMapper, PurchaseMapper purchaseMapper, Purchase purchase) {
+    public PurchaseService(UserMapper userMapper, CertificateMapper certificateMapper, PurchaseMapper purchaseMapper) {
         this.userMapper = userMapper;
         this.certificateMapper = certificateMapper;
         this.purchaseMapper = purchaseMapper;
-        this.purchase = purchase;
     }
 
     public long save(GiftCertificate giftCertificate, Locale locale) {
-        if (certificateMapper.existById(giftCertificate.getId())) {
-            User user = getCurrentUser();
-            if(user!=null) {
-                purchase.setUserId(user.getId());
-                purchase.setCertificateId(giftCertificate.getId());
-                purchase.setDateTime(LocalDateTime.now());
-                purchaseMapper.save(purchase);
-            }
+        User user = getCurrentUser();
+        long purchaseId;
+        if (certificateMapper.existById(giftCertificate.getId()) && user != null) {
+            Purchase purchase = new Purchase();
+            purchase.setUserId(user.getId());
+            purchase.setCertificateId(giftCertificate.getId());
+            purchase.setDateTime(LocalDateTime.now());
+            purchaseMapper.save(purchase);
+            purchaseId = purchase.getId();
         } else {
             throw new GeneralException(ExceptionType.CERTIFICATE_NOT_EXISTS, locale);
         }
-        return purchase.getId();
+        return purchaseId;
     }
 
     public List<Purchase> findUsersPurchases(String userId, Map<String, Object> parameters, Locale locale) {
-        long id;
-            try {
-                id = Long.parseLong(userId);
-            } catch (NumberFormatException e) {
-                throw new GeneralException(ExceptionType.INCORRECT_DATA_FORMAT, locale);
-            }
-
+        long id = parseId(userId, locale);
         return purchaseMapper.findUsersPurchases(id, getRowBounds(parameters, locale));
     }
 
     public List<Purchase> findCurrentUserPurchases(Map<String, Object> parameters, Locale locale) {
         User user = getCurrentUser();
         List<Purchase> usersPurchases = new ArrayList<>();
-        if (user!=null){
+        if (user != null) {
             long id = user.getId();
             usersPurchases = purchaseMapper.findUsersPurchases(id, getRowBounds(parameters, locale));
         }
         return usersPurchases;
     }
 
-    private User getCurrentUser() {
+    public User getCurrentUser() {
         User user = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {

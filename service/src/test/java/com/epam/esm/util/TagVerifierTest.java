@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
@@ -25,5 +26,15 @@ public class TagVerifierTest {
         GiftCertificate giftCertificate = new GiftCertificate();
         giftCertificate.setTagList(Arrays.asList(new Tag()));
         tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, new Locale("en"));
+    }
+
+    @Test
+    public void testCheckAndSaveTag() {
+        GiftCertificate giftCertificate = new GiftCertificate();
+        Tag tag = new Tag();
+        tag.setName("name");
+        giftCertificate.setTagList(Arrays.asList(tag));
+        tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, new Locale("en"));
+        Mockito.verify(tagMapper, Mockito.times(1)).existByName(tag.getName());
     }
 }
