@@ -49,11 +49,12 @@ public class TagServiceTest {
     public void testFindByParameterShouldReturnTrue() {
         Tag tag = new Tag();
         tag.setName("name");
-        tag.setId(1);
+        tag.setId(1L);
         List<Tag> tags = Arrays.asList(tag);
-        Mockito.when(tagMapper.findIdTag(tag.getName())).thenReturn(1L);
-        long actualId = tagService.findIdTag(tag.getName());
-        Assert.assertEquals(tag.getId(), actualId);
+        List<Long> longs = Arrays.asList(1L);
+        Mockito.when(tagMapper.findIdTag(tags)).thenReturn(longs);
+        List<Long> actualId = tagService.findIdTag(tags);
+        Assert.assertEquals((Long) tag.getId(), actualId.get(0));
     }
 
     @Test

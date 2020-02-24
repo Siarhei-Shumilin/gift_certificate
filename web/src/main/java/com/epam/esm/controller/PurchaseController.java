@@ -5,6 +5,7 @@ import com.epam.esm.entity.Purchase;
 import com.epam.esm.service.PurchaseService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -19,13 +20,20 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public long save(@RequestBody GiftCertificate giftCertificate, Locale locale) {
-        return purchaseService.save(giftCertificate, locale);
+    public Map<String, String> save(@RequestBody GiftCertificate giftCertificate, Locale locale) {
+        Map<String, String> map = new HashMap<>();
+        map.put("Message" , "Purchase id = " + purchaseService.save(giftCertificate, locale));
+        return map;
     }
 
     @GetMapping("/{userId}")
-    public List<Purchase> findUsersPurchases(@PathVariable String userId, @RequestParam(required = false) Map<String, Object> parameters, Locale locale){
-        return purchaseService.findUsersPurchases(userId, parameters, locale);
+    public Map<String, Object> findUsersPurchases(@PathVariable String userId, @RequestParam(required = false) Map<String, Object> parameters, Locale locale){
+        Map<String, Object> map = new HashMap<>();
+        List<Purchase> usersPurchases = purchaseService.findUsersPurchases(userId, parameters, locale);
+        for (Purchase purchase : usersPurchases) {
+            map.put("Purchase id = " + purchase.getId(),"date = " + purchase.getDateTime() + ", " + "price = " + purchase.getPrice());
+        }
+        return map;
     }
 
     @GetMapping

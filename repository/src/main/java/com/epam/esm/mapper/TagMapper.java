@@ -17,11 +17,14 @@ public interface TagMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     long save(Tag tag);
 
+    @Insert({"<script>",
+            "insert ignore into  tags (name) values ",
+            "<foreach collection='list' item='tag' index='index' open='(' separator = '),(' close=')' >#{tag.name}</foreach>",
+            "</script>"})
+    void saveListTags(@Param("list") List<Tag> tag);
+
     @Delete("DELETE FROM tags WHERE id = #{id}")
     int delete(long id);
-
-    @Select("SELECT EXISTS(SELECT name FROM tags WHERE name = #{name})")
-    Boolean existByName(String name);
 
     @Select("SELECT tags.id, tags.name FROM tags INNER JOIN connecting ON tags.id=connecting.tag_id"
             + " WHERE connecting.certificate_id = " +
@@ -29,6 +32,9 @@ public interface TagMapper {
             "(SELECT user_id FROM purchases where price =(select MAX(price) from purchases limit 1) ORDER BY price DESC LIMIT 1) GROUP BY certificate_id ORDER BY COUNT(certificate_id) DESC LIMIT 1) GROUP BY tag_id ORDER BY COUNT(tag_id) DESC LIMIT 1")
     Tag findMostPopularTag();
 
-    @Select("SELECT id FROM tags where name = #{name}")
-    long findIdTag(String name);
+   @Select({"<script>",
+           "select id from tags where name in ",
+           "<foreach collection='list' item='tag' index='index' open='(' separator = ',' close=')' >#{tag.name}</foreach>",
+           "</script>"})
+    List<Long> findIdTag(@Param("list") List<Tag> tagList);
 }

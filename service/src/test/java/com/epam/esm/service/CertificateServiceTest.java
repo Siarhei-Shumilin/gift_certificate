@@ -3,10 +3,10 @@ package com.epam.esm.service;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.CertificateMapper;
+import com.epam.esm.mapper.TagMapper;
 import com.epam.esm.util.CertificateValidator;
 import com.epam.esm.util.TagVerifier;
 import org.apache.ibatis.session.RowBounds;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -29,7 +29,7 @@ public class CertificateServiceTest {
     @Mock
     private TagService tagService;
     @Mock
-    private SqlSessionFactory sqlSessionFactory;
+    private TagMapper tagMapper;
     @Spy
     @InjectMocks
     private CertificateService service;

@@ -26,10 +26,7 @@ public class TagVerifier {
             if (name == null || name.trim().isEmpty()) {
                 throw new GeneralException(ExceptionType.TAG_DATA_INCORRECT, locale);
             }
-            Boolean existByName = tagMapper.existByName(tag.getName());
-            if (!existByName) {
-                tagMapper.save(tag);
-            }
         }
+        tagMapper.saveListTags(tagList);
     }
 }

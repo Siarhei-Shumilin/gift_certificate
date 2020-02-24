@@ -35,6 +35,6 @@ public class TagVerifierTest {
         tag.setName("name");
         giftCertificate.setTagList(Arrays.asList(tag));
         tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, new Locale("en"));
-        Mockito.verify(tagMapper, Mockito.times(1)).existByName(tag.getName());
+        Mockito.verify(tagMapper, Mockito.times(1)).saveListTags(giftCertificate.getTagList());
     }
 }

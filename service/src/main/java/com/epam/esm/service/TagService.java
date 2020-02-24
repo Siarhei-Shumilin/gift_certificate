@@ -40,7 +40,7 @@ public class TagService extends GeneralService {
         return mapperTag.findMostPopularTag();
     }
 
-    public long findIdTag(String tagName){
-        return mapperTag.findIdTag(tagName);
+    public List<Long> findIdTag(List<Tag> tagList){
+        return mapperTag.findIdTag(tagList);
     }
 }

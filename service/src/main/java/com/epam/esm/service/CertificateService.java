@@ -9,9 +9,6 @@ import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.CertificateTagConnectingMapper;
 import com.epam.esm.util.CertificateValidator;
 import com.epam.esm.util.TagVerifier;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,16 +25,14 @@ public class CertificateService extends GeneralService {
     private final TagVerifier tagVerifier;
     private final CertificateMapper certificateMapper;
     private final CertificateTagConnectingMapper certificateTagConnectingMapper;
-    private final SqlSessionFactory sqlSessionFactory;
 
     public CertificateService(TagService tagService, CertificateValidator validator, TagVerifier tagVerifier,
-                              CertificateMapper certificateMapper, CertificateTagConnectingMapper certificateTagConnectingMapperBatis, SqlSessionFactory sqlSessionFactory) {
+                              CertificateMapper certificateMapper, CertificateTagConnectingMapper certificateTagConnectingMapperBatis) {
         this.tagService = tagService;
         this.validator = validator;
         this.tagVerifier = tagVerifier;
         this.certificateMapper = certificateMapper;
         this.certificateTagConnectingMapper = certificateTagConnectingMapperBatis;
-        this.sqlSessionFactory = sqlSessionFactory;
     }
 
     public List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, Locale locale) {
@@ -106,15 +101,11 @@ public class CertificateService extends GeneralService {
 
     private void saveConnect(GiftCertificate giftCertificate) {
         List<Tag> tagList = giftCertificate.getTagList();
+        List<Long> idTags = tagService.findIdTag(tagList);
         List<CertificateTagConnecting> list = new ArrayList<>();
-        for (Tag tag : tagList) {
-            long tagId = tagService.findIdTag(tag.getName());
+        for (long tagId : idTags) {
             list.add(new CertificateTagConnecting(giftCertificate.getId(), tagId));
         }
-        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
-        for (CertificateTagConnecting connecting : list) {
-            sqlSession.insert("com.epam.esm.mapper.CertificateTagConnectingMapper.save", connecting);
-        }
-        sqlSession.flushStatements();
+        certificateTagConnectingMapper.save(list);
     }
 }
