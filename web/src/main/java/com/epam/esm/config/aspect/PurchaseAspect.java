@@ -15,23 +15,23 @@ import java.util.UUID;
 @Aspect
 @Component
 public class PurchaseAspect {
-    private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Before("com.epam.esm.config.aspect.PointCutConfig.findUsersPurchases()")
     public void logBeforeFindUsersPurchases(JoinPoint joinPoint) {
         ThreadContext.put("correlationId", UUID.randomUUID().toString());
-        LOGGER.info("Start " + joinPoint.getSignature());
+        logger.info("Start " + joinPoint.getSignature());
     }
 
     @AfterReturning("com.epam.esm.config.aspect.PointCutConfig.findUsersPurchases()")
     public void logAfterFindUsersPurchases(JoinPoint joinPoint) {
         ThreadContext.remove("correlationId");
-        LOGGER.info("Ended " + joinPoint.getSignature() + " successfully");
+        logger.info("Ended " + joinPoint.getSignature() + " successfully");
     }
 
     @AfterThrowing("com.epam.esm.config.aspect.PointCutConfig.findUsersPurchases()")
     public void logAfterFindUsersPurchasesThrowException(JoinPoint joinPoint) {
         ThreadContext.remove("correlationId");
-        LOGGER.info("The " + joinPoint.getSignature() + " failed");
+        logger.info("The " + joinPoint.getSignature() + " failed");
     }
 }

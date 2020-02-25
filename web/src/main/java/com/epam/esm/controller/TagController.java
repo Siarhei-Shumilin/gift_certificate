@@ -5,6 +5,7 @@ import com.epam.esm.service.TagService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -27,13 +28,17 @@ public class TagController {
     }
 
     @PostMapping
-    public long save(@RequestBody Tag tag, Locale locale) {
-        return tagService.save(tag, locale);
+    public Map<String, Long> save(@RequestBody Tag tag, Locale locale) {
+        Map<String, Long> map = new HashMap<>();
+        map.put("id" , tagService.save(tag, locale));
+        return map;
     }
 
     @DeleteMapping("/{id}")
-    public int delete(@PathVariable String id, Locale locale) {
-        return tagService.delete(id, locale);
+    public Map<String, String> delete(@PathVariable String id, Locale locale) {
+        Map<String, String> map = new HashMap<>();
+        map.put("Message" , "Deleted " + tagService.delete(id, locale) + " certificate");
+        return map;
     }
 
     @GetMapping("/popular")
