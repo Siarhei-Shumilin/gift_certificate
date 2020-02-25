@@ -22,7 +22,7 @@ public class GeneralServiceTest {
     public void testGetRowBoundsShouldReturnTrueWhenLimitThree() {
         Map<String, Object> map = new HashMap<>();
         map.put("page", "1");
-        map.put("limit", "3");
+        map.put("pageSize", "3");
         RowBounds rowBounds = generalService.getRowBounds(map, new Locale("en"));
         int actual = rowBounds.getLimit();
         Assert.assertEquals(3, actual);
@@ -32,7 +32,7 @@ public class GeneralServiceTest {
     public void testGetRowBoundsShouldThrowException() {
         Map<String, Object> map = new HashMap<>();
         map.put("page", "1sd");
-        map.put("limit", "3ds");
+        map.put("pageSize", "3ds");
         generalService.getRowBounds(map, new Locale("en"));
     }
 
