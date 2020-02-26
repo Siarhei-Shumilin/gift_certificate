@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 public class SearchUtil {
+     private static final String DESCRIPTION = "description";
 
     public String findByName(Map<String, Object> parameters, List<String> tagList, SQL sql) {
         String query = "certificates.name like '" + "%" + parameters.get("name") + "%' ";
-        if (parameters.get("description") != null) {
-            query = query + " and certificates.description like '" + "%" + parameters.get("description") + "%'";
+        if (parameters.get(DESCRIPTION) != null) {
+            query = query + " and certificates.description like '" + "%" + parameters.get(DESCRIPTION) + "%'";
         }
         if (tagList != null) {
             query = query + " and " + findByTag(tagList, sql);
@@ -18,7 +19,7 @@ public class SearchUtil {
     }
 
     public String findDescription(Map<String, Object> parameters, List<String> tagList, SQL sql) {
-        String query = "certificates.description like '" + "%" + parameters.get("description") + "%'";
+        String query = "certificates.description like '" + "%" + parameters.get(DESCRIPTION) + "%'";
         if (tagList != null) {
             query = query + " and " + findByTag(tagList, sql);
         }

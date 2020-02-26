@@ -12,11 +12,12 @@ import java.util.List;
 public interface CertificateTagConnectingMapper {
 
     @Insert({"<script>",
-            "insert into  connecting (certificate_id, tag_id) values ",
-            "<foreach collection='list' item='connecting' index='index' open='(' separator = '),(' close=')' >#{connecting.certificateId},#{connecting.tagId}</foreach>",
+            "insert into connecting (certificate_id, tag_id) values ",
+            "<foreach collection='list' item='connecting' index='index' open='(' separator = '),(' close=')' >" +
+                    "#{connecting.certificateId},#{connecting.tagId}</foreach>",
             "</script>"})
     int save(@Param("list") List<CertificateTagConnecting> certificateTagConnecting);
 
     @Delete("DELETE FROM connecting WHERE certificate_id = #{certificateId}")
-    void deleteConnect(CertificateTagConnecting certificateTagConnecting);
+    void deleteConnect(long certificateId);
 }

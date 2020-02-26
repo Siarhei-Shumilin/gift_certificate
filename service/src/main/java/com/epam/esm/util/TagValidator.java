@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Locale;
 
 @Component
-public class TagVerifier {
+public class TagValidator {
 
     private final TagMapper tagMapper;
 
-    public TagVerifier(TagMapper tagMapper) {
+    public TagValidator(TagMapper tagMapper) {
         this.tagMapper = tagMapper;
     }
 

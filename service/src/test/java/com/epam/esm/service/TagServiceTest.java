@@ -4,7 +4,6 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.TagMapper;
 import org.apache.ibatis.session.RowBounds;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -51,10 +50,8 @@ public class TagServiceTest {
         tag.setName("name");
         tag.setId(1L);
         List<Tag> tags = Arrays.asList(tag);
-        List<Long> longs = Arrays.asList(1L);
-        Mockito.when(tagMapper.findIdTag(tags)).thenReturn(longs);
-        List<Long> actualId = tagService.findIdTag(tags);
-        Assert.assertEquals((Long) tag.getId(), actualId.get(0));
+        tagService.findTagByName(tags);
+        Mockito.verify(tagMapper, Mockito.times(1)).findTagByName(tags);
     }
 
     @Test
@@ -64,7 +61,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void findByParameters() {
+    public void testFindByParameters() {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("tagName", "name");
         Locale locale = new Locale("en");

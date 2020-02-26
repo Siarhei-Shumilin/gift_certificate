@@ -10,7 +10,8 @@ public enum ExceptionType {
     USER_EXISTS_EXCEPTION(ErrorMessageConstants.USER_EXISTS, 400, "40004"),
     FAILED_AUTHENTICATION(ErrorMessageConstants.FAILED_AUTHENTICATION, 403, "40301"),
     INCORRECT_DATA_FORMAT(ErrorMessageConstants.INCORRECT_DATA_FORMAT, 400, "40005"),
-    UNEXPECTED_EXCEPTION(ErrorMessageConstants.UNEXPECTED_EXCEPTION, 500, "50005");
+    UNEXPECTED_EXCEPTION(ErrorMessageConstants.UNEXPECTED_EXCEPTION, 500, "50005"),
+    INCORRECT_USER_DATA(ErrorMessageConstants.INCORRECT_USER_DATA, 400, "40006");
 
     private final String message;
     private final int statusCode;

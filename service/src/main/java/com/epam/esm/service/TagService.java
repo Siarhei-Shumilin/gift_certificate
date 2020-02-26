@@ -36,11 +36,16 @@ public class TagService extends GeneralService {
         return mapperTag.findByParameters(tagName, getRowBounds(parameters, locale));
     }
 
+    public Tag findById(String id, Locale locale){
+        long tagId = parseId(id, locale);
+        return mapperTag.findById(tagId);
+    }
+
     public Tag findMostPopularTag(){
         return mapperTag.findMostPopularTag();
     }
 
-    public List<Long> findIdTag(List<Tag> tagList){
-        return mapperTag.findIdTag(tagList);
+    public List<Tag> findTagByName(List<Tag> listTagWithoutId){
+        return mapperTag.findTagByName(listTagWithoutId);
     }
 }

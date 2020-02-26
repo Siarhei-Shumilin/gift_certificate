@@ -13,6 +13,9 @@ public interface TagMapper {
     @SelectProvider(type = TagSqlUtil.class, method = "getTagByParameter")
     List<Tag> findByParameters(String name, RowBounds rowBounds);
 
+    @Select("SELECT id, name FROM tags WHERE id = #{tagId}")
+    Tag findById(long tagId);
+
     @Insert("INSERT IGNORE INTO tags (name) VALUES(#{name})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     long save(Tag tag);
@@ -32,9 +35,9 @@ public interface TagMapper {
             "(SELECT user_id FROM purchases where price =(select MAX(price) from purchases limit 1) ORDER BY price DESC LIMIT 1) GROUP BY certificate_id ORDER BY COUNT(certificate_id) DESC LIMIT 1) GROUP BY tag_id ORDER BY COUNT(tag_id) DESC LIMIT 1")
     Tag findMostPopularTag();
 
-   @Select({"<script>",
-           "select id from tags where name in ",
-           "<foreach collection='list' item='tag' index='index' open='(' separator = ',' close=')' >#{tag.name}</foreach>",
-           "</script>"})
-    List<Long> findIdTag(@Param("list") List<Tag> tagList);
+    @Select({"<script>",
+            "select id, name from tags where name in ",
+            "<foreach collection='list' item='tag' index='index' open='(' separator = ',' close=')' >#{tag.name}</foreach>",
+            "</script>"})
+    List<Tag> findTagByName(@Param("list") List<Tag> listTagWithoutId);
 }

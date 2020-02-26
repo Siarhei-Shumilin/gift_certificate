@@ -15,17 +15,17 @@ import java.util.Arrays;
 import java.util.Locale;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TagVerifierTest {
+public class TagValidatorTest {
     @Mock
     private TagMapper tagMapper;
     @InjectMocks
-    private TagVerifier tagVerifier;
+    private TagValidator tagValidator;
 
     @Test(expected = GeneralException.class)
     public void testCheckAndSaveTagIfNotExistShouldThrowException() {
         GiftCertificate giftCertificate = new GiftCertificate();
         giftCertificate.setTagList(Arrays.asList(new Tag()));
-        tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, new Locale("en"));
+        tagValidator.checkAndSaveTagIfNotExist(giftCertificate, new Locale("en"));
     }
 
     @Test
@@ -34,7 +34,7 @@ public class TagVerifierTest {
         Tag tag = new Tag();
         tag.setName("name");
         giftCertificate.setTagList(Arrays.asList(tag));
-        tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, new Locale("en"));
+        tagValidator.checkAndSaveTagIfNotExist(giftCertificate, new Locale("en"));
         Mockito.verify(tagMapper, Mockito.times(1)).saveListTags(giftCertificate.getTagList());
     }
 }

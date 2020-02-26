@@ -8,4 +8,8 @@ public class ErrorMessageConstants {
     public static final String UNEXPECTED_EXCEPTION = "Something went wrong";
     public static final String CERTIFICATE_NOT_EXISTS = "certificate.not.exists";
     public static final String INCORRECT_DATA_FORMAT = "incorrect.data.format";
+    public static final String INCORRECT_USER_DATA = "incorrect.user.data";
+
+    private ErrorMessageConstants() {
+    }
 }

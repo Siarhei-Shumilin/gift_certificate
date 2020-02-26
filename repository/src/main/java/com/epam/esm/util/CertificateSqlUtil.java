@@ -8,8 +8,8 @@ import java.util.Map;
 
 @Component
 public class CertificateSqlUtil {
-    private static final String SELECT_DATA = "certificates.id, certificates.name, certificates.description, "
-            + "certificates.price, certificates.create_date, certificates.last_update_date, certificates.duration";
+    private static final String SELECT_DATA = "certificates.id, certificates.name, certificates.description, certificates.price, " +
+            "certificates.create_date, certificates.last_update_date, certificates.duration";
     private static final String TABLE = "certificates";
     private static final String INNER_JOIN_CERTIFICATE = "connecting ON connecting.certificate_id=certificates.id";
     private static final String INNER_JOIN_TAG = "tags ON connecting.tag_id=tags.id";

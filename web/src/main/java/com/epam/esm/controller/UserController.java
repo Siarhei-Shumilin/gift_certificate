@@ -1,24 +1,30 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.config.util.JwtUtil;
 import com.epam.esm.config.entity.AuthenticationResponse;
+import com.epam.esm.config.util.JwtUtil;
 import com.epam.esm.entity.User;
+import com.epam.esm.exception.ExceptionType;
+import com.epam.esm.exception.GeneralException;
 import com.epam.esm.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Locale;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
+    @Value("${jwt.expiration}")
+    private String expiration;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtTokenUtil;
     private final UserService userService;
@@ -38,15 +44,16 @@ public class UserController {
     }
 
     @PostMapping(value = "/authenticate")
-    public ResponseEntity createAuthenticationToken(@RequestBody User user) throws Exception {
+    public ResponseEntity createAuthenticationToken(@RequestBody User user, Locale locale) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
+            throw new GeneralException(ExceptionType.INCORRECT_USER_DATA, locale);
         }
+        expiration = (Integer.parseInt(expiration) / 1000 / 60 / 60) + " hours";
         final UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, expiration));
     }
 }

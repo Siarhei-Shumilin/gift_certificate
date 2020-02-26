@@ -5,7 +5,7 @@ import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.TagMapper;
 import com.epam.esm.util.CertificateValidator;
-import com.epam.esm.util.TagVerifier;
+import com.epam.esm.util.TagValidator;
 import org.apache.ibatis.session.RowBounds;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ public class CertificateServiceTest {
     @Mock
     private CertificateValidator validator;
     @Mock
-    private TagVerifier tagVerifier;
+    private TagValidator tagValidator;
     @Mock
     private TagService tagService;
     @Mock
@@ -73,5 +73,10 @@ public class CertificateServiceTest {
         Mockito.when(service.getRowBounds(parameters, locale)).thenReturn(rowBounds);
         service.findByParameters(parameters, tagList, locale);
         Mockito.verify(mapper, Mockito.times(1)).findByParameters(parameters, tagList, rowBounds);
+    }
+
+    @Test(expected = GeneralException.class)
+    public void testFindByIdShouldThrowException() {
+        service.findById("1fg", new Locale("en"));
     }
 }

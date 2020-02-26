@@ -3,16 +3,13 @@ package com.epam.esm.exception;
 import java.util.Locale;
 
 public class GeneralException extends RuntimeException {
-   private ExceptionType error;
-   private Locale locale;
+   private final ExceptionType error;
+   private final Locale locale;
 
     public GeneralException(ExceptionType error, Locale locale) {
+        super();
         this.error = error;
         this.locale = locale;
-    }
-
-    public GeneralException(String message) {
-        super(message);
     }
 
     public ExceptionType getError() {

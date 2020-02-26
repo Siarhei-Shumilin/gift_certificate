@@ -16,58 +16,63 @@ import java.util.UUID;
 @Component
 public class GeneralCertificateTagAspect {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String CORRELATION_ID = "correlationId";
+    private static final String BEFORE = "Start {}";
+    private static final String AFTER = "Ended {} successfully";
+    private static final String FAILED = "The {} failed";
 
     @Before("com.epam.esm.config.aspect.PointCutConfig.findByParameters()")
     public void logBeforeFind(JoinPoint joinPoint) {
-        ThreadContext.put("correlationId", UUID.randomUUID().toString());
-        logger.info("Start " + joinPoint.getSignature());
+        before(BEFORE, joinPoint);
     }
 
     @AfterReturning("com.epam.esm.config.aspect.PointCutConfig.findByParameters()")
     public void logAfterFind(JoinPoint joinPoint) {
-        ThreadContext.remove("correlationId");
-        logger.info("Ended " + joinPoint.getSignature() + " successfully");
+        after(AFTER, joinPoint);
     }
 
     @AfterThrowing("com.epam.esm.config.aspect.PointCutConfig.findByParameters()")
     public void logAfterFindThrowException(JoinPoint joinPoint) {
-        ThreadContext.remove("correlationId");
-        logger.info("The " + joinPoint.getSignature() + " failed");
+        after(FAILED, joinPoint);
     }
 
     @Before("com.epam.esm.config.aspect.PointCutConfig.delete()")
     public void logBeforeDelete(JoinPoint joinPoint) {
-        ThreadContext.put("correlationId", UUID.randomUUID().toString());
-        logger.info("Start " + joinPoint.getSignature() + " successfully");
+        before(BEFORE, joinPoint);
     }
 
     @AfterReturning("com.epam.esm.config.aspect.PointCutConfig.delete()")
     public void logAfterDelete(JoinPoint joinPoint) {
-        ThreadContext.remove("correlationId");
-        logger.info("Ended " + joinPoint.getSignature() + " successfully");
+        after(AFTER, joinPoint);
     }
 
     @AfterThrowing("com.epam.esm.config.aspect.PointCutConfig.delete()")
     public void logAfterDeleteThrowException(JoinPoint joinPoint) {
-        ThreadContext.remove("correlationId");
-        logger.info("The " + joinPoint.getSignature() + " failed");
+        after(FAILED, joinPoint);
     }
 
     @Before("com.epam.esm.config.aspect.PointCutConfig.save()")
     public void logBeforeSave(JoinPoint joinPoint) {
-        ThreadContext.put("correlationId", UUID.randomUUID().toString());
-        logger.info("Start " + joinPoint.getSignature());
+        before(BEFORE, joinPoint);
     }
 
     @AfterReturning("com.epam.esm.config.aspect.PointCutConfig.save()")
     public void logAfterSave(JoinPoint joinPoint) {
-        ThreadContext.remove("correlationId");
-        logger.info("Ended " + joinPoint.getSignature() + " successfully");
+        after(AFTER, joinPoint);
     }
 
     @AfterThrowing("com.epam.esm.config.aspect.PointCutConfig.save()")
     public void logAfterSaveThrowException(JoinPoint joinPoint) {
-        ThreadContext.remove("correlationId");
-        logger.info("The " + joinPoint.getSignature() + " failed");
+        after(FAILED, joinPoint);
+    }
+
+    private void before(String message, JoinPoint joinPoint){
+        ThreadContext.put(CORRELATION_ID, UUID.randomUUID().toString());
+        logger.info(message, joinPoint.getSignature());
+    }
+
+    private void after(String message, JoinPoint joinPoint){
+        ThreadContext.remove(CORRELATION_ID);
+        logger.info(message, joinPoint.getSignature());
     }
 }

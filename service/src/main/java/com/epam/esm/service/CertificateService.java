@@ -8,7 +8,7 @@ import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.CertificateMapper;
 import com.epam.esm.mapper.CertificateTagConnectingMapper;
 import com.epam.esm.util.CertificateValidator;
-import com.epam.esm.util.TagVerifier;
+import com.epam.esm.util.TagValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,15 +22,15 @@ import java.util.Map;
 public class CertificateService extends GeneralService {
     private final TagService tagService;
     private final CertificateValidator validator;
-    private final TagVerifier tagVerifier;
+    private final TagValidator tagValidator;
     private final CertificateMapper certificateMapper;
     private final CertificateTagConnectingMapper certificateTagConnectingMapper;
 
-    public CertificateService(TagService tagService, CertificateValidator validator, TagVerifier tagVerifier,
+    public CertificateService(TagService tagService, CertificateValidator validator, TagValidator tagValidator,
                               CertificateMapper certificateMapper, CertificateTagConnectingMapper certificateTagConnectingMapperBatis) {
         this.tagService = tagService;
         this.validator = validator;
-        this.tagVerifier = tagVerifier;
+        this.tagValidator = tagValidator;
         this.certificateMapper = certificateMapper;
         this.certificateTagConnectingMapper = certificateTagConnectingMapperBatis;
     }
@@ -38,12 +38,18 @@ public class CertificateService extends GeneralService {
     public List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, Locale locale) {
         List<GiftCertificate> certificateList = certificateMapper.findByParameters(parameters, tagList, getRowBounds(parameters, locale));
         for (GiftCertificate giftCertificate : certificateList) {
-            CertificateTagConnecting certificateTagConnecting = new CertificateTagConnecting();
-            certificateTagConnecting.setCertificateId(giftCertificate.getId());
-            List<Tag> certificateTags = certificateMapper.findCertificateTags(certificateTagConnecting);
+            List<Tag> certificateTags = certificateMapper.findCertificateTags(giftCertificate.getId());
             giftCertificate.setTagList(certificateTags);
         }
         return certificateList;
+    }
+
+    public GiftCertificate findById(String id, Locale locale) {
+        long certificateId = parseId(id, locale);
+        GiftCertificate giftCertificate = certificateMapper.findById(certificateId);
+        List<Tag> certificateTags = certificateMapper.findCertificateTags(certificateId);
+        giftCertificate.setTagList(certificateTags);
+        return giftCertificate;
     }
 
     @Transactional
@@ -51,7 +57,7 @@ public class CertificateService extends GeneralService {
         giftCertificate.setCreateDate(LocalDateTime.now());
         giftCertificate.setLastUpdateDate(LocalDateTime.now());
         if (validator.validate(giftCertificate)) {
-            tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, locale);
+            tagValidator.checkAndSaveTagIfNotExist(giftCertificate, locale);
             certificateMapper.save(giftCertificate);
             saveConnect(giftCertificate);
         } else {
@@ -70,13 +76,11 @@ public class CertificateService extends GeneralService {
         long certificateId = parseId(id, locale);
         int update;
         if (validator.validate(giftCertificate)) {
-            tagVerifier.checkAndSaveTagIfNotExist(giftCertificate, locale);
+            tagValidator.checkAndSaveTagIfNotExist(giftCertificate, locale);
             giftCertificate.setLastUpdateDate(LocalDateTime.now());
             giftCertificate.setId(certificateId);
             update = certificateMapper.update(giftCertificate);
-            CertificateTagConnecting certificateTagConnecting = new CertificateTagConnecting();
-            certificateTagConnecting.setCertificateId(certificateId);
-            certificateTagConnectingMapper.deleteConnect(certificateTagConnecting);
+            certificateTagConnectingMapper.deleteConnect(certificateId);
             saveConnect(giftCertificate);
         } else {
             throw new GeneralException(ExceptionType.CERTIFICATE_DATA_INCORRECT, locale);
@@ -100,11 +104,11 @@ public class CertificateService extends GeneralService {
     }
 
     private void saveConnect(GiftCertificate giftCertificate) {
-        List<Tag> tagList = giftCertificate.getTagList();
-        List<Long> idTags = tagService.findIdTag(tagList);
+        List<Tag> listTagWithoutId = giftCertificate.getTagList();
+        List<Tag> tagList = tagService.findTagByName(listTagWithoutId);
         List<CertificateTagConnecting> list = new ArrayList<>();
-        for (long tagId : idTags) {
-            list.add(new CertificateTagConnecting(giftCertificate.getId(), tagId));
+        for (Tag tag : tagList) {
+            list.add(new CertificateTagConnecting(giftCertificate.getId(), tag.getId()));
         }
         certificateTagConnectingMapper.save(list);
     }
