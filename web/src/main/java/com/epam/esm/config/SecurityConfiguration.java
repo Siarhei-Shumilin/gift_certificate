@@ -1,6 +1,7 @@
 package com.epam.esm.config;
 
 import com.epam.esm.config.filter.JwtRequestFilter;
+import com.epam.esm.controller.handler.RestAccessDeniedHandler;
 import com.epam.esm.controller.handler.RestAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, certificatesPath, "/certificates/*").permitAll()
                 .antMatchers(HttpMethod.POST, certificatesPath).hasRole(roleAdmin)
-                .antMatchers(HttpMethod.PUT, certificatesPath).hasRole(roleAdmin)
+                .antMatchers(HttpMethod.PUT, "/certificates/*").hasRole(roleAdmin)
                 .antMatchers(HttpMethod.DELETE, "/certificates/*").hasRole(roleAdmin)
 
                 .antMatchers(HttpMethod.POST, tagsPath).hasRole(roleAdmin)
@@ -62,12 +63,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, purchasePath).authenticated()
                 .antMatchers(HttpMethod.GET, purchasePath).authenticated()
                 .antMatchers(HttpMethod.GET, "/purchase/*").hasRole(roleAdmin)
-
-                .antMatchers("/users/authenticate").anonymous()
-                .antMatchers("/registration").anonymous()
+                .antMatchers("/users/*").anonymous()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .and().exceptionHandling().accessDeniedHandler(new RestAccessDeniedHandler())
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

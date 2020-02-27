@@ -1,11 +1,12 @@
 package com.epam.esm.util;
 
 import org.apache.ibatis.jdbc.SQL;
+
 import java.util.List;
 import java.util.Map;
 
 public class SearchUtil {
-     private static final String DESCRIPTION = "description";
+    private static final String DESCRIPTION = "description";
 
     public String findByName(Map<String, Object> parameters, List<String> tagList, SQL sql) {
         String query = "certificates.name like '" + "%" + parameters.get("name") + "%' ";
@@ -42,18 +43,26 @@ public class SearchUtil {
     }
 
     public String sort(Map<String, Object> parameters) {
-        String result = "";
-        if (parameters.get("sort") != null) {
-            String sort = (String) parameters.get("sort");
-            if (sort.equalsIgnoreCase("date")) {
-                result = "certificates.last_update_date ";
-            } else if (sort.equalsIgnoreCase("name")) {
-                result = "certificates.name ";
-            }
-            String typeSort = (String) parameters.get("typeSort");
-            if (typeSort != null && typeSort.equalsIgnoreCase("DESC")) {
-                result = result + typeSort;
-            }
+        String result = "certificates.id ";
+        String parameterSort = (String) parameters.get("sort");
+        if (parameterSort != null && !parameterSort.isEmpty()) {
+            result = sortByParameter(parameterSort);
+        }
+        String typeSort = (String) parameters.get("typeSort");
+        if (typeSort != null && typeSort.equalsIgnoreCase("DESC")) {
+            result = result + typeSort;
+        }
+        return result;
+    }
+
+    private String sortByParameter(String parameterSort) {
+        String result;
+        if (parameterSort.equalsIgnoreCase("date")) {
+            result = "certificates.last_update_date ";
+        } else if (parameterSort.equalsIgnoreCase("name")) {
+            result = "certificates.name ";
+        } else {
+            result = "certificates.id ";
         }
         return result;
     }

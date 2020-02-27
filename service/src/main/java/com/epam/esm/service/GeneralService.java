@@ -17,11 +17,11 @@ public class GeneralService {
         String numberPage = (String) parameters.get("page");
         String numberCertificates = (String) parameters.get("pageSize");
         try {
-            if (numberPage != null) {
+            if (numberPage != null && !numberPage.isEmpty()) {
                 int parsePage = Integer.parseInt(numberPage);
                 page = validatePage(parsePage);
             }
-            if (numberCertificates != null) {
+            if (numberCertificates != null && !numberCertificates.isEmpty()) {
                 int parseNumberCertificates = Integer.parseInt(numberCertificates);
                 pageSize = validatePageSize(parseNumberCertificates);
             }

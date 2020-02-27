@@ -28,7 +28,7 @@ public class CertificateSqlUtil {
         } else if (tagList != null && !tagList.isEmpty()) {
             sql.WHERE(searchUtil.findByTag(tagList, sql));
         }
-        String sort = sort(parameters);
+        String sort = searchUtil.sort(parameters);
         sql.ORDER_BY(sort);
         return sql.toString();
     }
@@ -47,14 +47,5 @@ public class CertificateSqlUtil {
         sql.SET("price=#{price}, last_update_date=#{lastUpdateDate}");
         sql.WHERE("id = #{id}");
         return sql.toString();
-    }
-
-    private String sort(Map<String, Object> parameters) {
-        SearchUtil searchUtil = new SearchUtil();
-        String sort = "certificates.id";
-        if (parameters.get("sort") != null) {
-            sort = searchUtil.sort(parameters);
-        }
-        return sort;
     }
 }
