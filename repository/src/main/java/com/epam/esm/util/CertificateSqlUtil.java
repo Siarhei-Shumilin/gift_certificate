@@ -25,7 +25,7 @@ public class CertificateSqlUtil {
             sql.WHERE(searchUtil.findByName(parameters, tagList, sql));
         } else if (parameters.get("description") != null) {
             sql.WHERE(searchUtil.findDescription(parameters, tagList, sql));
-        } else if (tagList != null) {
+        } else if (tagList != null && !tagList.isEmpty()) {
             sql.WHERE(searchUtil.findByTag(tagList, sql));
         }
         String sort = sort(parameters);
