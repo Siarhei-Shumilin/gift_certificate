@@ -47,8 +47,10 @@ public class CertificateService extends GeneralService {
     public GiftCertificate findById(String id, Locale locale) {
         long certificateId = parseId(id, locale);
         GiftCertificate giftCertificate = certificateMapper.findById(certificateId);
-        List<Tag> certificateTags = certificateMapper.findCertificateTags(certificateId);
-        giftCertificate.setTagList(certificateTags);
+        if (giftCertificate != null) {
+            List<Tag> certificateTags = certificateMapper.findCertificateTags(certificateId);
+            giftCertificate.setTagList(certificateTags);
+        }
         return giftCertificate;
     }
 
