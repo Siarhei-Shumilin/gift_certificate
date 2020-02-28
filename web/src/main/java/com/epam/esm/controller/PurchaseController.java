@@ -20,10 +20,8 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public Map<String, String> save(@RequestBody GiftCertificate giftCertificate, Locale locale) {
-        Map<String, String> map = new HashMap<>();
-        map.put("Message" , "Purchase id = " + purchaseService.save(giftCertificate, locale));
-        return map;
+    public Map<String, Long> save(@RequestBody GiftCertificate giftCertificate, Locale locale) {
+        return Map.of("Purchase id " , purchaseService.save(giftCertificate, locale));
     }
 
     @GetMapping("/{userId}")
@@ -31,7 +29,7 @@ public class PurchaseController {
         Map<String, Object> map = new HashMap<>();
         List<Purchase> usersPurchases = purchaseService.findUsersPurchases(userId, parameters, locale);
         for (Purchase purchase : usersPurchases) {
-            map.put("Purchase id = " + purchase.getId(),"date = " + purchase.getDateTime() + ", " + "price = " + purchase.getPrice());
+            map.put("Purchase id " + purchase.getId(),"date = " + purchase.getDateTime() + ", " + "price = " + purchase.getPrice());
         }
         return map;
     }

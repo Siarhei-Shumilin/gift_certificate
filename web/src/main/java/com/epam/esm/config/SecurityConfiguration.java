@@ -26,10 +26,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${path.certificate}")
     private String certificatesPath;
+    @Value("${path.certificate.id}")
+    private String certificatesIdPath;
+    @Value("${path.certificate.price}")
+    private String certificatePricePath;
     @Value("${path.tag}")
     private String tagsPath;
+    @Value("${path.tag.id}")
+    private String tagsPathId;
+    @Value("${path.tag.popular}")
+    private String popularTagPath;
     @Value("${path.purchase}")
     private String purchasePath;
+    @Value("${path.purchase.id}")
+    private String purchaseIdPath;
+    @Value("${path.user}")
+    private String userPath;
     @Value("${role.admin}")
     private String roleAdmin;
 
@@ -50,26 +62,28 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, certificatesPath, "/certificates/*").permitAll()
-                .antMatchers(HttpMethod.POST, certificatesPath).hasRole(roleAdmin)
-                .antMatchers(HttpMethod.PUT, "/certificates/*").hasRole(roleAdmin)
-                .antMatchers(HttpMethod.DELETE, "/certificates/*").hasRole(roleAdmin)
-
-                .antMatchers(HttpMethod.POST, tagsPath).hasRole(roleAdmin)
-                .antMatchers(HttpMethod.DELETE, tagsPath).hasRole(roleAdmin)
-                .antMatchers(HttpMethod.GET, tagsPath, "/tags/*").authenticated()
-                .antMatchers(HttpMethod.GET, "/tags/popular").permitAll()
-
-                .antMatchers(HttpMethod.POST, purchasePath).authenticated()
-                .antMatchers(HttpMethod.GET, purchasePath).authenticated()
-                .antMatchers(HttpMethod.GET, "/purchase/*").hasRole(roleAdmin)
-                .antMatchers("/users/*").anonymous()
-                .anyRequest().authenticated()
+                //certificates
+                    .antMatchers(HttpMethod.GET, certificatesPath, certificatesIdPath).permitAll()
+                    .antMatchers(HttpMethod.POST, certificatesPath).hasRole(roleAdmin)
+                    .antMatchers(HttpMethod.PUT, certificatesIdPath, certificatePricePath).hasRole(roleAdmin)
+                    .antMatchers(HttpMethod.DELETE, certificatesIdPath).hasRole(roleAdmin)
+                //tags
+                    .antMatchers(HttpMethod.POST, tagsPath).hasRole(roleAdmin)
+                    .antMatchers(HttpMethod.DELETE, tagsPathId).hasRole(roleAdmin)
+                    .antMatchers(HttpMethod.GET, tagsPath, tagsPathId, popularTagPath).authenticated()
+                //purchase
+                    .antMatchers(HttpMethod.POST, purchasePath).authenticated()
+                    .antMatchers(HttpMethod.GET, purchasePath).authenticated()
+                    .antMatchers(HttpMethod.GET, purchaseIdPath).hasRole(roleAdmin)
+                //auth
+                    .antMatchers(userPath).anonymous()
+                    .anyRequest().authenticated()
                 .and()
-                .exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint())
-                .and().exceptionHandling().accessDeniedHandler(new RestAccessDeniedHandler())
+                    .exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .and()
+                    .exceptionHandling().accessDeniedHandler(new RestAccessDeniedHandler())
                 .and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 

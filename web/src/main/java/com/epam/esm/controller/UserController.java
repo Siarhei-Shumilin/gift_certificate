@@ -19,12 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Locale;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
     @Value("${jwt.expiration}")
-    private String expiration;
+    private Integer expiration;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtTokenUtil;
     private final UserService userService;
@@ -38,9 +39,10 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public long registration(@RequestBody User user, Locale locale) {
+    public Map<String, Long> registration(@RequestBody User user, Locale locale) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userService.save(user, locale);
+        long userId = userService.save(user, locale);
+        return Map.of("User id", userId);
     }
 
     @PostMapping(value = "/authenticate")
@@ -51,9 +53,10 @@ public class UserController {
         } catch (BadCredentialsException e) {
             throw new GeneralException(ExceptionType.INCORRECT_USER_DATA, locale);
         }
-        expiration = (Integer.parseInt(expiration) / 1000 / 60 / 60) + " hours";
+        int expirationHours = expiration / 3600000;
+        String time = expirationHours + "hours";
         final UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt, expiration));
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, time));
     }
 }
