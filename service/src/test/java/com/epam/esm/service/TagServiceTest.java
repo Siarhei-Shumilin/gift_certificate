@@ -70,4 +70,12 @@ public class TagServiceTest {
         tagService.findByParameters(parameters, locale);
         Mockito.verify(tagMapper, Mockito.times(1)).findByParameters((String) parameters.get("tagName"), mock);
     }
+
+    @Test
+    public void testFindById() {
+        String id = "1";
+        Locale locale = new Locale("en");
+        tagService.findById(id, locale);
+        Mockito.verify(tagMapper, Mockito.times(1)).findById(1);
+    }
 }

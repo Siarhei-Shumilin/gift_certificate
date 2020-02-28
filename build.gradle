@@ -9,6 +9,13 @@ jacocoTestReport {
         csv.enabled false
     }
 }
+
+sonarqube {
+    properties {
+        property 'sonar.exclusions', "**/com/epam/esm/util/UserDetailsImpl.java"
+    }
+}
+
 subprojects {
 
     apply plugin: "java"
