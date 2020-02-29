@@ -11,7 +11,9 @@ public enum ExceptionType {
     FAILED_AUTHENTICATION(ErrorMessageConstants.FAILED_AUTHENTICATION, 403, "40301"),
     INCORRECT_DATA_FORMAT(ErrorMessageConstants.INCORRECT_DATA_FORMAT, 400, "40005"),
     UNEXPECTED_EXCEPTION(ErrorMessageConstants.UNEXPECTED_EXCEPTION, 500, "50005"),
-    INCORRECT_USER_DATA(ErrorMessageConstants.INCORRECT_USER_DATA, 400, "40006");
+    INCORRECT_USER_DATA(ErrorMessageConstants.INCORRECT_USER_DATA, 400, "40006"),
+    METHOD_NOT_SUPPORTED(ErrorMessageConstants.METHOD_NOT_SUPPORTED, 405, "40501"),
+    NOT_HANDLER_FOUND(ErrorMessageConstants.NOT_FOUND_HANDLER, 405, "40502");
 
     private final String message;
     private final int statusCode;
@@ -34,6 +36,4 @@ public enum ExceptionType {
     public String getCustomCode() {
         return customCode;
     }
-
-
 }
