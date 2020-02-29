@@ -27,7 +27,7 @@ FOREIGN KEY (tag_id) REFERENCES tags (id) ON UPDATE CASCADE ON DELETE CASCADE
 CREATE TABLE users (
 id bigint auto_increment NOT NULL,
 active boolean,
-password VARCHAR(30) NOT NULL,
+password VARCHAR(60) NOT NULL,
 roles VARCHAR(30) NOT NULL,
 user_name VARCHAR(30) UNIQUE NOT NULL,
 PRIMARY KEY (id)

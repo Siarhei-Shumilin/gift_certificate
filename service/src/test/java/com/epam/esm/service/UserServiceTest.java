@@ -4,6 +4,7 @@ import com.epam.esm.entity.User;
 import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.UserMapper;
 import com.epam.esm.util.UserDetailsImpl;
+import com.epam.esm.util.UserValidator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,6 +17,8 @@ import java.util.Locale;
 public class UserServiceTest {
     @Mock
     private UserMapper userMapper;
+    @Mock
+    private UserValidator validator;
     @Mock
     private UserDetailsImpl userDetails;
     @InjectMocks

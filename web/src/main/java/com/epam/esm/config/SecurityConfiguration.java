@@ -64,11 +64,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 //certificates
                     .antMatchers(HttpMethod.GET, certificatesPath, certificatesIdPath).permitAll()
-                    .antMatchers(HttpMethod.POST, certificatesPath).hasRole(roleAdmin)
+                    .antMatchers(HttpMethod.POST, certificatesPath, "/certificates/").hasRole(roleAdmin)
                     .antMatchers(HttpMethod.PUT, certificatesIdPath, certificatePricePath).hasRole(roleAdmin)
                     .antMatchers(HttpMethod.DELETE, certificatesIdPath).hasRole(roleAdmin)
                 //tags
-                    .antMatchers(HttpMethod.POST, tagsPath).hasRole(roleAdmin)
+                    .antMatchers(HttpMethod.POST, tagsPath, "/tags/").hasRole(roleAdmin)
                     .antMatchers(HttpMethod.DELETE, tagsPathId).hasRole(roleAdmin)
                     .antMatchers(HttpMethod.GET, tagsPath, tagsPathId, popularTagPath).authenticated()
                 //purchase

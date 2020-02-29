@@ -5,6 +5,7 @@ import com.epam.esm.exception.ExceptionType;
 import com.epam.esm.exception.GeneralException;
 import com.epam.esm.mapper.UserMapper;
 import com.epam.esm.util.UserDetailsImpl;
+import com.epam.esm.util.UserValidator;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,11 @@ import java.util.Locale;
 public class UserService implements UserDetailsService {
 
     private final UserMapper userMapper;
+    private final UserValidator userValidator;
 
-    public UserService(UserMapper userMapper) {
+    public UserService(UserMapper userMapper, UserValidator userValidator) {
         this.userMapper = userMapper;
+        this.userValidator = userValidator;
     }
 
     @Override
@@ -27,6 +30,9 @@ public class UserService implements UserDetailsService {
     }
 
     public long save(User user, Locale locale) {
+        if (!userValidator.validateUser(user)){
+            throw new GeneralException(ExceptionType.INCORRECT_USER_DATA, locale);
+        }
         userMapper.save(user);
         long id = user.getId();
         if (id == 0) {
