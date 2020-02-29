@@ -27,4 +27,6 @@ dependencies {
     implementation group: 'io.rest-assured', name: 'json-path', version: "${restAssured}"
     implementation group: 'io.rest-assured', name: 'xml-path', version: "${restAssured}"
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonDataBind}"
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.10.1'
 }
