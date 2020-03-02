@@ -30,14 +30,19 @@ public class UserService implements UserDetailsService {
     }
 
     public long save(User user, Locale locale) {
-        if (!userValidator.validateUser(user)){
-            throw new GeneralException(ExceptionType.INCORRECT_USER_DATA, locale);
-        }
+        validateUser(user, locale);
         userMapper.save(user);
         long id = user.getId();
         if (id == 0) {
             throw new GeneralException(ExceptionType.USER_EXISTS_EXCEPTION, locale);
         }
         return id;
+    }
+
+    public boolean validateUser(User user, Locale locale){
+        if (!userValidator.validateUser(user)){
+            throw new GeneralException(ExceptionType.INCORRECT_USER_DATA, locale);
+        }
+        return true;
     }
 }

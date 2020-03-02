@@ -47,6 +47,7 @@ public class UserController {
 
     @PostMapping(value = "/authenticate")
     public ResponseEntity createAuthenticationToken(@RequestBody User user, Locale locale) {
+        userService.validateUser(user, locale);
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
