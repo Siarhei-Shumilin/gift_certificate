@@ -31,14 +31,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new ApiError(message, error.getCustomCode()), httpStatus);
     }
 
-    @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity<ApiError> handleRunTimeException(RuntimeException e) {
-        HttpStatus httpStatus = HttpStatus.valueOf(ExceptionType.UNEXPECTED_EXCEPTION.getStatusCode());
-        ApiError apiError = new ApiError(ExceptionType.UNEXPECTED_EXCEPTION.getMessage(),
-                ExceptionType.UNEXPECTED_EXCEPTION.getCustomCode());
-        return new ResponseEntity<>(apiError, httpStatus);
-    }
-
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers,
                                                                          HttpStatus status, WebRequest request) {
