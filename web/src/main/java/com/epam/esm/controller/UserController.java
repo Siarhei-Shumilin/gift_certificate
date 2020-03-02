@@ -54,7 +54,7 @@ public class UserController {
             throw new GeneralException(ExceptionType.INCORRECT_USER_DATA, locale);
         }
         int expirationHours = expiration / 3600000;
-        String time = expirationHours + "hours";
+        String time = expirationHours + " hours";
         final UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
         return ResponseEntity.ok(new AuthenticationResponse(jwt, time));
