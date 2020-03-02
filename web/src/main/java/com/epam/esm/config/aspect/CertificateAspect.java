@@ -18,36 +18,45 @@ public class CertificateAspect {
 
     @Before("com.epam.esm.config.aspect.PointCutConfig.update()")
     public void logBeforeUpdateCertificate(JoinPoint joinPoint) {
-        ThreadContext.put(CORRELATION_ID, UUID.randomUUID().toString());
-        logger.info("Start {}", joinPoint.getSignature());
+        before(joinPoint);
     }
 
     @AfterReturning("com.epam.esm.config.aspect.PointCutConfig.update()")
     public void logAfterUpdateCertificates(JoinPoint joinPoint) {
-        ThreadContext.remove(CORRELATION_ID);
-        logger.info("Ended {} successfully", joinPoint.getSignature());
+        afterReturning(joinPoint);
     }
 
     @AfterThrowing("com.epam.esm.config.aspect.PointCutConfig.update()")
     public void logAfterUpdateThrowException(JoinPoint joinPoint) {
-        ThreadContext.remove(CORRELATION_ID);
-        logger.info("The {} failed", joinPoint.getSignature());
+        afterThrowing(joinPoint);
     }
 
     @Before("com.epam.esm.config.aspect.PointCutConfig.updatePrice()")
     public void logBeforeUpdatePriceCertificate(JoinPoint joinPoint) {
-        ThreadContext.put(CORRELATION_ID, UUID.randomUUID().toString());
-        logger.info("Start {}", joinPoint.getSignature());
+        before(joinPoint);
     }
 
     @AfterReturning("com.epam.esm.config.aspect.PointCutConfig.updatePrice()")
     public void logAfterUpdatePriceCertificates(JoinPoint joinPoint) {
-        ThreadContext.remove(CORRELATION_ID);
-        logger.info("Ended {} successfully", joinPoint.getSignature());
+        afterReturning(joinPoint);
     }
 
     @AfterThrowing("com.epam.esm.config.aspect.PointCutConfig.updatePrice()")
     public void logAfterUpdatePriceThrowException(JoinPoint joinPoint) {
+        afterThrowing(joinPoint);
+    }
+
+    private void before(JoinPoint joinPoint) {
+        ThreadContext.put(CORRELATION_ID, UUID.randomUUID().toString());
+        logger.info("Start {}", joinPoint.getSignature());
+    }
+
+    private void afterReturning(JoinPoint joinPoint) {
+        ThreadContext.remove(CORRELATION_ID);
+        logger.info("Ended {} successfully", joinPoint.getSignature());
+    }
+
+    private void afterThrowing(JoinPoint joinPoint) {
         ThreadContext.remove(CORRELATION_ID);
         logger.info("The {} failed", joinPoint.getSignature());
     }
