@@ -31,6 +31,11 @@ public class PointCutConfig {
         // Do nothing because pointcut just specifies where exactly to apply advice
     }
 
+    @Pointcut("execution(* com.epam.esm.controller.*.updatePrice(..))")
+    public void updatePrice() {
+        // Do nothing because pointcut just specifies where exactly to apply advice
+    }
+
     @Pointcut("execution(* com.epam.esm.controller.*.findMostPopularTag(..))")
     public void findMostPopularTag() {
         // Do nothing because pointcut just specifies where exactly to apply advice

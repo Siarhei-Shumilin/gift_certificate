@@ -33,4 +33,22 @@ public class CertificateAspect {
         ThreadContext.remove(CORRELATION_ID);
         logger.info("The {} failed", joinPoint.getSignature());
     }
+
+    @Before("com.epam.esm.config.aspect.PointCutConfig.updatePrice()")
+    public void logBeforeUpdatePriceCertificate(JoinPoint joinPoint) {
+        ThreadContext.put(CORRELATION_ID, UUID.randomUUID().toString());
+        logger.info("Start {}", joinPoint.getSignature());
+    }
+
+    @AfterReturning("com.epam.esm.config.aspect.PointCutConfig.updatePrice()")
+    public void logAfterUpdatePriceCertificates(JoinPoint joinPoint) {
+        ThreadContext.remove(CORRELATION_ID);
+        logger.info("Ended {} successfully", joinPoint.getSignature());
+    }
+
+    @AfterThrowing("com.epam.esm.config.aspect.PointCutConfig.updatePrice()")
+    public void logAfterUpdatePriceThrowException(JoinPoint joinPoint) {
+        ThreadContext.remove(CORRELATION_ID);
+        logger.info("The {} failed", joinPoint.getSignature());
+    }
 }
