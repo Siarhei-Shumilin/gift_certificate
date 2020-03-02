@@ -29,12 +29,15 @@ public interface TagMapper {
     @Delete("DELETE FROM tags WHERE id = #{id}")
     int delete(long id);
 
-    @Select("SELECT tags.id, tags.name FROM tags INNER JOIN connecting ON tags.id=connecting.tag_id"
-            + " WHERE connecting.certificate_id = " +
-            "(SELECT certificate_id FROM purchases WHERE user_id = " +
-            "(SELECT user_id FROM purchases GROUP BY user_id ORDER BY sum(price) DESC LIMIT 1)" +
-            " GROUP BY certificate_id ORDER BY COUNT(certificate_id) DESC LIMIT 1) " +
-            "GROUP BY tag_id ORDER BY COUNT(tag_id) DESC LIMIT 1")
+    @Select("select tags.id, tags.name from " +
+            "(select users.id as userId, sum(purchases.price) as sumPurchases " +
+            "from purchases join users on users.id = purchases.user_id " +
+            "group by users.id order by sumPurchases desc limit 1) as user_with_max_cost_purchases " +
+            "join purchases on purchases.user_id = userId " +
+            "join certificates on purchases.certificate_id = certificates.id " +
+            "join connecting on certificates.id = connecting.certificate_id " +
+            "join tags  on tags.id = connecting.tag_id " +
+            "group by tags.id, tags.name order by sum(sumPurchases) desc limit 1")
     Tag findMostPopularTag();
 
     @Select({"<script>",
