@@ -22,7 +22,8 @@ public interface TagMapper {
 
     @Insert({"<script>",
             "insert ignore into  tags (name) values ",
-            "<foreach collection='list' item='tag' index='index' open='(' separator = '),(' close=')' >#{tag.name}</foreach>",
+            "<foreach collection='list' item='tag' index='index' open='(' separator = '),(' close=')' >" +
+                    "#{tag.name}</foreach>",
             "</script>"})
     void saveListTags(@Param("list") List<Tag> tag);
 
@@ -42,7 +43,8 @@ public interface TagMapper {
 
     @Select({"<script>",
             "select id, name from tags where name in ",
-            "<foreach collection='list' item='tag' index='index' open='(' separator = ',' close=')' >#{tag.name}</foreach>",
+            "<foreach collection='list' item='tag' index='index' open='(' separator = ',' close=')' >" +
+                    "#{tag.name}</foreach>",
             "</script>"})
     List<Tag> findTagByName(@Param("list") List<Tag> listTagWithoutId);
 }

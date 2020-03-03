@@ -29,10 +29,8 @@ public interface CertificateMapper {
     })
     List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, RowBounds rowBounds);
 
-    @Select("SELECT id, name, description, " +
-            "price, create_date, last_update_date, duration" +
-            " FROM certificates " +
-            " WHERE id = #{certificateId}")
+    @Select("SELECT id, name, description, price, create_date, last_update_date, duration" +
+            " FROM certificates WHERE id = #{certificateId}")
     @Results(value = {
             @Result(property = "id", column = "id"),
             @Result(property = "createDate", column = "create_date"),
@@ -42,7 +40,8 @@ public interface CertificateMapper {
     })
     GiftCertificate findById(long certificateId);
 
-    @Select("SELECT tags.id, tags.name FROM connecting INNER JOIN certificates ON connecting.certificate_id=certificates.id " +
+    @Select("SELECT tags.id, tags.name FROM connecting " +
+            "INNER JOIN certificates ON connecting.certificate_id=certificates.id " +
             "INNER JOIN tags ON connecting.tag_id=tags.id WHERE connecting.certificate_id = #{certificateId}")
     List<Tag> findCertificateTags(long certificateId);
 
