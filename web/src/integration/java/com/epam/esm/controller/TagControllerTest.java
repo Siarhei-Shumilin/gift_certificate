@@ -14,7 +14,7 @@ public class TagControllerTest {
     public void init(){
         String response = RestAssured.given()
                 .contentType("application/json")
-                .body("{\"username\" : \"adm\", \"password\" : \"111\"}")
+                .body("{\"username\" : \"admin\", \"password\" : \"22222\"}")
                 .when()
                 .post("/users/authenticate")
                 .then().extract().response().as(AuthenticationResponse.class).getJwt();
