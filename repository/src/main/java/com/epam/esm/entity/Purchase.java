@@ -11,9 +11,6 @@ public class Purchase {
     private BigDecimal price;
     private LocalDateTime dateTime;
 
-    private String certificatesName;
-    private String certificateDescription;
-
     public Purchase() {
     }
 
@@ -22,22 +19,6 @@ public class Purchase {
         this.certificateId = certificateId;
         this.price = price;
         this.dateTime = dateTime;
-    }
-
-    public String getCertificatesName() {
-        return certificatesName;
-    }
-
-    public void setCertificatesName(String certificatesName) {
-        this.certificatesName = certificatesName;
-    }
-
-    public String getCertificateDescription() {
-        return certificateDescription;
-    }
-
-    public void setCertificateDescription(String certificateDescription) {
-        this.certificateDescription = certificateDescription;
     }
 
     public long getId() {
@@ -89,13 +70,11 @@ public class Purchase {
                 userId == purchase.userId &&
                 certificateId == purchase.certificateId &&
                 Objects.equals(price, purchase.price) &&
-                Objects.equals(dateTime, purchase.dateTime) &&
-                Objects.equals(certificatesName, purchase.certificatesName) &&
-                Objects.equals(certificateDescription, purchase.certificateDescription);
+                Objects.equals(dateTime, purchase.dateTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, certificateId, price, dateTime, certificatesName, certificateDescription);
+        return Objects.hash(id, userId, certificateId, price, dateTime);
     }
 }
