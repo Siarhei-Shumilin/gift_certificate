@@ -36,22 +36,12 @@ public class CertificateService extends GeneralService {
     }
 
     public List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, Locale locale) {
-        List<GiftCertificate> certificateList = certificateMapper.findByParameters(parameters, tagList, getRowBounds(parameters, locale));
-        for (GiftCertificate giftCertificate : certificateList) {
-            List<Tag> certificateTags = certificateMapper.findCertificateTags(giftCertificate.getId());
-            giftCertificate.setTagList(certificateTags);
-        }
-        return certificateList;
+        return certificateMapper.findByParameters(parameters, tagList, getRowBounds(parameters, locale));
     }
 
     public GiftCertificate findById(String id, Locale locale) {
         long certificateId = parseId(id, locale);
-        GiftCertificate giftCertificate = certificateMapper.findById(certificateId);
-        if (giftCertificate != null) {
-            List<Tag> certificateTags = certificateMapper.findCertificateTags(certificateId);
-            giftCertificate.setTagList(certificateTags);
-        }
-        return giftCertificate;
+        return certificateMapper.findById(certificateId);
     }
 
     @Transactional

@@ -21,15 +21,24 @@ public interface CertificateMapper {
 
     @SelectProvider(type = CertificateSqlUtil.class, method = "getByParameter")
     @Results(value = {
+            @Result(property = "id", column = "id"),
             @Result(property = "createDate", column = "create_date"),
             @Result(property = "lastUpdateDate", column = "last_update_date"),
+            @Result(property = "tagList", javaType = List.class, column = "id",
+                    many = @Many(select = "findCertificateTags"))
     })
     List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, RowBounds rowBounds);
 
-    @Select("SELECT id, name, description, price, create_date, last_update_date, duration FROM certificates WHERE id = #{certificateId}")
+    @Select("SELECT id, name, description, " +
+            "price, create_date, last_update_date, duration" +
+            " FROM certificates " +
+            " WHERE id = #{certificateId}")
     @Results(value = {
+            @Result(property = "id", column = "id"),
             @Result(property = "createDate", column = "create_date"),
             @Result(property = "lastUpdateDate", column = "last_update_date"),
+            @Result(property = "tagList", javaType = List.class, column = "id",
+                    many = @Many(select = "findCertificateTags"))
     })
     GiftCertificate findById(long certificateId);
 
