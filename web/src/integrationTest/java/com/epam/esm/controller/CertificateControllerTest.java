@@ -3,18 +3,21 @@ package com.epam.esm.controller;
 import com.epam.esm.config.entity.AuthenticationResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.context.ActiveProfiles;
 
+@ActiveProfiles("test")
 public class CertificateControllerTest {
 
     private String jwt;
 
     @Before
-    public void init(){
-      String response = RestAssured.given()
+    public void init() {
+        String response = RestAssured.given()
                 .contentType("application/json")
-                .body("{\"username\" : \"admin\", \"password\" : \"22222\"}")
+                .body("{\"username\" : \"adm\", \"password\" : \"111\"}")
                 .when()
                 .post("/users/authenticate")
                 .then().extract().response().as(AuthenticationResponse.class).getJwt();
@@ -23,17 +26,19 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void testFindCertificates() {
+    public void testFindCertificatesByIdShouldReturnStatusCode200AndNameCertificate() {
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get("/certificates?name=a")
+                .get("/certificates/8")
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .assertThat()
+                .body("name", CoreMatchers.equalTo("nisi"));
     }
 
-   @Test
-    public void testSaveCertificates() {
+    @Test
+    public void testSaveCertificatesShouldReturnBadRequestWhenBodyIsEmpty() {
         RestAssured.given()
                 .contentType("application/json")
                 .header("Authorization", jwt)
@@ -45,7 +50,7 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void testDelete() {
+    public void testDeleteShouldReturnStatusCode200() {
         RestAssured.given()
                 .contentType("application/json")
                 .header("Authorization", jwt)
@@ -53,10 +58,12 @@ public class CertificateControllerTest {
                 .delete("/certificates/4")
                 .then()
                 .statusCode(200);
+
+
     }
 
     @Test
-    public void testUpdatePrice() {
+    public void testUpdatePriceShouldReturnStatusCode200() {
         RestAssured.given()
                 .contentType("application/json")
                 .header("Authorization", jwt)
@@ -68,7 +75,7 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void testUpdate() {
+    public void testUpdateShouldReturnBadRequestWhenCertificateFieldsIsIncorrect() {
         RestAssured.given()
                 .contentType("application/json")
                 .header("Authorization", jwt)
