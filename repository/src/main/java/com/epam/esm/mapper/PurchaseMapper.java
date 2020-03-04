@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface PurchaseMapper {
     @Insert("INSERT INTO purchases (user_id, certificate_id, price, date_purchase) " +
-            "VALUES (#{userId},#{certificateId}, (select price from certificates where id = #{certificateId}),#{dateTime})")
+            "VALUES (#{userId},#{certificateId}, (SELECT price FROM certificates WHERE id = #{certificateId}),#{dateTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(Purchase purchase);
 

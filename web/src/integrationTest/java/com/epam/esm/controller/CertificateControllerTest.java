@@ -1,13 +1,20 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.config.entity.AuthenticationResponse;
+import com.epam.esm.entity.GiftCertificate;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
+
+//@PropertySource("classpath:application-test.properties")
 @ActiveProfiles("test")
 public class CertificateControllerTest {
 
@@ -23,6 +30,16 @@ public class CertificateControllerTest {
                 .then().extract().response().as(AuthenticationResponse.class).getJwt();
         String[] split = response.split(":");
         jwt = "Bearer " + split[0];
+    }
+
+    @Test
+    public void testFindCertificatesShouldReturnListCertificates() {
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/certificates");
+        List<GiftCertificate> certificateList = response.getBody().as(List.class);
+        Assert.assertFalse(certificateList.isEmpty());
     }
 
     @Test
