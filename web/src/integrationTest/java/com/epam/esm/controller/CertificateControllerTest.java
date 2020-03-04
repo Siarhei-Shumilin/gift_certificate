@@ -2,20 +2,18 @@ package com.epam.esm.controller;
 
 import com.epam.esm.config.entity.AuthenticationResponse;
 import com.epam.esm.entity.GiftCertificate;
+import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.Map;
 
-//@PropertySource("classpath:application-test.properties")
-@ActiveProfiles("test")
 public class CertificateControllerTest {
 
     private String jwt;
@@ -34,11 +32,10 @@ public class CertificateControllerTest {
 
     @Test
     public void testFindCertificatesShouldReturnListCertificates() {
-        Response response = RestAssured.given()
+        List<GiftCertificate> certificateList = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get("/certificates");
-        List<GiftCertificate> certificateList = response.getBody().as(List.class);
+                .get("/certificates").getBody().as(List.class);
         Assert.assertFalse(certificateList.isEmpty());
     }
 
@@ -55,32 +52,49 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void testSaveCertificatesShouldReturnBadRequestWhenBodyIsEmpty() {
+    public void testSaveCertificatesShouldReturnStatusCode200AndPrintResponseWithIdNewObject() {
         RestAssured.given()
                 .contentType("application/json")
                 .header("Authorization", jwt)
-                .body("{}")
+                .body("{\n" +
+                        "        \"name\": \"ali\",\n" +
+                        "        \"description\": \"Ut quod ipsa vitae amet expedita voluptatem. Eligendi temporibus fuga mollitia et.\",\n" +
+                        "        \"price\": 96.25,\n" +
+                        "        \"createDate\": \"1984-06-05T13:06:55\",\n" +
+                        "        \"lastUpdateDate\": \"2020-02-26T10:21:39\",\n" +
+                        "        \"duration\": 5,\n" +
+                        "        \"tagList\": [\n" +
+                        "            {\n" +
+                        "                \"id\": 2,\n" +
+                        "                \"name\": \"odio\"\n" +
+                        "            }\n" +
+                        "        ]\n" +
+                        "    }")
                 .when()
                 .post("/certificates/")
                 .then()
-                .statusCode(400);
+                .statusCode(200)
+                .extract().response().getBody().print();
     }
 
     @Test
-    public void testDeleteShouldReturnStatusCode200() {
+    public void testDeleteShouldReturnStatusCode200AndNumberDeletedCertificates() {
+        Gson gson = new Gson();
+        String numberOfDeletedCertificates = gson.toJson(Map.of("Number of deleted certificates", 1));
         RestAssured.given()
                 .contentType("application/json")
                 .header("Authorization", jwt)
                 .when()
-                .delete("/certificates/4")
+                .delete("/certificates/118")
                 .then()
-                .statusCode(200);
-
-
+                .statusCode(200)
+                .body(Matchers.equalTo(numberOfDeletedCertificates));
     }
 
     @Test
-    public void testUpdatePriceShouldReturnStatusCode200() {
+    public void testUpdatePriceShouldReturnStatusCode200AndNumberUpdatedCertificates() {
+        Gson gson = new Gson();
+        String numberOfUpdatedCertificates = gson.toJson(Map.of("Number of updated certificates", 0));
         RestAssured.given()
                 .contentType("application/json")
                 .header("Authorization", jwt)
@@ -88,7 +102,8 @@ public class CertificateControllerTest {
                 .when()
                 .put("/certificates/price/5")
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .body(Matchers.equalTo(numberOfUpdatedCertificates));
     }
 
     @Test
