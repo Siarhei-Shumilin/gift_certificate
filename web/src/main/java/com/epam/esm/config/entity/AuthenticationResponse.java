@@ -6,12 +6,12 @@ import java.io.Serializable;
 
 public class AuthenticationResponse implements Serializable {
     private String jwt;
-    private String expiration;
+    private int expirationTimeHours;
 
     @JsonCreator
-    public AuthenticationResponse(String jwt, String expiration) {
+    public AuthenticationResponse(String jwt, int expiration) {
         this.jwt = jwt;
-        this.expiration = expiration;
+        this.expirationTimeHours = expiration;
     }
 
     public String getJwt() {
@@ -22,11 +22,11 @@ public class AuthenticationResponse implements Serializable {
         this.jwt = jwt;
     }
 
-    public String getExpiration() {
-        return expiration;
+    public int getExpirationTimeHours() {
+        return expirationTimeHours;
     }
 
-    public void setExpiration(String expiration) {
-        this.expiration = expiration;
+    public void setExpirationTimeHours(int expirationTimeHours) {
+        this.expirationTimeHours = expirationTimeHours;
     }
 }

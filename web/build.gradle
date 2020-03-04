@@ -13,22 +13,22 @@ springBoot {
 }
 
 sourceSets {
-    integration {
-        java.srcDir "$projectDir/src/integration/java"
-        resources.srcDir "$projectDir/src/integration/resources"
+    integrationTest {
+        java.srcDir "$projectDir/src/integrationTest/java"
+        resources.srcDir "$projectDir/src/integrationTest/resources"
         compileClasspath += main.output + test.output
         runtimeClasspath += main.output + test.output
     }
 }
 
 configurations {
-    integrationImplementation.extendsFrom testImplementation
-    integrationRuntime.extendsFrom testRuntime
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntime.extendsFrom testRuntime
 }
 
 task integrationTest(type: Test) {
-    testClassesDirs = sourceSets.integration.output.classesDirs
-    classpath = sourceSets.integration.runtimeClasspath
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
 }
 
 dependencies {
@@ -46,4 +46,5 @@ dependencies {
     implementation group: 'io.rest-assured', name: 'json-path', version: "${restAssured}"
     implementation group: 'io.rest-assured', name: 'xml-path', version: "${restAssured}"
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonDataBind}"
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
 }

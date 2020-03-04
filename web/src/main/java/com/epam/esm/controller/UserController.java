@@ -53,10 +53,9 @@ public class UserController {
         } catch (BadCredentialsException e) {
             throw new GeneralException(ExceptionType.INCORRECT_USER_DATA, locale);
         }
-        int expirationHours = expiration / 3600000;
-        String time = expirationHours + " hours";
+        int expirationTimeHours = expiration / 3600000;
         final UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt, time));
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, expirationTimeHours));
     }
 }
