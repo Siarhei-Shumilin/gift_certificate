@@ -21,7 +21,7 @@ import java.util.*;
 @RunWith(MockitoJUnitRunner.class)
 public class CertificateServiceTest {
     @Mock
-    private CertificateMapper mapper;
+    private CertificateMapper certificateMapper;
     @Mock
     private CertificateValidator validator;
     @Mock
@@ -37,7 +37,7 @@ public class CertificateServiceTest {
     @Test
     public void testDeleteShouldCallMappersMethodDelete() {
         service.delete("1");
-        Mockito.verify(mapper, Mockito.times(1)).delete(1);
+        Mockito.verify(certificateMapper, Mockito.times(1)).delete(1);
     }
 
     @Test(expected = GeneralException.class)
@@ -60,7 +60,7 @@ public class CertificateServiceTest {
         GiftCertificate giftCertificate = new GiftCertificate();
         giftCertificate.setPrice(new BigDecimal(2));
         service.updatePrice("1", giftCertificate);
-        Mockito.verify(mapper, Mockito.times(1)).updatePrice(giftCertificate);
+        Mockito.verify(certificateMapper, Mockito.times(1)).updatePrice(giftCertificate);
     }
 
     @Test
@@ -70,11 +70,17 @@ public class CertificateServiceTest {
         RowBounds rowBounds = Mockito.mock(RowBounds.class);
         Mockito.when(service.getRowBounds(parameters)).thenReturn(rowBounds);
         service.findByParameters(parameters, tagList);
-        Mockito.verify(mapper, Mockito.times(1)).findByParameters(parameters, tagList, rowBounds);
+        Mockito.verify(certificateMapper, Mockito.times(1)).findByParameters(parameters, tagList, rowBounds);
     }
 
     @Test(expected = GeneralException.class)
     public void testFindByIdShouldThrowException() {
         service.findById("1fg");
+    }
+
+    @Test
+    public void testFindByIdShouldMapperCallFindById() {
+        service.findById("1");
+        Mockito.verify(certificateMapper, Mockito.times(1)).findById(1);
     }
 }

@@ -12,7 +12,7 @@ jacocoTestReport {
 
 sonarqube {
     properties {
-        property 'sonar.exclusions', "**/com/epam/esm/util/UserDetailsImpl.java"
+        property 'sonar.exclusions', "**/com/epam/esm/util/UserDetailsImpl.java, **/com/epam/esm/exception/*"
     }
 }
 
