@@ -9,8 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
-
 @Service
 public class UserService implements UserDetailsService {
 
@@ -26,11 +24,11 @@ public class UserService implements UserDetailsService {
         return new UserDetailsImpl(user);
     }
 
-    public long save(User user, Locale locale) {
+    public long save(User user) {
         userMapper.save(user);
         long id = user.getId();
         if (id == 0) {
-            throw new GeneralException(ExceptionType.USER_EXISTS_EXCEPTION, locale);
+            throw new GeneralException(ExceptionType.USER_EXISTS_EXCEPTION);
         }
         return id;
     }

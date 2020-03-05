@@ -5,7 +5,6 @@ import com.epam.esm.service.TagService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @RestController
@@ -21,23 +20,23 @@ public class TagController {
     }
 
     @GetMapping
-    public List<Tag> findByParameters(@RequestParam(required = false) Map<String, Object> parameters, Locale locale) {
-        return tagService.findByParameters(parameters, locale);
+    public List<Tag> findByParameters(@RequestParam(required = false) Map<String, Object> parameters) {
+        return tagService.findByParameters(parameters);
     }
 
     @GetMapping("/{id}")
-    public Tag findById(@PathVariable String id, Locale locale){
-        return tagService.findById(id, locale);
+    public Tag findById(@PathVariable String id){
+        return tagService.findById(id);
     }
 
     @PostMapping
-    public Map<String, Long> save(@RequestBody Tag tag, Locale locale) {
-        return Map.of("id" , tagService.save(tag, locale));
+    public Map<String, Long> save(@RequestBody Tag tag) {
+        return Map.of("id" , tagService.save(tag));
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Integer> delete(@PathVariable String id, Locale locale) {
-        return Map.of("Number of deleted tags", tagService.delete(id, locale));
+    public Map<String, Integer> delete(@PathVariable String id) {
+        return Map.of("Number of deleted tags", tagService.delete(id));
     }
 
     @GetMapping("/popular")

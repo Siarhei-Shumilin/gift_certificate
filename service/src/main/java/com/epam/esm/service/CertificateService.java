@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -35,61 +34,61 @@ public class CertificateService extends GeneralService {
         this.certificateTagConnectingMapper = certificateTagConnectingMapperBatis;
     }
 
-    public List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList, Locale locale) {
-        return certificateMapper.findByParameters(parameters, tagList, getRowBounds(parameters, locale));
+    public List<GiftCertificate> findByParameters(Map<String, Object> parameters, List<String> tagList) {
+        return certificateMapper.findByParameters(parameters, tagList, getRowBounds(parameters));
     }
 
-    public GiftCertificate findById(String id, Locale locale) {
-        long certificateId = parseId(id, locale);
+    public GiftCertificate findById(String id) {
+        long certificateId = parseId(id);
         return certificateMapper.findById(certificateId);
     }
 
     @Transactional
-    public long save(GiftCertificate giftCertificate, Locale locale) {
+    public long save(GiftCertificate giftCertificate) {
         giftCertificate.setCreateDate(LocalDateTime.now());
         giftCertificate.setLastUpdateDate(LocalDateTime.now());
         if (validator.validate(giftCertificate)) {
-            tagValidator.checkAndSaveTagIfNotExist(giftCertificate, locale);
+            tagValidator.checkAndSaveTagIfNotExist(giftCertificate);
             certificateMapper.save(giftCertificate);
             saveConnect(giftCertificate);
         } else {
-            throw new GeneralException(ExceptionType.CERTIFICATE_DATA_INCORRECT, locale);
+            throw new GeneralException(ExceptionType.CERTIFICATE_DATA_INCORRECT);
         }
         return giftCertificate.getId();
     }
 
-    public int delete(String id, Locale locale) {
-        long certificateId = parseId(id, locale);
+    public int delete(String id) {
+        long certificateId = parseId(id);
         return certificateMapper.delete(certificateId);
     }
 
     @Transactional
-    public int update(String id, GiftCertificate giftCertificate, Locale locale) {
-        long certificateId = parseId(id, locale);
+    public int update(String id, GiftCertificate giftCertificate) {
+        long certificateId = parseId(id);
         int update;
         if (validator.validate(giftCertificate)) {
-            tagValidator.checkAndSaveTagIfNotExist(giftCertificate, locale);
+            tagValidator.checkAndSaveTagIfNotExist(giftCertificate);
             giftCertificate.setLastUpdateDate(LocalDateTime.now());
             giftCertificate.setId(certificateId);
             update = certificateMapper.update(giftCertificate);
             certificateTagConnectingMapper.deleteConnect(certificateId);
             saveConnect(giftCertificate);
         } else {
-            throw new GeneralException(ExceptionType.CERTIFICATE_DATA_INCORRECT, locale);
+            throw new GeneralException(ExceptionType.CERTIFICATE_DATA_INCORRECT);
         }
         return update;
     }
 
     @Transactional
-    public int updatePrice(String id, GiftCertificate giftCertificate, Locale locale) {
-        long certificateId = parseId(id, locale);
+    public int updatePrice(String id, GiftCertificate giftCertificate) {
+        long certificateId = parseId(id);
         int updatedRow;
         if (giftCertificate.getPrice() != null && giftCertificate.getPrice().intValue() > 0) {
             giftCertificate.setLastUpdateDate(LocalDateTime.now());
             giftCertificate.setId(certificateId);
             updatedRow = certificateMapper.updatePrice(giftCertificate);
         } else {
-            throw new GeneralException(ExceptionType.CERTIFICATE_DATA_INCORRECT, locale);
+            throw new GeneralException(ExceptionType.CERTIFICATE_DATA_INCORRECT);
         }
 
         return updatedRow;

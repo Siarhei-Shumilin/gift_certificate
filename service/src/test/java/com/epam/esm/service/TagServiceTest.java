@@ -28,19 +28,19 @@ public class TagServiceTest {
         Tag tag = new Tag();
         tag.setName("name");
         tag.setId(1);
-        tagService.save(tag, new Locale("en"));
+        tagService.save(tag);
         Mockito.verify(tagMapper, Mockito.times(1)).save(tag);
     }
 
     @Test(expected = GeneralException.class)
     public void testSaveThrowException() {
         Tag tag = new Tag();
-        tagService.save(tag, new Locale("en"));
+        tagService.save(tag);
     }
 
     @Test
     public void testDeleteShouldTagMapperCallDeleteMethod() {
-        tagService.delete("1", new Locale("en"));
+        tagService.delete("1");
         Mockito.verify(tagMapper, Mockito.times(1)).delete(1);
     }
 
@@ -64,18 +64,15 @@ public class TagServiceTest {
     public void testFindByParameters() {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("tagName", "name");
-        Locale locale = new Locale("en");
         RowBounds mock = Mockito.mock(RowBounds.class);
-        Mockito.when(tagService.getRowBounds(parameters, locale)).thenReturn(mock);
-        tagService.findByParameters(parameters, locale);
+        Mockito.when(tagService.getRowBounds(parameters)).thenReturn(mock);
+        tagService.findByParameters(parameters);
         Mockito.verify(tagMapper, Mockito.times(1)).findByParameters((String) parameters.get("tagName"), mock);
     }
 
     @Test
     public void testFindById() {
-        String id = "1";
-        Locale locale = new Locale("en");
-        tagService.findById(id, locale);
+        tagService.findById("1");
         Mockito.verify(tagMapper, Mockito.times(1)).findById(1);
     }
 }

@@ -36,31 +36,30 @@ public class CertificateServiceTest {
 
     @Test
     public void testDeleteShouldCallMappersMethodDelete() {
-        Locale locale = new Locale("en");
-        service.delete("1", locale);
+        service.delete("1");
         Mockito.verify(mapper, Mockito.times(1)).delete(1);
     }
 
     @Test(expected = GeneralException.class)
     public void testSaveShouldThrowException(){
-        service.save(new GiftCertificate(), new Locale("en"));
+        service.save(new GiftCertificate());
     }
 
     @Test(expected = GeneralException.class)
     public void testUpdateShouldThrowException(){
-        service.update("1", new GiftCertificate(), new Locale("en"));
+        service.update("1", new GiftCertificate());
     }
 
     @Test(expected = GeneralException.class)
     public void testUpdatePriceShouldThrowException(){
-        service.updatePrice("1", new GiftCertificate(), new Locale("en"));
+        service.updatePrice("1", new GiftCertificate());
     }
 
     @Test
     public void testUpdatePriceShould(){
         GiftCertificate giftCertificate = new GiftCertificate();
         giftCertificate.setPrice(new BigDecimal(2));
-        service.updatePrice("1", giftCertificate, new Locale("en"));
+        service.updatePrice("1", giftCertificate);
         Mockito.verify(mapper, Mockito.times(1)).updatePrice(giftCertificate);
     }
 
@@ -68,15 +67,14 @@ public class CertificateServiceTest {
     public void testFindByParametersShouldMapperCallFindByParametersMethod() {
         Map<String, Object> parameters = new HashMap<>();
         List<String> tagList = new ArrayList<>();
-        Locale locale = new Locale("en");
         RowBounds rowBounds = Mockito.mock(RowBounds.class);
-        Mockito.when(service.getRowBounds(parameters, locale)).thenReturn(rowBounds);
-        service.findByParameters(parameters, tagList, locale);
+        Mockito.when(service.getRowBounds(parameters)).thenReturn(rowBounds);
+        service.findByParameters(parameters, tagList);
         Mockito.verify(mapper, Mockito.times(1)).findByParameters(parameters, tagList, rowBounds);
     }
 
     @Test(expected = GeneralException.class)
     public void testFindByIdShouldThrowException() {
-        service.findById("1fg", new Locale("en"));
+        service.findById("1fg");
     }
 }

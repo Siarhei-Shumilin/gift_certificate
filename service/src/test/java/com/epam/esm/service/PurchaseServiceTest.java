@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,7 +27,6 @@ public class PurchaseServiceTest {
     public void testFindUsersPurchasesShouldThrowException() {
         String userId = "lm1";
         Map<String, Object> parameters = new HashMap<>();
-        Locale locale = new Locale("en");
-        purchaseService.findUsersPurchases(userId, parameters, locale);
+        purchaseService.findUsersPurchases(userId, parameters);
     }
 }

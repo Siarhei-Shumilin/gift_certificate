@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -23,7 +22,7 @@ public class GeneralServiceTest {
         Map<String, Object> map = new HashMap<>();
         map.put("page", "1");
         map.put("pageSize", "3");
-        RowBounds rowBounds = generalService.getRowBounds(map, new Locale("en"));
+        RowBounds rowBounds = generalService.getRowBounds(map);
         int actual = rowBounds.getLimit();
         Assert.assertEquals(3, actual);
     }
@@ -33,17 +32,17 @@ public class GeneralServiceTest {
         Map<String, Object> map = new HashMap<>();
         map.put("page", "1sd");
         map.put("pageSize", "3ds");
-        generalService.getRowBounds(map, new Locale("en"));
+        generalService.getRowBounds(map);
     }
 
     @Test
     public void testParseIdShouldTrueWhenIdIsValid() {
-        long id = generalService.parseId("1", new Locale("en"));
+        long id = generalService.parseId("1");
         Assert.assertEquals(1, id);
     }
 
     @Test(expected = GeneralException.class)
     public void testParseIdShouldThrowException() {
-        generalService.parseId("1fef", new Locale("en"));
+        generalService.parseId("1fef");
     }
 }

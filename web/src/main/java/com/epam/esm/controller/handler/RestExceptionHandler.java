@@ -13,6 +13,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.Locale;
+
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -24,10 +26,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(GeneralException.class)
-    protected ResponseEntity<ApiError> handleException(GeneralException exception) {
+    protected ResponseEntity<ApiError> handleException(GeneralException exception, Locale locale) {
         ExceptionType error = exception.getError();
         HttpStatus httpStatus = HttpStatus.valueOf(error.getStatusCode());
-        String message = messageSource.getMessage(error.getMessage(), null, exception.getLocale());
+        String message = messageSource.getMessage(error.getMessage(), null, locale);
         return new ResponseEntity<>(new ApiError(message, error.getCustomCode()), httpStatus);
     }
 

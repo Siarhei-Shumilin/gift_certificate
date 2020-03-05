@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Locale;
 import java.util.Map;
 
 @RestController
@@ -39,19 +38,19 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public Map<String, Long> registration(@RequestBody User user, Locale locale) {
+    public Map<String, Long> registration(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        long userId = userService.save(user, locale);
+        long userId = userService.save(user);
         return Map.of("User id", userId);
     }
 
     @PostMapping(value = "/authenticate")
-    public ResponseEntity createAuthenticationToken(@RequestBody User user, Locale locale) {
+    public ResponseEntity createAuthenticationToken(@RequestBody User user) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new GeneralException(ExceptionType.INCORRECT_USER_DATA, locale);
+            throw new GeneralException(ExceptionType.INCORRECT_USER_DATA);
         }
         int expirationTimeHours = expiration / 3600000;
         final UserDetails userDetails = userService.loadUserByUsername(user.getUsername());

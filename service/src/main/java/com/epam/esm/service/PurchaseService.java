@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -32,7 +31,7 @@ public class PurchaseService extends GeneralService {
         this.purchaseMapper = purchaseMapper;
     }
 
-    public long save(GiftCertificate giftCertificate, Locale locale) {
+    public long save(GiftCertificate giftCertificate) {
         User user = getCurrentUser();
         long purchaseId;
         if (certificateMapper.existById(giftCertificate.getId()) && user != null) {
@@ -43,22 +42,22 @@ public class PurchaseService extends GeneralService {
             purchaseMapper.save(purchase);
             purchaseId = purchase.getId();
         } else {
-            throw new GeneralException(ExceptionType.CERTIFICATE_NOT_EXISTS, locale);
+            throw new GeneralException(ExceptionType.CERTIFICATE_NOT_EXISTS);
         }
         return purchaseId;
     }
 
-    public List<Purchase> findUsersPurchases(String userId, Map<String, Object> parameters, Locale locale) {
-        long id = parseId(userId, locale);
-        return purchaseMapper.findUsersPurchases(id, getRowBounds(parameters, locale));
+    public List<Purchase> findUsersPurchases(String userId, Map<String, Object> parameters) {
+        long id = parseId(userId);
+        return purchaseMapper.findUsersPurchases(id, getRowBounds(parameters));
     }
 
-    public List<Purchase> findCurrentUserPurchases(Map<String, Object> parameters, Locale locale) {
+    public List<Purchase> findCurrentUserPurchases(Map<String, Object> parameters) {
         User user = getCurrentUser();
         List<Purchase> usersPurchases = new ArrayList<>();
         if (user != null) {
             long id = user.getId();
-            usersPurchases = purchaseMapper.findUsersPurchases(id, getRowBounds(parameters, locale));
+            usersPurchases = purchaseMapper.findUsersPurchases(id, getRowBounds(parameters));
         }
         return usersPurchases;
     }

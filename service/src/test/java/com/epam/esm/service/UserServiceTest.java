@@ -10,8 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Locale;
-
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
     @Mock
@@ -24,6 +22,6 @@ public class UserServiceTest {
     @Test(expected = GeneralException.class)
     public void testSaveShouldThrowException() {
         User user = new User();
-        userService.save(user, new Locale("en"));
+        userService.save(user);
     }
 }

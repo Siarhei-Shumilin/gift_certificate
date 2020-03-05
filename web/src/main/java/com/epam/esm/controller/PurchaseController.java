@@ -6,7 +6,6 @@ import com.epam.esm.service.PurchaseService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @RestController
@@ -19,17 +18,17 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public Map<String, Long> save(@RequestBody GiftCertificate giftCertificate, Locale locale) {
-        return Map.of("Purchase id " , purchaseService.save(giftCertificate, locale));
+    public Map<String, Long> save(@RequestBody GiftCertificate giftCertificate) {
+        return Map.of("Purchase id " , purchaseService.save(giftCertificate));
     }
 
     @GetMapping("/user/{userId}")
-    public List<Purchase> findUsersPurchases(@PathVariable String userId, @RequestParam(required = false) Map<String, Object> parameters, Locale locale){
-        return purchaseService.findUsersPurchases(userId, parameters, locale);
+    public List<Purchase> findUsersPurchases(@PathVariable String userId, @RequestParam(required = false) Map<String, Object> parameters){
+        return purchaseService.findUsersPurchases(userId, parameters);
     }
 
     @GetMapping
-    public List<Purchase> findCurrentUserPurchase(@RequestParam(required = false) Map<String, Object> parameters, Locale locale){
-        return purchaseService.findCurrentUserPurchases(parameters, locale);
+    public List<Purchase> findCurrentUserPurchase(@RequestParam(required = false) Map<String, Object> parameters){
+        return purchaseService.findCurrentUserPurchases(parameters);
     }
 }
