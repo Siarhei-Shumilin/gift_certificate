@@ -21,48 +21,18 @@ public class GeneralCertificateTagAspect {
     private static final String AFTER = "Ended {} successfully";
     private static final String FAILED = "The {} failed";
 
-    @Before("com.epam.esm.config.aspect.PointCutConfig.findByParameters()")
+    @Before("com.epam.esm.config.aspect.PointCutConfig.anyControllerMethod()")
     public void logBeforeFind(JoinPoint joinPoint) {
         before(BEFORE, joinPoint);
     }
 
-    @AfterReturning("com.epam.esm.config.aspect.PointCutConfig.findByParameters()")
+    @AfterReturning("com.epam.esm.config.aspect.PointCutConfig.anyControllerMethod()")
     public void logAfterFind(JoinPoint joinPoint) {
         after(AFTER, joinPoint);
     }
 
-    @AfterThrowing("com.epam.esm.config.aspect.PointCutConfig.findByParameters()")
+    @AfterThrowing("com.epam.esm.config.aspect.PointCutConfig.anyControllerMethod()")
     public void logAfterFindThrowException(JoinPoint joinPoint) {
-        after(FAILED, joinPoint);
-    }
-
-    @Before("com.epam.esm.config.aspect.PointCutConfig.delete()")
-    public void logBeforeDelete(JoinPoint joinPoint) {
-        before(BEFORE, joinPoint);
-    }
-
-    @AfterReturning("com.epam.esm.config.aspect.PointCutConfig.delete()")
-    public void logAfterDelete(JoinPoint joinPoint) {
-        after(AFTER, joinPoint);
-    }
-
-    @AfterThrowing("com.epam.esm.config.aspect.PointCutConfig.delete()")
-    public void logAfterDeleteThrowException(JoinPoint joinPoint) {
-        after(FAILED, joinPoint);
-    }
-
-    @Before("com.epam.esm.config.aspect.PointCutConfig.save()")
-    public void logBeforeSave(JoinPoint joinPoint) {
-        before(BEFORE, joinPoint);
-    }
-
-    @AfterReturning("com.epam.esm.config.aspect.PointCutConfig.save()")
-    public void logAfterSave(JoinPoint joinPoint) {
-        after(AFTER, joinPoint);
-    }
-
-    @AfterThrowing("com.epam.esm.config.aspect.PointCutConfig.save()")
-    public void logAfterSaveThrowException(JoinPoint joinPoint) {
         after(FAILED, joinPoint);
     }
 
