@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/purchase")
+@RequestMapping("/purchases")
 public class PurchaseController {
     private final PurchaseService purchaseService;
 
@@ -22,7 +22,7 @@ public class PurchaseController {
         return Map.of("Purchase id " , purchaseService.save(giftCertificate));
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/users/{userId}")
     public List<Purchase> findUsersPurchases(@PathVariable String userId, @RequestParam(required = false) Map<String, Object> parameters){
         return purchaseService.findUsersPurchases(userId, parameters);
     }

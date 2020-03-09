@@ -18,6 +18,11 @@ public class TagValidator {
         this.tagMapper = tagMapper;
     }
 
+    /**
+     * Check for valid tag fields if new tags are passed during creation/modification – they are created in database.
+     *
+     * @throws GeneralException if this tag has not valid fields.
+     */
     public void checkAndSaveTagIfNotExist(GiftCertificate giftCertificate) {
         List<Tag> tagList = giftCertificate.getTagList();
         for (Tag tag : tagList) {

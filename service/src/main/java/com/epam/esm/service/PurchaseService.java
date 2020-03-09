@@ -31,27 +31,45 @@ public class PurchaseService extends GeneralService {
         this.purchaseMapper = purchaseMapper;
     }
 
+    /**
+     * Get the ID of the user who makes the purchase. Check whether the certificate exists in the database.
+     * If all conditions are met, we save the purchase.
+     *
+     * @return {@code true} the purchase ID.
+     * @throws GeneralException if the certificate for purchase does not exist.
+     */
     public long save(GiftCertificate giftCertificate) {
         User user = getCurrentUser();
-        long purchaseId;
+        Purchase purchase;
         if (certificateMapper.existById(giftCertificate.getId()) && user != null) {
-            Purchase purchase = new Purchase();
+            purchase = new Purchase();
             purchase.setUserId(user.getId());
             purchase.setCertificateId(giftCertificate.getId());
             purchase.setDateTime(LocalDateTime.now());
             purchaseMapper.save(purchase);
-            purchaseId = purchase.getId();
         } else {
             throw new GeneralException(ExceptionType.CERTIFICATE_NOT_EXISTS);
         }
-        return purchaseId;
+        return purchase.getId();
     }
 
+    /**
+     * Find user purchases by Id.
+     *
+     * @return the user list purchases.
+     * @throws GeneralException if the user ID format is incorrect.
+     */
     public List<Purchase> findUsersPurchases(String userId, Map<String, Object> parameters) {
         long id = parseId(userId);
         return purchaseMapper.findUsersPurchases(id, getRowBounds(parameters));
     }
 
+    /**
+     * Get the ID of the user who logged in.
+     * Find current user purchases if the user is not null.
+     *
+     * @return the user list purchases.
+     */
     public List<Purchase> findCurrentUserPurchases(Map<String, Object> parameters) {
         User user = getCurrentUser();
         List<Purchase> usersPurchases = new ArrayList<>();
@@ -62,6 +80,9 @@ public class PurchaseService extends GeneralService {
         return usersPurchases;
     }
 
+    /**
+     * @return the user who logged in.
+     */
     public User getCurrentUser() {
         User user = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

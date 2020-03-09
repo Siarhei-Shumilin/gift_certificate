@@ -17,6 +17,7 @@ public class TagService extends GeneralService {
         this.mapperTag = mapperTag;
     }
 
+
     public long save(Tag tag) {
         if (tag.getName() == null || tag.getName().trim().isEmpty()) {
             throw new GeneralException(ExceptionType.TAG_DATA_INCORRECT);

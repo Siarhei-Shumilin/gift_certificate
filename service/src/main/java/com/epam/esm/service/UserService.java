@@ -24,6 +24,11 @@ public class UserService implements UserDetailsService {
         return new UserDetailsImpl(user);
     }
 
+    /**
+     * @return {@code true} the user ID.
+     *
+     * @throws GeneralException if such a user already exists in database.
+     */
     public long save(User user) {
         userMapper.save(user);
         long id = user.getId();
