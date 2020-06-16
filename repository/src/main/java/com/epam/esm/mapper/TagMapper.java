@@ -34,7 +34,9 @@ public interface TagMapper {
             "FROM (SELECT user_id, certificate_id as certificateId, sum(price) as sumPurchases " +
             "FROM purchases GROUP BY user_id ORDER BY sumPurchases DESC LIMIT 1) as user_with_max_cost_purchases " +
             "JOIN connecting ON certificateId = connecting.certificate_id " +
-            "JOIN tags ON tags.id = connecting.tag_id GROUP BY tags.id, tags.name ORDER BY count(tags.id) DESC LIMIT 1")
+            "JOIN tags ON tags.id = connecting.tag_id " +
+            "GROUP BY tags.id, tags.name " +
+            "ORDER BY count(tags.id) DESC LIMIT 1")
     Tag findMostPopularTag();
 
     @Select({"<script>",

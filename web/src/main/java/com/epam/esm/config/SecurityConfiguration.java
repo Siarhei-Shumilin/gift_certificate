@@ -60,9 +60,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+                .cors()
+                .and()
+                .csrf()
+                .disable()
                 .authorizeRequests()
-                //certificates
+                .antMatchers("/",
+                        "/favicon.ico",
+                        "/**/*.png",
+                        "/**/*.gif",
+                        "/**/*.svg",
+                        "/**/*.jpg",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js")
+                .permitAll()
                     .antMatchers(HttpMethod.GET, certificatesPath, certificatesIdPath).permitAll()
                     .antMatchers(HttpMethod.POST, certificatesPath, "/certificates/").hasRole(roleAdmin)
                     .antMatchers(HttpMethod.PUT, certificatesIdPath, certificatePricePath).hasRole(roleAdmin)

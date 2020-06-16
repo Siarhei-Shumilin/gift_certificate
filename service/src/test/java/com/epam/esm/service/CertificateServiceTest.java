@@ -55,13 +55,13 @@ public class CertificateServiceTest {
         service.updatePrice("1", new GiftCertificate());
     }
 
-    @Test
-    public void testUpdatePriceShould(){
-        GiftCertificate giftCertificate = new GiftCertificate();
-        giftCertificate.setPrice(new BigDecimal(2));
-        service.updatePrice("1", giftCertificate);
-        Mockito.verify(certificateMapper, Mockito.times(1)).updatePrice(giftCertificate);
-    }
+//    @Test
+//    public void testUpdatePriceShould(){
+//        GiftCertificate giftCertificate = new GiftCertificate();
+//        giftCertificate.setPrice(new BigDecimal(2));
+//        service.updatePrice("1", giftCertificate);
+//        Mockito.verify(certificateMapper, Mockito.times(1)).updatePrice(giftCertificate);
+//    }
 
     @Test
     public void testFindByParametersShouldMapperCallFindByParametersMethod() {
